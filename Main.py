@@ -11,6 +11,9 @@ screen_width = 500
 screen_height = 800
 screen = pygame.display.set_mode([screen_width,screen_height])
 
+score = 0
+current_level = 0
+
 background = pygame.image.load('img/background.jpg').convert()
 ship_image = pygame.image.load('img/spaceship.png').convert()
 enemy_image = pygame.image.load('img/enemy.png').convert()
@@ -31,13 +34,15 @@ enemies_list = pygame.sprite.Group()
 player = PlayerShip(screen_width, ship_image)
 sprites_list.add(player)
 
-for i in range (20):
-    enemy = Enemy(enemy_image)
-    enemy.rect.x = random.randrange(screen_width - enemy_image.get_rect().width)
-    enemy.rect.y = random.randrange(screen_height)/3
-    #Adding enemies to list
-    enemies_list.add(enemy)
-    sprites_list.add(enemy)
+#Spawning enemies
+def spawn_enemy():
+    for i in range (6):
+        enemy = Enemy(enemy_image)
+        enemy.rect.x = 25 + 80*i
+        enemy.rect.y = 80
+        enemies_list.add(enemy)
+        sprites_list.add(enemy)
+spawn_enemy()
 
 done = False
 
