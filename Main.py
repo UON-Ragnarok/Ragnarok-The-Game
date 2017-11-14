@@ -35,14 +35,15 @@ player = PlayerShip(screen_width, ship_image)
 sprites_list.add(player)
 
 #Spawning enemies
-def spawn_enemy():
+
+def spawn_enemy(speed):
     for i in range (6):
-        enemy = Enemy(enemy_image)
+        enemy = Enemy(enemy_image, speed)
         enemy.rect.x = 25 + 80*i
-        enemy.rect.y = 80
+        enemy.rect.y = -50
         enemies_list.add(enemy)
         sprites_list.add(enemy)
-spawn_enemy()
+
 
 done = False
 
@@ -75,10 +76,9 @@ while not done:
     sprites_list.update()
     # --- Game mechanics
     for bullet in bullet_list:
-
         enemies_hit_list = pygame.sprite.spritecollide(bullet, enemies_list, True)
-
         for enemies in enemies_hit_list:
+            score += 1
             bullet_list.remove(bullet)
             sprites_list.remove(bullet)
 
@@ -87,11 +87,24 @@ while not done:
             bullet_list.remove(bullet)
             sprites_list.remove(bullet)
 
+    #Spawn enemies if there aren't any, levels and speeds fix later
+    if not enemies_list:
+        spawn_enemy(2 + current_level)
+        current_level += 0.5
+
+    for enemy in enemies_list:
+        #If enemies go off screen
+
+        if enemy.rect.y > screen_height:
+            enemies_list.remove(enemy)
+            sprites_list.remove(enemy)
+
+
     sprites_list.draw(screen)
 
     pygame.display.flip()
 
-    clock.tick(60)
+    clock.tick(120)
 
 # Close the window and quit.
 pygame.quit()
