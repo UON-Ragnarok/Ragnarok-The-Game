@@ -50,12 +50,12 @@ def spawn_enemy(speed):
         enemy.rect.y = -50
         enemies_list.add(enemy)
         sprites_list.add(enemy)
-
-
+        
 done = False
 
 clock = pygame.time.Clock()
 player.rect.y = 700
+
 
 # -------- Main Program Loop -----------
 while not done:
@@ -66,13 +66,14 @@ while not done:
     if relative_y < screen_height:
         screen.blit(background, [0, relative_y])
     background_y += 1
-
+        
     # --- Main event loop
     key = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
+        
         if event.type == pygame.MOUSEBUTTONDOWN and alive:
             bullet = Bullet()
             bullet.rect.x = player.rect.x + ship_image.get_rect().width/2
@@ -86,11 +87,17 @@ while not done:
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
                 if pause:
+
                     pause = False
                     pause_time += time.time() - pause_start_time
+
                 else:
+                    for enemy in enemies_list:
+                        enemies_list.remove(enemy)
+                        sprites_list.remove(enemy)
                     pause = True
                     pause_start_time = time.time()
+
                     
     sprites_list.update()
     # --- Game mechanics
