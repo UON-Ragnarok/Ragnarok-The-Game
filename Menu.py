@@ -5,13 +5,7 @@ class Menu(object):
     #menua = Instruction
     #menub = Pause
     #menuc = Game Over
-        if menu =='a':
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Instructions", 1, (91, 109, 131)), (50, 200))
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("DESTROY ASGARD", 1, (91, 109, 131)), (170, 370))
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Mouse to move and click to shoot", 1, (91, 109, 131)), (140, 390))
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Esc to pause", 1, (91, 109, 131)), (170, 410))
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press any key to start", 1, (91, 109, 131)), (170, 430))
-        elif menu == "b":
+        if menu == "b":
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Paused", 1, (91, 109, 131)), (50, 200))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press ELSE to resume", 1, (91, 109, 131)), (170, 370))
         elif menu == "c":
