@@ -10,3 +10,22 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += self.speed
+		
+class Boss(Enemy):
+	pass
+	
+class Hammer(Boss):
+	pass
+
+class Thunder(Boss):
+	pass
+	
+class Mob(Enemy):
+	pass
+
+class Meteor(Enemy):
+	pass
+	
+	
+		
+
