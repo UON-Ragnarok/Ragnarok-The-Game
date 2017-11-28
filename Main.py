@@ -15,6 +15,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 
 score = 0
 current_level = 0
+boss_health = 20 + current_level
 start_time = time.time()
 pause_time = 0
 pause_start_time=time.time()
@@ -23,7 +24,9 @@ pause = False
 
 background = pygame.image.load('img/background.jpg').convert()
 ship_image = pygame.image.load('img/spaceship.png').convert()
+boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/enemy.png').convert()
+meteor_image = pygame.image.load('img/meteor.png').convert()
 background_y = 0
 pygame.display.set_caption("My Game")
 
@@ -33,9 +36,14 @@ sprites_list = pygame.sprite.Group()
 #List of bullets
 bullet_list = pygame.sprite.Group()
 
+#BOSS
+boss_list = pygame.sprite.Group()
+
 #List of enemies
 enemies_list = pygame.sprite.Group()
 
+#List of meteor
+meteor_list = pygame.sprite.Group()
 
 #Creating sprites
 player = PlayerShip(screen_width, ship_image)
@@ -45,17 +53,31 @@ sprites_list.add(player)
 
 def spawn_enemy(speed):
     for i in range (6):
-        enemy = Enemy(enemy_image, speed)
+        enemy = Mob(enemy_image, speed)
         enemy.rect.x = 25 + 80*i
         enemy.rect.y = -50
         enemies_list.add(enemy)
         sprites_list.add(enemy)
 
+def spawn_meteor(speed):
+    meteor = Meteor(pygame.transform.scale(meteor_image,(50,50)), speed)
+    meteor.rect.x = random.choice([-meteor.rect.width/2,screen_width-meteor.rect.width/2])
+    meteor.rect.y = random.randrange(-meteor.rect.height/2,40)
+# trying to make it move dignoally but it will then need a speedx
+    meteor_list.add(meteor)
+    sprites_list.add(meteor)
 
+def spawn_boss(speed):
+    boss = Boss(boss_image, speed)
+    boss.rect.x = screen_width/2-boss.rect.width/2
+    boss.rect.y = 50
+    boss_list.add(boss)
+    sprites_list.add(boss)
+    
 done = False
 
 clock = pygame.time.Clock()
-player.rect.y = 700
+player.rect.y = (screen_height - player.rect.height)*0.95
 
 # -------- Main Program Loop -----------
 while not done:
@@ -81,6 +103,7 @@ while not done:
             bullet_list.add(bullet)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and (not alive):
+                score = 0
                 alive = True
             if event.key == pygame.K_n and (not alive):
                 done = True
@@ -95,9 +118,9 @@ while not done:
     sprites_list.update()
     # --- Game mechanics
 
-    if alive and (not pause):
+    if alive and not pause:
         # player colliding with enemy
-        hit_list = pygame.sprite.spritecollide(player, enemies_list, True)
+        hit_list = pygame.sprite.spritecollide(player, enemies_list, True) or pygame.sprite.spritecollide(player, meteor_list, True)
         for hit in hit_list:
              alive= False
              
@@ -107,20 +130,19 @@ while not done:
                 score += 1
                 bullet_list.remove(bullet)
                 sprites_list.remove(bullet)
-
+            
             #if bullet goes off screen
             if bullet.rect.y < -10:
                 bullet_list.remove(bullet)
                 sprites_list.remove(bullet)
 
         #Spawn enemies if there aren't any, levels and speeds fix later
-        if not enemies_list:
+        if not enemies_list and score < 5:
             spawn_enemy(2 + current_level)
-            current_level += 0.5
+            current_level += 0.2
 
         for enemy in enemies_list:
             #If enemies go off screen
-
             if enemy.rect.y > screen_height:
                 enemies_list.remove(enemy)
                 sprites_list.remove(enemy)
@@ -128,12 +150,31 @@ while not done:
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
 
+        #Spawn meteor:
+        if not meteor_list:
+            spawn_meteor(3 + current_level)
+            current_level += 0.5
+
+        for meteor in meteor_list:
+            #If meteor go off screen
+            if meteor.rect.y > screen_height:
+                meteor_list.remove(meteor)
+                sprites_list.remove(meteor)
+
+        #Spawn boss:
+        if not enemies_list and score >= 5:
+            spawn_boss(0)
 
     if not alive:
        # sprites_list.remove(player)
         screen.fill((0,0,0))
         Menu().displayMenu(screen,"c",score)
         current_level=0
+        #sprites_list.remove(bullet)
+        #sprites_list.remove(enemy)
+        #sprites_list.remove(meteor)
+        sprites_list.remove()
+        # can do remove or freeze?
     elif pause :
         Menu().displayMenu(screen, "b")
 
