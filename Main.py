@@ -79,6 +79,9 @@ done = False
 clock = pygame.time.Clock()
 player.rect.y = (screen_height - player.rect.height)*0.95
 
+pygame.mixer.music.load('Arcade Funk.ogg')
+
+pygame.mixer.music.play(loops=0, start=0.0)
 # -------- Main Program Loop -----------
 while not done:
 
@@ -95,7 +98,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
-        if event.type == pygame.MOUSEBUTTONDOWN and alive:
+        if alive:
             bullet = Bullet()
             bullet.rect.x = player.rect.x + ship_image.get_rect().width/2
             bullet.rect.y = player.rect.y
