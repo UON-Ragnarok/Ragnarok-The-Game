@@ -7,7 +7,7 @@ class Menu(object):
     #menuc = Game Over
         if menu == "b":
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Paused", 1, (91, 109, 131)), (50, 200))
-            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press Escape to resume", 1, (91, 109, 131)), (170, 370))
+            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press ELSE to resume", 1, (91, 109, 131)), (170, 370))
         elif menu == "c":
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Over", 1, (91, 109, 131)), (105, 300))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press R to restart", 1, (91, 109, 131)), (170, 370))
