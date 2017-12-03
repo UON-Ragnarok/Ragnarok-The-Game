@@ -20,6 +20,7 @@ class PlayerShip(pygame.sprite.Sprite):
 
 '''		self.speedx = 0
 		keystate = pygame.key.get_pressed()
+		
 		if keystate[pygame.K_LEFT]:
 			self.speedx = -5
 		if keystate[pygame.K_RIGHT]:

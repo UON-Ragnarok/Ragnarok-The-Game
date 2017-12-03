@@ -12,7 +12,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.speed
 		
 class Boss(Enemy):
-	pass
+	def update(self):
+		pass
 	
 class Hammer(Boss):
 	pass
