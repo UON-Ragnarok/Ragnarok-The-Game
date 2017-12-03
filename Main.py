@@ -15,6 +15,8 @@ FPS = 60
 # initialize pygame and creat window
 pygame.init()
 pygame.mixer.init() # handle sound effects
+pygame.mixer.music.load('Arcade Funk.ogg')
+pygame.mixer.music.play(loops=0, start=0.0)
 screen = pygame.display.set_mode([screen_width,screen_height])
 pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
@@ -30,14 +32,12 @@ pause_start_time=time.time()
 alive = True
 pause = False
 
-
 background = pygame.image.load('img/background.jpg').convert()
 ship_image = pygame.image.load('img/spaceship.png').convert()
 boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/enemy.png').convert()
 meteor_image = pygame.image.load('img/meteor.png').convert()
 background_y = 0
-
 
 #List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -105,11 +105,7 @@ while not done:
 
     # --- Main event loop
     key = pygame.key.get_pressed()
-	
-    
-    # process input (events)
     for event in pygame.event.get():
-        # check for closing window
         if event.type == pygame.QUIT:
             done = True
 
@@ -120,10 +116,10 @@ while not done:
             sprites_list.add(bullet)
             bullet_list.add(bullet)
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_r and not alive:
+            if event.key == pygame.K_r and (not alive):
                 score = 0
                 alive = True
-            if event.key == pygame.K_n and not alive:
+            if event.key == pygame.K_n and (not alive):
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
                 if pause:
@@ -133,14 +129,15 @@ while not done:
                     pause = True
                     pause_start_time = time.time()
                     
-    # Update
+    #Update
     sprites_list.update()
-
+    
     # --- Game mechanics
-      
+
     if alive and not pause:
         # player colliding with enemy
-        if pygame.sprite.spritecollide(player, enemies_list, True) or pygame.sprite.spritecollide(player, meteor_list, True):
+        hit_list = pygame.sprite.spritecollide(player, enemies_list, True) or pygame.sprite.spritecollide(player, meteor_list, True)
+        for hit in hit_list:
              alive= False
              
         for bullet in bullet_list:
@@ -169,12 +166,7 @@ while not done:
                 level_score = score
 
 
-            #if bullet goes off screen
-            if bullet.rect.y < -10:
-                bullet_list.remove(bullet)
-                sprites_list.remove(bullet)
-
-        #Spawn enemies if there aren't any, levels and speeds fix later
+        #Spawn enemies if there aren't any, levels and speeds NEED fixing
         if not enemies_list and score < level_score + 5  :
             spawn_enemy(2 + current_level)
 
