@@ -8,8 +8,7 @@ class PlayerShip(pygame.sprite.Sprite):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.rect = self.image.get_rect()
-        self.rect.y = (self.screen_height - self.rect.y)*0.95
-        self.image.set_colorkey([255,255,255])          #make bg transparent
+        self.rect.y = (self.screen_height - self.rect.y)*0.9
         self.pause = False
 
     def update(self):

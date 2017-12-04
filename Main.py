@@ -29,10 +29,10 @@ background_y = 0
 background = pygame.image.load('img/background.jpg').convert()
 menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
 title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
-ship_image = pygame.image.load('img/spaceship.png').convert()
+ship_image = pygame.image.load('img/spaceship.png').convert_alpha()
 boss_image = pygame.image.load('img/thor.png').convert()
-enemy_image = pygame.image.load('img/mob.png').convert()
-meteor_image = pygame.image.load('img/meteor.png').convert()
+enemy_image = pygame.image.load('img/mob.png').convert_alpha()
+meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
@@ -84,15 +84,15 @@ about = False
 
 #Spawning enemies
 def spawn_enemy(speed):
-    for i in range (6):
+    for i in range (5):
         enemy = Enemy(enemy_image, speed, 0, [enemy_list, mob_list, sprites_list])
-        enemy.rect.x = 25 + 80*i
+        enemy.rect.x = 10 + 100*i
         enemy.rect.y = -50
 
 def spawn_meteor(speed):
     pygame.mixer.Channel(2).play(pygame.mixer.Sound('comet.ogg'))
     pygame.mixer.Channel(2).set_volume(0.8)
-    meteor = Meteor(pygame.transform.scale(meteor_image,(50,50)), speed, 0, [enemy_list, meteor_list, sprites_list])
+    meteor = Meteor(pygame.transform.scale(meteor_image,(80,80)), speed, 0, [enemy_list, meteor_list, sprites_list])
     meteor.rect.y = -200
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
 # trying to make it move dignoally but it will then need a speedx
