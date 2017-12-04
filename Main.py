@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-
+import math
 
 from PlayerShip import *
 from Bullet import *
@@ -16,6 +16,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 
 score = 0
 current_level = 0
+enemies_speed = math.sqrt(10 + current_level)
 boss_health = 20 + current_level
 start_time = time.time()
 pause_time = 0
@@ -27,7 +28,7 @@ intro = True
 background = pygame.image.load('img/background.jpg').convert()
 ship_image = pygame.image.load('img/spaceship.png').convert()
 boss_image = pygame.image.load('img/thor.png').convert()
-enemy_image = pygame.image.load('img/enemy.png').convert()
+enemy_image = pygame.image.load('img/mob.png').convert()
 meteor_image = pygame.image.load('img/meteor.png').convert()
 
 start_button_image = pygame.image.load('img/start_button.png').convert()
@@ -45,8 +46,11 @@ bullet_list = pygame.sprite.Group()
 #BOSS
 boss_list = pygame.sprite.Group()
 
-#List of enemies
-enemies_list = pygame.sprite.Group()
+#List of all enemies
+enemy_list = pygame.sprite.Group()
+
+#List of mobs
+mob_list = pygame.sprite.Group()
 
 #List of meteor
 meteor_list = pygame.sprite.Group()
@@ -55,30 +59,43 @@ meteor_list = pygame.sprite.Group()
 player = PlayerShip(screen_width, ship_image)
 sprites_list.add(player)
 
+clock = pygame.time.Clock()
+FPS = 120
+
+#Setting up firing bullet delay
+fire_bullet_event = pygame.USEREVENT + 1
+fire_bullet_delay = 500
+pygame.time.set_timer(fire_bullet_event, 500)
+
+player.rect.y = (screen_height - player.rect.height)*0.95
+
+pygame.mixer.music.load('Arcade Funk.ogg')
+pygame.mixer.music.play(loops=0, start=0.0)
+
 #Spawning enemies
 
 def spawn_enemy(speed):
     for i in range (6):
-        enemy = Mob(enemy_image, speed)
+        enemy = Enemy(enemy_image, speed, 0, [enemy_list, mob_list, sprites_list])
         enemy.rect.x = 25 + 80*i
         enemy.rect.y = -50
-        enemies_list.add(enemy)
-        sprites_list.add(enemy)
 
 def spawn_meteor(speed):
-    meteor = Meteor(pygame.transform.scale(meteor_image,(50,50)), speed)
-    meteor.rect.x = random.choice([-meteor.rect.width/2,screen_width-meteor.rect.width/2])
-    meteor.rect.y = random.randrange(-meteor.rect.height/2,40)
+    meteor = Meteor(pygame.transform.scale(meteor_image,(50,50)), speed, 0, [enemy_list, meteor_list, sprites_list])
+    meteor.rect.y = -200
+    meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
 # trying to make it move dignoally but it will then need a speedx
-    meteor_list.add(meteor)
-    sprites_list.add(meteor)
 
 def spawn_boss(speed):
-    boss = Boss(boss_image, speed)
+    boss = Boss(boss_image, speed, 0, [boss_list, sprites_list])
     boss.rect.x = screen_width/2-boss.rect.width/2
     boss.rect.y = 50
-    boss_list.add(boss)
-    sprites_list.add(boss)
+
+def fire_bullet():
+    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2),player.rect.y,[sprites_list, bullet_list])
+    pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
+
+
 # main menu
 # set up the height and width
 sb_top_left_x=screen_width/2 - start_button_image.get_rect().width/2
@@ -88,6 +105,7 @@ sb_width=start_button_image.get_rect().width
 ab_height=about_button_image.get_rect().height
 ab_width=about_button_image.get_rect().width
 about=False 
+
 
 while intro:
     for event in pygame.event.get():
@@ -113,7 +131,7 @@ while intro:
         screen.fill((0,0,0))
         screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Ragnorak", 1, (91, 109, 131)), (sb_top_left_x-20,sb_top_left_y -20-sb_height))
         big_about_button_image=pygame.transform.rotozoom(about_button_image,0,1.2)
-        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
+        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
         screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
         pygame.display.flip()
         #if click[0]==1:
@@ -136,17 +154,12 @@ while intro:
     else:
         screen.fill((0,0,0))
         screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Ragnorak", 1, (91, 109, 131)), (sb_top_left_x-20,sb_top_left_y -20-sb_height))
-        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-        screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height]);
-        pygame.display.flip()    
+        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
+        screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+        pygame.display.flip()
+
 done = False
 
-clock = pygame.time.Clock()
-player.rect.y = (screen_height - player.rect.height)*0.95
-
-pygame.mixer.music.load('Arcade Funk.ogg')
-
-pygame.mixer.music.play(loops=0, start=0.0)
 # -------- Main Program Loop -----------
 while not done:
 
@@ -163,12 +176,9 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
-        if alive:
-            bullet = Bullet()
-            bullet.rect.x = player.rect.x + ship_image.get_rect().width/2
-            bullet.rect.y = player.rect.y
-            sprites_list.add(bullet)
-            bullet_list.add(bullet)
+        if alive and event.type == fire_bullet_event and not pause:
+            fire_bullet()
+
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and (not alive):
                 score = 0
@@ -176,61 +186,66 @@ while not done:
             if event.key == pygame.K_n and (not alive):
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
-                if pause:
-                    pause = False
-                    pause_time += time.time() - pause_start_time
-                else:
+                if not pause:
+                    temp_enemies_speed = enemies_speed
+                    for enemy in enemy_list:
+                        enemy.speed = 0
+                    for bullet in bullet_list:
+                        bullet.speed = 0
                     pause = True
+                    player.pause = True
                     pause_start_time = time.time()
+                else:
+                    for enemy in enemy_list:
+                        enemy.speed = temp_enemies_speed
+                    for bullet in bullet_list:
+                        bullet.speed = 5
+                    pause = False
+                    player.pause = False
+                    pause_time += time.time() - pause_start_time
                     
     sprites_list.update()
     # --- Game mechanics
 
     if alive and not pause:
         # player colliding with enemy
-        hit_list = pygame.sprite.spritecollide(player, enemies_list, True) or pygame.sprite.spritecollide(player, meteor_list, True)
+        hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in hit_list:
-             alive= False
+            alive= False
              
         for bullet in bullet_list:
-            enemies_hit_list = pygame.sprite.spritecollide(bullet, enemies_list, True)
+            enemies_hit_list = pygame.sprite.spritecollide(bullet, mob_list, True)
             for enemies in enemies_hit_list:
                 score += 1
-                bullet_list.remove(bullet)
-                sprites_list.remove(bullet)
-            
+                bullet.kill()
+
             #if bullet goes off screen
             if bullet.rect.y < -10:
-                bullet_list.remove(bullet)
-                sprites_list.remove(bullet)
+                bullet.kill()
+
+        #Kill bullet if it hits meteors
+        for meteor in meteor_list:
+            meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
         #Spawn enemies if there aren't any, levels and speeds fix later
-        if not enemies_list and score < 5:
-            spawn_enemy(2 + current_level)
-            current_level += 0.2
+        if not mob_list and score < 5000:
+            spawn_enemy(enemies_speed)
+            current_level += 1
 
-        for enemy in enemies_list:
+        for enemy in enemy_list:
             #If enemies go off screen
             if enemy.rect.y > screen_height:
-                enemies_list.remove(enemy)
-                sprites_list.remove(enemy)
-
+                enemy.kill()
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
 
         #Spawn meteor:
         if not meteor_list:
-            spawn_meteor(3 + current_level)
-            current_level += 0.5
-
-        for meteor in meteor_list:
-            #If meteor go off screen
-            if meteor.rect.y > screen_height:
-                meteor_list.remove(meteor)
-                sprites_list.remove(meteor)
+            if current_level % 3 == 0:
+                spawn_meteor(enemies_speed * 2)
 
         #Spawn boss:
-        if not enemies_list and score >= 5:
+        if not enemy_list and score >= 1000:
             spawn_boss(0)
 
     if not alive:
@@ -238,11 +253,8 @@ while not done:
         screen.fill((0,0,0))
         Menu().displayMenu(screen,"c",score)
         current_level=0
-        #sprites_list.remove(bullet)
-        #sprites_list.remove(enemy)
-        #sprites_list.remove(meteor)
-        sprites_list.remove()
-        # can do remove or freeze?
+        for sprite in enemy_list:
+            sprite.kill()
     elif pause :
         Menu().displayMenu(screen, "b")
 
@@ -250,7 +262,7 @@ while not done:
 
     pygame.display.flip()
 
-    clock.tick(120)
+    clock.tick(FPS)
 
 # Close the window and quit.
 pygame.quit()
