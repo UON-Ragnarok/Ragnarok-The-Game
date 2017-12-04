@@ -127,7 +127,7 @@ def intro():
             screen.blit(menu_background, [relative_x, 0])
         menu_background_x += -0.3
 
-        screen.blit(title, [screen_width/6, screen_height/ 5])
+        screen.blit(title, [screen_width/9, screen_height/ 6])
 
         # start button
         if sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
