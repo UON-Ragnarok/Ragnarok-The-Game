@@ -1,7 +1,6 @@
 import pygame
 import random
 import time
-import pygame as pg
 
 from PlayerShip import *
 from Bullet import *
@@ -17,25 +16,17 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 score = 0
 current_level = 0
 boss_health = 20 + current_level
-#Pause
 start_time = time.time()
 pause_time = 0
 pause_start_time=time.time()
 alive = True
 pause = False
-intro = True
-
 
 background = pygame.image.load('img/background.jpg').convert()
 ship_image = pygame.image.load('img/spaceship.png').convert()
 boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/enemy.png').convert()
 meteor_image = pygame.image.load('img/meteor.png').convert()
-start_image = pygame.image.load('img/spaceship.png').convert()
-
-start_button_image = pygame.image.load('img/start_button.png').convert()
-about_button_image = pygame.image.load('img/about_button.png').convert()
-
 background_y = 0
 pygame.display.set_caption("My Game")
 
@@ -82,67 +73,7 @@ def spawn_boss(speed):
     boss.rect.y = 50
     boss_list.add(boss)
     sprites_list.add(boss)
-
-# main menu
-# set up the height and width
-sb_top_left_x=screen_width/2 - start_button_image.get_rect().width/2
-sb_top_left_y=screen_height/2
-sb_height=start_button_image.get_rect().height
-sb_width=start_button_image.get_rect().width
-ab_height=about_button_image.get_rect().height
-ab_width=about_button_image.get_rect().width
-about=False
-
-while intro:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-
-    click = pygame.mouse.get_pressed()
-    mouse = pygame.mouse.get_pos()
-    # start button
-    if sb_top_left_x <mouse[0]<sb_top_left_x+sb_width and sb_top_left_y <mouse[1]<sb_top_left_y +sb_height:
-        screen.fill((0,0,0))
-        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Ragnorak", 1, (91, 109, 131)), (sb_top_left_x-20,sb_top_left_y -20-sb_height))
-        big_start_button_image=pg.transform.rotozoom(start_button_image,0,1.2)
-        screen.blit(big_start_button_image, [sb_top_left_x, sb_top_left_y])
-        screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-        pygame.display.flip()
-        if click[0] == 1:
-            intro = False
-            break
-    # about button
-    elif sb_top_left_x <mouse[0]<sb_top_left_x+ab_width and sb_top_left_y +20+ab_height<mouse[1]<sb_top_left_y+20+sb_height+ab_height:
-        screen.fill((0,0,0))
-        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Ragnorak", 1, (91, 109, 131)), (sb_top_left_x-20,sb_top_left_y -20-sb_height))
-        big_about_button_image=pg.transform.rotozoom(about_button_image,0,1.2)
-        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-        screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-        pygame.display.flip()
-        #if click[0]==1:
-            #screen.fill((0,0,0))
-            #screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-            #screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-            #pygame.display.flip()
-            #while about ==True:
-                #if sb_top_left_x <mouse[0]<sb_top_left_x+ab_width and sb_top_left_y +20+sb_height<mouse[1]<sb_top_left_y+20+sb_height+ab_height:
-                    #screen.fill((0,0,0))
-                    #big_about_button_image=pg.transform.rotozoom(about_button_image,0,1.2)
-                    #screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height]);
-                    #pygame.display.flip()
-                    #if click[0] == 1:
-                       # continue
-               # else:
-                    #screen.fill((0,0,0))
-                    #screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-                    #screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-    else:
-        screen.fill((0,0,0))
-        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Ragnorak", 1, (91, 109, 131)), (sb_top_left_x-20,sb_top_left_y -20-sb_height))
-        screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-        screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height]);
-        pygame.display.flip()
+    
 done = False
 
 clock = pygame.time.Clock()
