@@ -16,6 +16,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 
 score = 0
 current_level = 0
+difficulty = 10
 enemies_speed = math.sqrt(10 + current_level)
 boss_health = 20 + current_level
 start_time = time.time()
@@ -37,8 +38,7 @@ meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
 
-
-pygame.display.set_caption("My Game")
+pygame.display.set_caption("Ragnarok The Game")
 
 #List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -66,8 +66,8 @@ FPS = 120
 
 #Setting up firing bullet delay
 fire_bullet_event = pygame.USEREVENT + 1
-fire_bullet_delay = 300
-pygame.time.set_timer(fire_bullet_event, 500)
+fire_bullet_delay = 500
+pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
 pygame.mixer.Channel(0).set_volume(0.5)
@@ -84,8 +84,9 @@ about = False
 
 #Spawning enemies
 def spawn_enemy(speed):
+    health = int(current_level / difficulty) + 1
     for i in range (5):
-        enemy = Enemy(enemy_image, speed, 0, [enemy_list, mob_list, sprites_list])
+        enemy = Enemy(enemy_image, speed, health, [enemy_list, mob_list, sprites_list])
         enemy.rect.x = 10 + 100*i
         enemy.rect.y = -50
 
@@ -127,7 +128,7 @@ def intro():
             screen.blit(menu_background, [relative_x, 0])
         menu_background_x += -0.3
 
-        screen.blit(title, [screen_width/9, screen_height/ 6])
+        screen.blit(title, [screen_width / 9, screen_height / 6])
 
         # start button
         if sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
@@ -228,12 +229,16 @@ while not done:
 
 
         for bullet in bullet_list:
-            enemies_hit_list = pygame.sprite.spritecollide(bullet, mob_list, True)
-            for enemies in enemies_hit_list:
-                score += 1
+            enemies_hit_list = pygame.sprite.spritecollide(bullet, mob_list, False)
+            for enemy in enemies_hit_list:
+                enemy.health -= 1
                 bullet.kill()
-                pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
-                pygame.mixer.Channel(3).set_volume(0.5)
+                if enemy.health <= 0:
+                    enemy.kill()
+                    score += 1
+                    bullet.kill()
+                    pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
+                    pygame.mixer.Channel(3).set_volume(0.5)
 
             #if bullet goes off screen
             if bullet.rect.y < -10:
