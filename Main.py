@@ -64,14 +64,13 @@ FPS = 120
 
 #Setting up firing bullet delay
 fire_bullet_event = pygame.USEREVENT + 1
-fire_bullet_delay = 500
+fire_bullet_delay = 300
 pygame.time.set_timer(fire_bullet_event, 500)
 
 player.rect.y = (screen_height - player.rect.height)*0.95
 
-pygame.mixer.music.load('Arcade Funk.ogg')
-pygame.mixer.music.play(loops=0, start=0.0)
-
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
+pygame.mixer.Channel(0).set_volume(0.5)
 #Spawning enemies
 
 def spawn_enemy(speed):
@@ -81,6 +80,8 @@ def spawn_enemy(speed):
         enemy.rect.y = -50
 
 def spawn_meteor(speed):
+    pygame.mixer.Channel(2).play(pygame.mixer.Sound('comet.ogg'))
+    pygame.mixer.Channel(2).set_volume(0.8)
     meteor = Meteor(pygame.transform.scale(meteor_image,(50,50)), speed, 0, [enemy_list, meteor_list, sprites_list])
     meteor.rect.y = -200
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
@@ -92,6 +93,8 @@ def spawn_boss(speed):
     boss.rect.y = 50
 
 def fire_bullet():
+    pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
+    pygame.mixer.Channel(1).set_volume(0.2)
     bullet = Bullet((player.rect.x + ship_image.get_rect().width/2),player.rect.y,[sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
@@ -212,12 +215,16 @@ while not done:
         hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in hit_list:
             alive= False
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+
              
         for bullet in bullet_list:
             enemies_hit_list = pygame.sprite.spritecollide(bullet, mob_list, True)
             for enemies in enemies_hit_list:
                 score += 1
                 bullet.kill()
+                pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
+                pygame.mixer.Channel(3).set_volume(0.5)               
 
             #if bullet goes off screen
             if bullet.rect.y < -10:
