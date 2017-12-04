@@ -80,7 +80,7 @@ sb_height = start_button_image.get_rect().height
 sb_width = start_button_image.get_rect().width
 ab_height = about_button_image.get_rect().height
 ab_width = about_button_image.get_rect().width
-about = False
+
 
 #Spawning enemies
 def spawn_enemy(speed):
@@ -109,7 +109,14 @@ def fire_bullet():
     bullet = Bullet((player.rect.x + ship_image.get_rect().width/2),player.rect.y,[sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
-
+# load the highscore
+f = open('highscore.txt', 'a+')
+temp = f.read()
+if temp != "":
+    highscore = int(temp)
+else:
+    highscore = 0
+f.close()
 def intro():
     menu_background_x = 0
     while True:
@@ -185,6 +192,10 @@ while not done:
     key = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            #update highscore when you quit
+            f = open('highscore', 'w')
+            f.write(str(highscore))
+            f.close()
             done = True
 
         if alive and event.type == fire_bullet_event and not pause:
@@ -196,6 +207,10 @@ while not done:
                 alive = True
                 intro()
                 player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
+                #update highscore when you die 
+                f = open('highscore', 'w')
+                f.write(str(highscore))
+                f.close()
             if event.key == pygame.K_n and (not alive):
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
@@ -239,7 +254,8 @@ while not done:
                     bullet.kill()
                     pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
-
+                    if score > highscore:
+                        highscore = score
             #if bullet goes off screen
             if bullet.rect.y < -10:
                 bullet.kill()
@@ -268,11 +284,12 @@ while not done:
         #Spawn boss:
         if not enemy_list and score >= 1000:
             spawn_boss(0)
-
+    #m = Menu(screen_width/2,screen_height/2)
     if not alive:
+        
        # sprites_list.remove(player))
-        Menu().displayMenu(screen,"c",score)
-        current_level=0
+        Menu().displayMenu(screen,"c",score,highscore)
+        current_level = 0
         for sprite in sprites_list:
             sprite.kill()
     elif pause :
