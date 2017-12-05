@@ -7,6 +7,7 @@ from PlayerShip import *
 from Bullet import *
 from Enemy import *
 from Menu import *
+from PowerUp import *
 
 pygame.init()
 
@@ -17,6 +18,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 score = 0
 current_level = 0
 difficulty = 10
+bullet_speed = 5
 enemies_speed = math.sqrt(10 + current_level)
 boss_health = 20 + current_level
 start_time = time.time()
@@ -55,6 +57,9 @@ enemy_list = pygame.sprite.Group()
 #List of mobs
 mob_list = pygame.sprite.Group()
 
+#List of PowerUps
+power_up_list = pygame.sprite.Group()
+
 #List of meteor
 meteor_list = pygame.sprite.Group()
 
@@ -74,8 +79,8 @@ pygame.mixer.Channel(0).set_volume(0.5)
 
 # main menu
 # set up the height and width
-sb_top_left_x = screen_width/2 - start_button_image.get_rect().width/2
-sb_top_left_y = screen_height/2
+sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
+sb_top_left_y = screen_height / 2
 sb_height = start_button_image.get_rect().height
 sb_width = start_button_image.get_rect().width
 ab_height = about_button_image.get_rect().height
@@ -89,6 +94,11 @@ def spawn_enemy(speed):
         enemy = Enemy(enemy_image, speed, health, [enemy_list, mob_list, sprites_list])
         enemy.rect.x = 10 + 100*i
         enemy.rect.y = -50
+
+def spawn_power_ups(speed):
+    power_up = PowerUp(screen_width, screen_height, speed, [power_up_list, sprites_list])
+    power_up.rect.x = random.randrange(0, screen_width - power_up.rect.width)
+    power_up.rect.y = -200
 
 def spawn_meteor(speed):
     pygame.mixer.Channel(2).play(pygame.mixer.Sound('comet.ogg'))
@@ -106,7 +116,7 @@ def spawn_boss(speed):
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
     pygame.mixer.Channel(1).set_volume(0.2)
-    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2),player.rect.y,[sprites_list, bullet_list])
+    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 # load the highscore
@@ -182,11 +192,12 @@ done = False
 while not done:
 
     # --- Looping the background
-    relative_y = background_y % background.get_rect().height
-    screen.blit(background, [0, relative_y - background.get_rect().height])
-    if relative_y < screen_height:
-        screen.blit(background, [0, relative_y])
-    background_y += 1
+    if not pause and alive:
+        relative_y = background_y % background.get_rect().height
+        screen.blit(background, [0, relative_y - background.get_rect().height])
+        if relative_y < screen_height:
+            screen.blit(background, [0, relative_y])
+        background_y += 1
 
     # --- Main event loop
     key = pygame.key.get_pressed()
@@ -215,19 +226,23 @@ while not done:
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
                 if not pause:
-                    temp_enemies_speed = enemies_speed
+                    temp_speed = [enemies_speed, bullet_speed]
                     for enemy in enemy_list:
                         enemy.speed = 0
                     for bullet in bullet_list:
                         bullet.speed = 0
+                    for power_up in power_up_list:
+                        power_up.speed = 0
                     pause = True
                     player.pause = True
                     pause_start_time = time.time()
                 else:
                     for enemy in enemy_list:
-                        enemy.speed = temp_enemies_speed
+                        enemy.speed = temp_speed[0]
                     for bullet in bullet_list:
-                        bullet.speed = 5
+                        bullet.speed = temp_speed[1]
+                    for power_up in power_up_list:
+                        power_up.speed = temp_speed[0] * 1.5
                     pause = False
                     player.pause = False
                     pause_time += time.time() - pause_start_time
@@ -237,11 +252,17 @@ while not done:
 
     if alive and not pause:
         # player colliding with enemy
-        hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
-        for hit in hit_list:
-            alive= False
+        enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
+        for hit in enemy_hit_list:
             pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            alive = False
 
+        #Increase speed of bullets if get power up
+        power_up_hit_list = pygame.sprite.spritecollide(player, power_up_list, False)
+        for hit in power_up_hit_list:
+            hit.kill()
+            if fire_bullet_delay >= 150:
+                fire_bullet_delay -= 50
 
         for bullet in bullet_list:
             enemies_hit_list = pygame.sprite.spritecollide(bullet, mob_list, False)
@@ -269,12 +290,17 @@ while not done:
             spawn_enemy(enemies_speed)
             current_level += 1
 
-        for enemy in enemy_list:
+        for sprite in sprites_list  :
             #If enemies go off screen
-            if enemy.rect.y > screen_height:
-                enemy.kill()
+            if sprite.rect.y > screen_height:
+                sprite.kill()
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
+
+        #Spawn power ups
+        if not power_up_list:
+            if random.randint(0,100) < 2:
+                spawn_power_ups(enemies_speed * 1.5)
 
         #Spawn meteor:
         if not meteor_list:
@@ -286,7 +312,6 @@ while not done:
             spawn_boss(0)
     #m = Menu(screen_width/2,screen_height/2)
     if not alive:
-        
        # sprites_list.remove(player))
         Menu().displayMenu(screen,"c",score,highscore)
         current_level = 0
