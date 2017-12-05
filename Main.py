@@ -102,9 +102,9 @@ bb_width = back_button_image.get_rect().width
 
 #Spawning enemies
 def spawn_enemy(speed):
-    health = int(current_level / difficulty) + 1
+    mob_health = int(current_level / difficulty) + 1
     for i in range (5):
-        enemy = Enemy(enemy_image, speed, health, [enemy_list, mob_list, sprites_list])
+        enemy = Enemy(enemy_image, speed, mob_health, [enemy_list, mob_list, sprites_list])
         enemy.rect.x = 10 + 100*i
         enemy.rect.y = -50
 
@@ -159,7 +159,6 @@ def intro():
         if pressedkeys[pygame.K_m]:
             pygame.mixer.pause()
             #pygame.mixer.unpause()
-
             
         # start button
         if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
@@ -273,6 +272,8 @@ while not done:
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
             pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            if score > highscore:
+                highscore = score
             alive = False
 
         #Increase speed of bullets if get power up
@@ -292,21 +293,16 @@ while not done:
                     score += 1
                     pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
-                    if score > highscore:
-                        highscore = score
 
-            boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
-            if boss_health > 0:
-                if boss_hit:
-                    boss_health -= 1
-                    bullet.kill()
-            
-            if boss_health == 0:
-                boss_kill = True
-                score += 100
-                boss_list.remove(boss_hit)
-                sprites_list.remove(boss_hit)
-                boss_health = 10**current_level
+
+            boss_hit_list = pygame.sprite.spritecollide(bullet, boss_list, False)
+            for boss in boss_hit_list:
+                boss.health -= 1
+                bullet.kill()
+                if boss.health <= 0:
+                    boss.kill()
+                    current_level += 1
+                    score += 100
                         
             #if bullet goes off screen
             if bullet.rect.y < -10:
@@ -316,10 +312,13 @@ while not done:
         for meteor in meteor_list:
             meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
-       #Spawn enemies if there aren't any, levels and speeds fix later
-        if not mob_list and score < 5:
-            spawn_enemy(enemies_speed)
-            current_level += 1
+        #Spawn enemies if there aren't any, levels and speeds fix later
+        if not mob_list and not boss_list:
+            if (current_level % 5 != 0 or current_level == 0) and not boss_list:
+                spawn_enemy(enemies_speed)
+                current_level += 1
+            else:
+                spawn_boss(0)
 
         #Spawn power ups
         if not power_up_list:
@@ -331,17 +330,12 @@ while not done:
             if current_level % 3 == 0:
                 spawn_meteor(enemies_speed * 2)
 
-        #Spawn boss:
-        if not enemy_list and not boss_kill and score >= 5:
-            spawn_boss(0)
-
         for sprite in sprites_list  :
             #If enemies go off screen
             if sprite.rect.y > screen_height:
                 sprite.kill()
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
-
 
 
 			
