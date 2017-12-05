@@ -249,17 +249,14 @@ while not done:
         
         for bullet in bullet_list:
 
-            boss_hit = pygame.sprite.spritecollide(bullet, boss_list, True)
-            for boss in boss_list:
-                boss_health -= 1
+            boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
+            for boss in boss_hit:
+                boss.health -= 1
                 bullet.kill()
-                if boss_health <= 0:
-                    bullet.kill()
-                    score += 5
+                if boss.health <= 0:
                     boss.kill()
+                    score += 100
                     boss_kill = True
-
-                    
                         
             #if bullet goes off screen
             if bullet.rect.y < -10:
