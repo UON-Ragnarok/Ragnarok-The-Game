@@ -39,6 +39,7 @@ meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
+back_button_image = pygame.image.load('img/back_button.png').convert()
 
 pygame.display.set_caption("Ragnarok The Game")
 
@@ -77,14 +78,26 @@ pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
 pygame.mixer.Channel(0).set_volume(0.5)
 
+# load the highscore
+f = open('highscore.txt', 'r')
+temp = f.read()
+if temp != "":
+    highscore = int(temp)
+else:
+    highscore = 0
+f.close()
+
 # main menu
 # set up the height and width
 sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
 sb_top_left_y = screen_height / 2
+bb_top_left_x = screen_width / 2 - back_button_image.get_rect().width / 2
 sb_height = start_button_image.get_rect().height
 sb_width = start_button_image.get_rect().width
 ab_height = about_button_image.get_rect().height
 ab_width = about_button_image.get_rect().width
+bb_height = back_button_image.get_rect().height
+bb_width = back_button_image.get_rect().width
 
 
 #Spawning enemies
@@ -119,16 +132,10 @@ def fire_bullet():
     bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
-# load the highscore
-f = open('highscore.txt', 'r')
-temp = f.read()
-if temp != "":
-    highscore = int(temp)
-else:
-    highscore = 0
-f.close()
 
 def intro():
+    main = True
+    about = False
     menu_background_x = 0
     while True:
 
@@ -149,40 +156,40 @@ def intro():
         screen.blit(title, [screen_width / 9, screen_height / 6])
 
         # start button
-        if sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
+        if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
             big_start_button_image = pygame.transform.rotozoom(start_button_image,0,1.2)
             screen.blit(big_start_button_image, [sb_top_left_x, sb_top_left_y])
             screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
             pygame.display.flip()
             if click[0] == 1:
+                main = False
                 break
         # about button
-        elif sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 20 + ab_height < mouse[1] < sb_top_left_y + 20 + sb_height+ab_height:
+        elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 20 + ab_height < mouse[1] < sb_top_left_y + 20 + sb_height+ab_height:
             big_about_button_image = pygame.transform.rotozoom(about_button_image,0,1.2)
             screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
             screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
             pygame.display.flip()
-            #if click[0]==1:
-                #screen.fill((0,0,0))
-                #screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-                #screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-                #pygame.display.flip()
-                #while about ==True:
-                    #if sb_top_left_x <mouse[0]<sb_top_left_x+ab_width and sb_top_left_y +20+sb_height<mouse[1]<sb_top_left_y+20+sb_height+ab_height:
-                        #screen.fill((0,0,0))
-                        #big_about_button_image=pg.transform.rotozoom(about_button_image,0,1.2)
-                        #screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height]);
-                        #pygame.display.flip()
-                        #if click[0] == 1:
-                           # continue
-                   # else:
-                        #screen.fill((0,0,0))
-                        #screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y]);
-                        #screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
-        else:
-            screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
-            screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+            if click[0]==1:
+                main = False
+                about = True
+        
+        elif about and bb_top_left_x < mouse[0] < bb_top_left_x+bb_width and sb_top_left_y+200 < mouse[1] < sb_top_left_y+200 + bb_height:
+            big_back_button_image = pygame.transform.rotozoom(back_button_image,0,1.2)
+            screen.blit(big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
             pygame.display.flip()
+            if click[0] == 1:
+                main = True
+                about = False
+        else:
+            if main:
+                screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
+                screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+            elif about:
+                screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
+            pygame.display.flip()
+
+        
 
         clock.tick(FPS)
 
