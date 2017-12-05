@@ -120,13 +120,14 @@ def fire_bullet():
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 # load the highscore
-f = open('highscore.txt', 'a+')
+f = open('highscore.txt', 'r')
 temp = f.read()
 if temp != "":
     highscore = int(temp)
 else:
     highscore = 0
 f.close()
+
 def intro():
     menu_background_x = 0
     while True:
@@ -204,7 +205,7 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             #update highscore when you quit
-            f = open('highscore', 'w')
+            f = open('highscore.txt', 'w')
             f.write(str(highscore))
             f.close()
             done = True
@@ -219,7 +220,7 @@ while not done:
                 intro()
                 player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
                 #update highscore when you die 
-                f = open('highscore', 'w')
+                f = open('highscore.txt', 'w')
                 f.write(str(highscore))
                 f.close()
             if event.key == pygame.K_n and (not alive):
