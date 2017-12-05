@@ -6,14 +6,9 @@ import math
 from PlayerShip import *
 from Bullet import *
 from Enemy import *
+from Bosses import *
 from Menu import *
 from PowerUp import *
-
-pygame.init()
-
-screen_width = 500
-screen_height = 800
-screen = pygame.display.set_mode([screen_width,screen_height])
 
 score = 0
 current_level = 0
@@ -29,6 +24,20 @@ pause = False
 flag = True
 background_y = 0
 
+screen_width = 500
+screen_height = 800
+FPS = 120
+
+# initialize pygame and creat window
+pygame.init()
+screen = pygame.display.set_mode([screen_width,screen_height])
+pygame.display.set_caption("Ragnarok The Game")
+clock = pygame.time.Clock()
+
+#background music
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
+pygame.mixer.Channel(0).set_volume(0.5)
+
 background = pygame.image.load('img/background.jpg').convert()
 menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
 title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
@@ -40,8 +49,6 @@ meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
 back_button_image = pygame.image.load('img/back_button.png').convert()
-
-pygame.display.set_caption("Ragnarok The Game")
 
 #List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -67,16 +74,10 @@ meteor_list = pygame.sprite.Group()
 #Creating sprites
 player = PlayerShip(screen_width, screen_height,ship_image, [sprites_list])
 
-clock = pygame.time.Clock()
-FPS = 120
-
 #Setting up firing bullet delay
 fire_bullet_event = pygame.USEREVENT + 1
 fire_bullet_delay = 500
 pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
-
-pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
-pygame.mixer.Channel(0).set_volume(0.5)
 
 # load the highscore
 f = open('highscore.txt', 'r')
@@ -99,7 +100,6 @@ ab_width = about_button_image.get_rect().width
 bb_height = back_button_image.get_rect().height
 bb_width = back_button_image.get_rect().width
 
-
 #Spawning enemies
 def spawn_enemy(speed):
     health = int(current_level / difficulty) + 1
@@ -119,7 +119,6 @@ def spawn_meteor(speed):
     meteor = Meteor(pygame.transform.scale(meteor_image,(80,80)), speed, 0, [enemy_list, meteor_list, sprites_list])
     meteor.rect.y = -200
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
-# trying to make it move dignoally but it will then need a speedx
 
 def spawn_boss(speed):
     boss = Boss(boss_image, speed, 0, [boss_list, sprites_list])
@@ -138,13 +137,14 @@ def intro():
     about = False
     menu_background_x = 0
     while True:
-
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         click = pygame.mouse.get_pressed()
         mouse = pygame.mouse.get_pos()
+        pressedkeys = pygame.key.get_pressed()
 
         # --- Looping the background
         relative_x = menu_background_x % menu_background.get_rect().width
@@ -155,6 +155,12 @@ def intro():
 
         screen.blit(title, [screen_width / 9, screen_height / 6])
 
+        #mute
+        if pressedkeys[pygame.K_m]:
+            pygame.mixer.pause()
+            #pygame.mixer.unpause()
+
+            
         # start button
         if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
             big_start_button_image = pygame.transform.rotozoom(start_button_image,0,1.2)
@@ -188,13 +194,13 @@ def intro():
             elif about:
                 screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
             pygame.display.flip()
-
         
 
         clock.tick(FPS)
 
 intro()
 done = False
+boss_kill = False
 
 # -------- Main Program Loop -----------
 while not done:
@@ -280,11 +286,23 @@ while not done:
                 if enemy.health <= 0:
                     enemy.kill()
                     score += 1
-                    bullet.kill()
                     pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
                     if score > highscore:
                         highscore = score
+
+            boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
+            if boss_health > 0:
+                if boss_hit:
+                    boss_health -= 1
+                    bullet.kill()
+            
+            if boss_health == 0:
+                boss_kill = True
+                score += 100
+                boss_list.kill()
+                boss_health = 10**current_level
+                        
             #if bullet goes off screen
             if bullet.rect.y < -10:
                 bullet.kill()
@@ -293,17 +311,10 @@ while not done:
         for meteor in meteor_list:
             meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
-        #Spawn enemies if there aren't any, levels and speeds fix later
+       #Spawn enemies if there aren't any, levels and speeds fix later
         if not mob_list and score < 5000:
             spawn_enemy(enemies_speed)
             current_level += 1
-
-        for sprite in sprites_list  :
-            #If enemies go off screen
-            if sprite.rect.y > screen_height:
-                sprite.kill()
-
-        screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
 
         #Spawn power ups
         if not power_up_list:
@@ -316,8 +327,19 @@ while not done:
                 spawn_meteor(enemies_speed * 2)
 
         #Spawn boss:
-        if not enemy_list and score >= 1000:
+        if not enemy_list and not boss_kill and score >= 5000:
             spawn_boss(0)
+
+        for sprite in sprites_list  :
+            #If enemies go off screen
+            if sprite.rect.y > screen_height:
+                sprite.kill()
+
+        screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
+
+
+
+			
     #m = Menu(screen_width/2,screen_height/2)
     if not alive:
        # sprites_list.remove(player))
