@@ -3,8 +3,8 @@ import pygame
 class Boss(pygame.sprite.Sprite):
     def __init__(self, width, image_location, speed, health, *groups):
         super().__init__(*groups)
-        self.image = image_location
-        self.image.set_colorkey((255,255,255))
+        self.image = pygame.Surface((150,150))
+        self.image.fill((255,255,0))
         self.range = width
         self.speed = speed
         self.health = health
