@@ -15,7 +15,7 @@ current_level = 0
 difficulty = 10
 bullet_speed = 5
 enemies_speed = math.sqrt(10 + current_level)
-boss_health = 20 + current_level
+boss_health = 5 + current_level
 start_time = time.time()
 pause_time = 0
 pause_start_time=time.time()
@@ -121,7 +121,7 @@ def spawn_meteor(speed):
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
 
 def spawn_boss(speed):
-    boss = Boss(boss_image, speed, 0, [boss_list, sprites_list])
+    boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
     boss.rect.x = screen_width/2-boss.rect.width/2
     boss.rect.y = 50
 
@@ -304,7 +304,8 @@ while not done:
             if boss_health == 0:
                 boss_kill = True
                 score += 100
-                boss_list.kill()
+                boss_list.remove()
+                sprites_list.remove
                 boss_health = 10**current_level
                         
             #if bullet goes off screen
@@ -316,7 +317,7 @@ while not done:
             meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
        #Spawn enemies if there aren't any, levels and speeds fix later
-        if not mob_list and score < 5000:
+        if not mob_list and score < 5:
             spawn_enemy(enemies_speed)
             current_level += 1
 
@@ -331,7 +332,7 @@ while not done:
                 spawn_meteor(enemies_speed * 2)
 
         #Spawn boss:
-        if not enemy_list and not boss_kill and score >= 5000:
+        if not enemy_list and not boss_kill and score >= 5:
             spawn_boss(0)
 
         for sprite in sprites_list  :
