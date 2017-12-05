@@ -231,6 +231,9 @@ while not done:
                 f.write(str(highscore))
                 f.close()
             if event.key == pygame.K_n and (not alive):
+                f = open('highscore.txt', 'w')
+                f.write(str(highscore))
+                f.close()
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
                 if not pause:
