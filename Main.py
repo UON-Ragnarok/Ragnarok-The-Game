@@ -15,7 +15,7 @@ current_level = 0
 difficulty = 10
 bullet_speed = 5
 enemies_speed = math.sqrt(10 + current_level)
-boss_health = 5 + current_level
+boss_health = 20 + current_level
 start_time = time.time()
 pause_time = 0
 pause_start_time=time.time()
@@ -35,8 +35,9 @@ pygame.display.set_caption("Ragnarok The Game")
 clock = pygame.time.Clock()
 
 #background music
-pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'),-1)
 pygame.mixer.Channel(0).set_volume(0.5)
+
 
 background = pygame.image.load('img/background.jpg').convert()
 menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
@@ -121,7 +122,7 @@ def spawn_meteor(speed):
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
 
 def spawn_boss(speed):
-    boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
+    boss = Boss(boss_image, speed, 0, [boss_list, sprites_list])
     boss.rect.x = screen_width/2-boss.rect.width/2
     boss.rect.y = 50
 
@@ -266,13 +267,15 @@ while not done:
                     pause_time += time.time() - pause_start_time
 
     sprites_list.update()
+    
     # --- Game mechanics
 
     if alive and not pause:
         # player colliding with enemy
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
-            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            #pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound('killed_explo.ogg'))
             alive = False
 
         #Increase speed of bullets if get power up
@@ -304,8 +307,7 @@ while not done:
             if boss_health == 0:
                 boss_kill = True
                 score += 100
-                boss_list.remove(boss_hit)
-                sprites_list.remove(boss_hit)
+                boss_list.kill()
                 boss_health = 10**current_level
                         
             #if bullet goes off screen
@@ -317,7 +319,7 @@ while not done:
             meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
        #Spawn enemies if there aren't any, levels and speeds fix later
-        if not mob_list and score < 5:
+        if not mob_list and score < 5000:
             spawn_enemy(enemies_speed)
             current_level += 1
 
@@ -332,7 +334,7 @@ while not done:
                 spawn_meteor(enemies_speed * 2)
 
         #Spawn boss:
-        if not enemy_list and not boss_kill and score >= 5:
+        if not enemy_list and not boss_kill and score >= 5000:
             spawn_boss(0)
 
         for sprite in sprites_list  :
