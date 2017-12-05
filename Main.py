@@ -122,7 +122,7 @@ def spawn_meteor(speed):
 
 def spawn_boss(speed):
     boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
-    boss.rect.x = screen_width/2-boss.rect.width/2
+    boss.rect.x = screen_width/2 - boss.rect.width/2
     boss.rect.y = 50
 
 def fire_bullet():
@@ -273,6 +273,8 @@ while not done:
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
             pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            if score > highscore:
+                highscore = score
             alive = False
 
         #Increase speed of bullets if get power up
@@ -292,21 +294,15 @@ while not done:
                     score += 1
                     pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
-                    if score > highscore:
-                        highscore = score
 
-            boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
-            if boss_health > 0:
-                if boss_hit:
-                    boss_health -= 1
-                    bullet.kill()
-            
-            if boss_health == 0:
-                boss_kill = True
-                score += 100
-                boss_list.remove(boss_hit)
-                sprites_list.remove(boss_hit)
-                boss_health = 10**current_level
+            boss_hit_list = pygame.sprite.spritecollide(bullet, boss_list, False)
+            for boss in boss_hit_list:
+                 boss.health -= 1
+                 bullet.kill()
+                 if boss.health <= 0:
+                     boss.kill()
+                     current_level += 1
+                     score += 100
                         
             #if bullet goes off screen
             if bullet.rect.y < -10:
@@ -317,9 +313,12 @@ while not done:
             meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
 
        #Spawn enemies if there aren't any, levels and speeds fix later
-        if not mob_list and score < 5:
-            spawn_enemy(enemies_speed)
-            current_level += 1
+        if not mob_list and not boss_list:
+            if current_level % 5 != 0 or current_level == 0:
+                spawn_enemy(enemies_speed)
+                current_level += 1
+            else:
+                spawn_boss(0)
 
         #Spawn power ups
         if not power_up_list:
@@ -330,10 +329,6 @@ while not done:
         if not meteor_list:
             if current_level % 3 == 0:
                 spawn_meteor(enemies_speed * 2)
-
-        #Spawn boss:
-        if not enemy_list and not boss_kill and score >= 5:
-            spawn_boss(0)
 
         for sprite in sprites_list  :
             #If enemies go off screen
