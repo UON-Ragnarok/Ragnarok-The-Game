@@ -304,8 +304,8 @@ while not done:
             if boss_health == 0:
                 boss_kill = True
                 score += 100
-                boss_list.remove()
-                sprites_list.remove
+                boss_list.remove(boss_hit)
+                sprites_list.remove(boss_hit)
                 boss_health = 10**current_level
                         
             #if bullet goes off screen
