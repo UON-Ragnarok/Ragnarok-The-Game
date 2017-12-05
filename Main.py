@@ -152,8 +152,8 @@ def intro():
         if relative_x < screen_width:
             screen.blit(menu_background, [relative_x, 0])
         menu_background_x += -0.3
-
-        screen.blit(title, [screen_width / 9, screen_height / 6])
+        if main and about == False:
+            screen.blit(title, [screen_width / 9, screen_height / 6])
 
         #mute
         if pressedkeys[pygame.K_m]:
@@ -232,11 +232,15 @@ while not done:
                 alive = True
                 intro()
                 player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
-                #update highscore when you die 
+                #update highscore when you press r
                 f = open('highscore.txt', 'w')
                 f.write(str(highscore))
                 f.close()
             if event.key == pygame.K_n and (not alive):
+                #update highscore when you press n
+                f = open('highscore.txt', 'w')
+                f.write(str(highscore))
+                f.close()
                 done = True
             if event.key == pygame.K_ESCAPE and alive:
                 if not pause:
