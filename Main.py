@@ -45,6 +45,7 @@ ship_image = pygame.image.load('img/spaceship.png').convert_alpha()
 boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/mob.png').convert_alpha()
 meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
+enemy_bullet_image = pygame.image.load('img/enemy_bullet.png').convert_alpha()
 
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
@@ -70,6 +71,9 @@ power_up_list = pygame.sprite.Group()
 
 #List of meteor
 meteor_list = pygame.sprite.Group()
+
+#List of enemy bullet
+enemy_bullet_list = pygame.sprite.Group()
 
 #Creating sprites
 player = PlayerShip(screen_width, screen_height,ship_image, [sprites_list])
@@ -124,6 +128,10 @@ def spawn_boss(speed):
     boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
     boss.rect.x = screen_width/2 - boss.rect.width/2
     boss.rect.y = 50
+
+#def spawn_enemy_bullet(speed):
+#    enemy_bullet = enemy_bullet(enemy_bullet_image,(screen_width/2, 50),speed, 0, [enemy_list, meteor_list, sprites_list])
+
 
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
@@ -276,8 +284,9 @@ while not done:
         # player colliding with enemy
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
-            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
             pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed_explo.ogg'))
+            pygame.time.wait(100)
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))            
             if score > highscore:
                 highscore = score
             alive = False
@@ -334,6 +343,11 @@ while not done:
         if not meteor_list:
             if current_level % 3 == 0:
                 spawn_meteor(enemies_speed * 2)
+
+        #Spawn enemy_bullet:
+ #       if not enemy_bullet_list:
+#            if random.randint(0,100) < 5:
+#                spawn_enemy_bullet(enemies_speed*4)
 
         for sprite in sprites_list  :
             #If enemies go off screen

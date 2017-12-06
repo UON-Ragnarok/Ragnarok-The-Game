@@ -16,7 +16,10 @@ class Meteor(Enemy):
 	
 class mob(Enemy):
 	pass
-	
+
+class enemy_bullet(Enemy):
+    pass
+
 	
 		
 
