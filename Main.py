@@ -28,7 +28,7 @@ screen_width = 500
 screen_height = 800
 FPS = 120
 
-# initialize pygame and creat window
+# initialize pygame and create window
 pygame.init()
 screen = pygame.display.set_mode([screen_width,screen_height])
 pygame.display.set_caption("Ragnarok The Game")
@@ -136,6 +136,7 @@ def intro():
     main = True
     about = False
     menu_background_x = 0
+    n=0 #counter for mute
     while True:
     
         for event in pygame.event.get():
@@ -157,9 +158,12 @@ def intro():
 
         #mute
         if pressedkeys[pygame.K_m]:
-            pygame.mixer.pause()
-            #pygame.mixer.unpause()
-
+            pygame.time.wait(100)
+            n+=1
+            if n %2 ==0:
+                pygame.mixer.unpause()
+            else:
+                pygame.mixer.pause()
             
         # start button
         if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
@@ -315,7 +319,7 @@ while not done:
 
        #Spawn enemies if there aren't any, levels and speeds fix later
         if not mob_list and not boss_list:
-            if current_level % 5 != 0 or current_level == 0:
+            if current_level % 1 != 0 or current_level == 0:
                 spawn_enemy(enemies_speed)
                 current_level += 1
             else:
