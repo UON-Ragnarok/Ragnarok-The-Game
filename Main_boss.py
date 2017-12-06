@@ -15,7 +15,7 @@ current_level = 0
 difficulty = 10
 bullet_speed = 5
 enemies_speed = math.sqrt(10 + current_level)
-boss_health = 10
+boss_health = 1000
 start_time = time.time()
 pause_time = 0
 pause_start_time=time.time()
@@ -117,7 +117,6 @@ def intro():
     
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
                 quit()
         click = pygame.mouse.get_pressed()
         mouse = pygame.mouse.get_pos()
@@ -250,13 +249,17 @@ while not done:
         for bullet in bullet_list:
 
             boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
-            for boss in boss_hit:
-                boss.health -= 1
-                bullet.kill()
-                if boss.health <= 0:
-                    boss.kill()
-                    score += 100
-                    boss_kill = True
+            if boss_health > 0:
+                if boss_hit:
+                    boss_health -= 1
+                    bullet.kill()
+            
+            if boss_health == 0:
+                boss_kill = True
+                score += 100
+                boss_list.remove(boss_hit)
+                sprites_list.remove(boss_hit)
+                boss_health = 10**current_level
                         
             #if bullet goes off screen
             if bullet.rect.y < -10:
@@ -287,4 +290,4 @@ while not done:
     clock.tick(FPS)
 
 # Close the window and quit.
-pygame.quit()
+quit()
