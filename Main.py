@@ -21,7 +21,6 @@ pause_time = 0
 pause_start_time=time.time()
 alive = True
 pause = False
-flag = True
 background_y = 0
 
 screen_width = 500
@@ -46,10 +45,6 @@ boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/mob.png').convert_alpha()
 meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 enemy_bullet_image = pygame.image.load('img/enemy_bullet.png').convert_alpha()
-
-start_button_image = pygame.image.load('img/start_button.png').convert()
-about_button_image = pygame.image.load('img/about_button.png').convert()
-back_button_image = pygame.image.load('img/back_button.png').convert()
 
 #List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -92,18 +87,6 @@ else:
     highscore = 0
 f.close()
 
-# main menu
-# set up the height and width
-sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
-sb_top_left_y = screen_height / 2
-bb_top_left_x = screen_width / 2 - back_button_image.get_rect().width / 2
-sb_height = start_button_image.get_rect().height
-sb_width = start_button_image.get_rect().width
-ab_height = about_button_image.get_rect().height
-ab_width = about_button_image.get_rect().width
-bb_height = back_button_image.get_rect().height
-bb_width = back_button_image.get_rect().width
-
 #Spawning enemies
 def spawn_enemy(speed):
     health = int(current_level / difficulty) + 1
@@ -136,7 +119,7 @@ def spawn_boss(speed):
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
     pygame.mixer.Channel(1).set_volume(0.2)
-    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
+    bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 
@@ -145,8 +128,25 @@ def intro():
     about = False
     menu_background_x = 0
     n=0 #counter for mute
+
+    start_button_image = pygame.image.load('img/start_button.png').convert()
+    about_button_image = pygame.image.load('img/about_button.png').convert()
+    back_button_image = pygame.image.load('img/back_button.png').convert()
+
+    # main menu
+    # set up the height and width
+    sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
+    sb_top_left_y = screen_height / 2
+    bb_top_left_x = screen_width / 2 - back_button_image.get_rect().width / 2
+    sb_height = start_button_image.get_rect().height
+    sb_width = start_button_image.get_rect().width
+    ab_height = about_button_image.get_rect().height
+    ab_width = about_button_image.get_rect().width
+    bb_height = back_button_image.get_rect().height
+    bb_width = back_button_image.get_rect().width
+
+
     while True:
-    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -204,7 +204,7 @@ def intro():
                 screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
                 screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
             elif about:
-                screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
+                screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ])
             pygame.display.flip()
         
 
