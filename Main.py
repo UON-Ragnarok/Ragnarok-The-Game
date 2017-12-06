@@ -9,7 +9,6 @@ from Enemy import *
 from Bosses import *
 from Menu import *
 from PowerUp import *
-from Intro import *
 
 score = 0
 current_level = 0
@@ -89,6 +88,18 @@ else:
     highscore = 0
 f.close()
 
+# main menu
+# set up the height and width
+sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
+sb_top_left_y = screen_height / 2
+bb_top_left_x = screen_width / 2 - back_button_image.get_rect().width / 2
+sb_height = start_button_image.get_rect().height
+sb_width = start_button_image.get_rect().width
+ab_height = about_button_image.get_rect().height
+ab_width = about_button_image.get_rect().width
+bb_height = back_button_image.get_rect().height
+bb_width = back_button_image.get_rect().width
+
 #Spawning enemies
 def spawn_enemy(speed):
     health = int(current_level / difficulty) + 1
@@ -121,10 +132,73 @@ def fire_bullet():
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 
-# -------- Intro Screen -----------
-intro = Intro(screen, menu_background,screen_width,screen_height,title, start_button_image, about_button_image, back_button_image)
-intro.show_intro(screen)
+def intro():
+    main = True
+    about = False
+    menu_background_x = 0
+    while True:
+    
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        click = pygame.mouse.get_pressed()
+        mouse = pygame.mouse.get_pos()
+        pressedkeys = pygame.key.get_pressed()
+
+        # --- Looping the background
+        relative_x = menu_background_x % menu_background.get_rect().width
+        screen.blit(menu_background, [relative_x - menu_background.get_rect().width, 0])
+        if relative_x < screen_width:
+            screen.blit(menu_background, [relative_x, 0])
+        menu_background_x += -0.3
+        if main and about == False:
+            screen.blit(title, [screen_width / 9, screen_height / 6])
+
+        #mute
+        if pressedkeys[pygame.K_m]:
+            pygame.mixer.pause()
+            #pygame.mixer.unpause()
+
+            
+        # start button
+        if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
+            big_start_button_image = pygame.transform.rotozoom(start_button_image,0,1.2)
+            screen.blit(big_start_button_image, [sb_top_left_x, sb_top_left_y])
+            screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+            pygame.display.flip()
+            if click[0] == 1:
+                main = False
+                break
+        # about button
+        elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 20 + ab_height < mouse[1] < sb_top_left_y + 20 + sb_height+ab_height:
+            big_about_button_image = pygame.transform.rotozoom(about_button_image,0,1.2)
+            screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
+            screen.blit(big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+            pygame.display.flip()
+            if click[0]==1:
+                main = False
+                about = True
         
+        elif about and bb_top_left_x < mouse[0] < bb_top_left_x+bb_width and sb_top_left_y+200 < mouse[1] < sb_top_left_y+200 + bb_height:
+            big_back_button_image = pygame.transform.rotozoom(back_button_image,0,1.2)
+            screen.blit(big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
+            pygame.display.flip()
+            if click[0] == 1:
+                main = True
+                about = False
+        else:
+            if main:
+                screen.blit(start_button_image, [sb_top_left_x, sb_top_left_y])
+                screen.blit(about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+            elif about:
+                screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
+            pygame.display.flip()
+        
+
+        clock.tick(FPS)
+
+intro()
 done = False
 boss_kill = False
 
@@ -156,7 +230,7 @@ while not done:
             if event.key == pygame.K_r and (not alive):
                 score = 0
                 alive = True
-                intro.show_intro(screen)
+                intro()
                 player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
                 #update highscore when you press r
                 f = open('highscore.txt', 'w')
