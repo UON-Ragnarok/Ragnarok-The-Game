@@ -35,7 +35,7 @@ pygame.display.set_caption("Ragnarok The Game")
 clock = pygame.time.Clock()
 
 #background music
-pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'))
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'),-1)
 pygame.mixer.Channel(0).set_volume(0.5)
 
 background = pygame.image.load('img/background.jpg').convert()
@@ -273,6 +273,7 @@ while not done:
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
             pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed_explo.ogg'))
             if score > highscore:
                 highscore = score
             alive = False
