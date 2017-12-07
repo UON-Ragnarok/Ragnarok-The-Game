@@ -86,15 +86,15 @@ f.close()
 class Boss(pygame.sprite.Sprite):
     def __init__(self, width, image_location, speed, *groups):
         super().__init__(*groups)
-        self.image = pygame.Surface((150,150))
-        self.image.fill((255,255,0))
+        self.image = image_location
+        self.image.set_colorkey((255,255,255))
         self.speed = speed
         self.range = width
         self.rect = self.image.get_rect()
 
     def update(self):
         self.rect.x += self.speed
-        if self.rect.left > self.range or self.rect.right < 1:
+        if self.rect.right > self.range or self.rect.left < 1:
              self.speed = -self.speed
 		
 
@@ -115,6 +115,7 @@ def spawn_boss(speed):
     boss = Boss(screen_width, boss_image, speed, [boss_list, sprites_list])
     boss.rect.centerx = screen_width/2
     boss.rect.y = 50
+boss = spawn_boss(5)
 
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
@@ -257,9 +258,6 @@ while not done:
     # --- Game mechanics
 
     if alive and not pause:
-
-        if not boss_kill:
-            spawn_boss(5)
         
         for bullet in bullet_list:
 
