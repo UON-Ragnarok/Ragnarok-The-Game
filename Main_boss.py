@@ -40,7 +40,7 @@ ship_image = pygame.image.load('img/spaceship.png').convert_alpha()
 boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/mob.png').convert_alpha()
 meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
-
+electricball = pygame.image.load('img/electricball.png').convert()
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
 back_button_image = pygame.image.load('img/back_button.png').convert()
@@ -65,6 +65,8 @@ power_up_list = pygame.sprite.Group()
 
 #List of meteor
 meteor_list = pygame.sprite.Group()
+
+balls_list = pygame.sprite.Group()
 
 #Creating sprites
 player = PlayerShip(screen_width, screen_height,ship_image, [sprites_list])
@@ -91,12 +93,43 @@ class Boss(pygame.sprite.Sprite):
         self.speed = speed
         self.range = width
         self.rect = self.image.get_rect()
+        self.last = pygame.time.get_ticks()
+        self.cooldown = 120*8
+        #LifeBar() # need a new class for that
 
     def update(self):
         self.rect.x += self.speed
         if self.rect.right > self.range or self.rect.left < 1:
              self.speed = -self.speed
-		
+             self.fire()
+
+    def fire(self):
+        # fire gun, only if cooldown has been 0.3 seconds since last
+        now = pygame.time.get_ticks()
+        if now - self.last >= self.cooldown:
+            self.last = now
+            spwan_ball(self.rect.centerx,self.rect.centery+50)
+            print ("shoot")
+            
+
+class Circle(pygame.sprite.Sprite):
+    def __init__(self , x, y, *groups):
+        super().__init__(*groups)
+        self.image = pygame.transform.scale(electricball,(20,20))
+        self.image.set_colorkey((255,255,255))
+        #pygame.draw.circle(self.image, (0, 0, 255), (x, y), 25, 0)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+     
+    def update(self):
+        self.rect.y += 3
+    
+def spwan_ball(c,bot):
+    for i in range (-100,150,50):
+        Circle(c-i, bot, [balls_list, sprites_list])
+
+
 
 # main menu
 # set up the height and width
@@ -113,8 +146,7 @@ bb_width = back_button_image.get_rect().width
 
 def spawn_boss(speed):
     boss = Boss(screen_width, boss_image, speed, [boss_list, sprites_list])
-    boss.rect.centerx = screen_width/2
-    boss.rect.y = 50
+    boss.rect.center = (screen_width/2, 150)
 boss = spawn_boss(5)
 
 def fire_bullet():
@@ -255,6 +287,7 @@ while not done:
                     pause_time += time.time() - pause_start_time
 
     sprites_list.update()
+    
     # --- Game mechanics
 
     if alive and not pause:

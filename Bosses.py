@@ -9,12 +9,22 @@ class Boss(pygame.sprite.Sprite):
         self.speed = speed
         self.health = health
         self.rect = self.image.get_rect()
+        self.last = pygame.time.get_ticks()
+        self.cooldown = 360
+        #LifeBar() # need a new class for that
 
     def update(self):
-        pass
-#        self.rect.x += self.speed
-#        if self.rect.left > self.range or self.rect.right < 1:
-#            self.speed = -self.speed
+        self.rect.x += self.speed
+        if self.rect.right > self.range or self.rect.left < 1:
+            self.speed = -self.speed
+
+    def fire(self):
+        # fire gun, only if cooldown has been 0.3 seconds since last
+        now = pygame.time.get_ticks()
+        if now - self.last >= self.cooldown:
+            self.last = now
+            spawn_bullet()    
+    
 class Ball():
     def __init__(self, x, y):
         # Ball position
