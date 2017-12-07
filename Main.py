@@ -36,7 +36,7 @@ pygame.display.set_caption("Ragnarok The Game")
 clock = pygame.time.Clock()
 
 #background music
-pygame.mixer.Channel(0).play(pygame.mixer.Sound('Arcade Funk.ogg'),-1)
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('Sound/Arcade Funk.ogg'),-1)
 pygame.mixer.Channel(0).set_volume(0.5)
 
 background = pygame.image.load('img/background.jpg').convert()
@@ -50,6 +50,9 @@ meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
 back_button_image = pygame.image.load('img/back_button.png').convert()
+setting_button_image = pygame.image.load('img/setting_button.png').convert()
+mute_button_image = pygame.image.load('img/mute.png').convert()
+volume_button_image = pygame.image.load('img/volume.png').convert()
 
 #List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -103,7 +106,7 @@ def spawn_power_ups(speed):
     power_up.rect.y = -200
 
 def spawn_meteor(speed):
-    pygame.mixer.Channel(2).play(pygame.mixer.Sound('comet.ogg'))
+    pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
     pygame.mixer.Channel(2).set_volume(0.8)
     meteor = Meteor(pygame.transform.scale(meteor_image,(80,80)), speed, 0, [enemy_list, meteor_list, sprites_list])
     meteor.rect.y = -200
@@ -115,14 +118,14 @@ def spawn_boss(speed):
     boss.rect.y = 50
 
 def fire_bullet():
-    pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
+    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
     pygame.mixer.Channel(1).set_volume(0.2)
     bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 
 # -------- Intro Screen -----------
-intro = Intro(screen, menu_background,screen_width,screen_height,title, start_button_image, about_button_image, back_button_image)
+intro = Intro(screen, menu_background,screen_width,screen_height,title, start_button_image, about_button_image, back_button_image, setting_button_image, mute_button_image, volume_button_image)
 intro.show_intro(screen)
         
 done = False
@@ -198,8 +201,7 @@ while not done:
         # player colliding with enemy
         enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
         for hit in enemy_hit_list:
-            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed.ogg'))
-            pygame.mixer.Channel(4).play(pygame.mixer.Sound('killed_explo.ogg'))
+            pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
             if score > highscore:
                 highscore = score
             alive = False
@@ -219,7 +221,7 @@ while not done:
                 if enemy.health <= 0:
                     enemy.kill()
                     score += 1
-                    pygame.mixer.Channel(3).play(pygame.mixer.Sound('explo.ogg'))
+                    pygame.mixer.Channel(3).play(pygame.mixer.Sound('Sound/explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
 
             boss_hit_list = pygame.sprite.spritecollide(bullet, boss_list, False)
