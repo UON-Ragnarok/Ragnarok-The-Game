@@ -6,7 +6,6 @@ import math
 from PlayerShip import *
 from Bullet import *
 from Enemy import *
-from Bosses import *
 from Menu import *
 from PowerUp import *
 
@@ -84,6 +83,21 @@ else:
     highscore = 0
 f.close()
 
+class Boss(pygame.sprite.Sprite):
+    def __init__(self, width, image_location, speed, *groups):
+        super().__init__(*groups)
+        self.image = pygame.Surface((150,150))
+        self.image.fill((255,255,0))
+        self.speed = speed
+        self.range = width
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.left > self.range or self.rect.right < 1:
+             self.speed = -self.speed
+		
+
 # main menu
 # set up the height and width
 sb_top_left_x = screen_width / 2 - start_button_image.get_rect().width / 2
@@ -98,8 +112,8 @@ bb_width = back_button_image.get_rect().width
 
 
 def spawn_boss(speed):
-    boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
-    boss.rect.x = screen_width/2-boss.rect.width/2
+    boss = Boss(screen_width, boss_image, speed, [boss_list, sprites_list])
+    boss.rect.centerx = screen_width/2
     boss.rect.y = 50
 
 def fire_bullet():
@@ -245,18 +259,22 @@ while not done:
     if alive and not pause:
 
         if not boss_kill:
-            spawn_boss(0)
+            spawn_boss(5)
         
         for bullet in bullet_list:
 
             boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
-            for boss in boss_hit:
-                boss.health -= 1
-                bullet.kill()
-                if boss.health <= 0:
-                    boss.kill()
-                    score += 100
+            if boss_health > 0:
+                if boss_hit:
+                    boss_health -= 1
+                    bullet.kill()
+            
+                if boss_health == 0:
                     boss_kill = True
+                    score += 100
+                    boss_list.remove(boss_hit)
+                    sprites_list.remove(boss_hit)
+                    boss_health = 10**current_level
                         
             #if bullet goes off screen
             if bullet.rect.y < -10:
@@ -268,7 +286,7 @@ while not done:
                 sprite.kill()
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
-
+        screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(boss_health), 1, (91, 109, 131)), (50,50 ))
 		
     #m = Menu(screen_width/2,screen_height/2)
     if not alive:
@@ -287,4 +305,4 @@ while not done:
     clock.tick(FPS)
 
 # Close the window and quit.
-pygame.quit()
+quit()
