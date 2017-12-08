@@ -14,9 +14,10 @@ class Intro():
         self.about_button_image = about_button_image
         self.back_button_image = back_button_image
         self.setting_button_image = setting_button_image
-        self.mute_button_image = mute_button_image
-        self.volume_button_image = volume_button_image
+        self.mute_button_image = pygame.transform.scale(mute_button_image,(100,100))
+        self.volume_button_image = pygame.transform.scale(volume_button_image,(100,100)) 
 
+        
         
     def show_intro(self,screen):
 
@@ -27,10 +28,10 @@ class Intro():
         sb_top_left_x = self.screen_width / 2 - self.start_button_image.get_rect().width / 2
         stb_top_left_x = self.screen_width / 2 - self.setting_button_image.get_rect().width / 2
         sb_top_left_y = self.screen_height / 2
-        mb_top_left_y = self.screen_height / 2
+        mb_top_left_y = 100
         bb_top_left_x = self.screen_width / 2 - self.back_button_image.get_rect().width / 2
-        mb_top_left_x = self.screen_width / 2 - self.mute_button_image.get_rect().width / 2
-        vb_top_left_x = self.screen_width / 2 - self.volume_button_image.get_rect().width / 2        
+        mb_top_left_x = 100 - self.mute_button_image.get_rect().width / 2
+        vb_top_left_x = 100 - self.volume_button_image.get_rect().width / 2        
         sb_height = self.start_button_image.get_rect().height
         sb_width = self.start_button_image.get_rect().width
         stb_height = self.setting_button_image.get_rect().height
@@ -78,6 +79,7 @@ class Intro():
                 screen.blit(self.setting_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height + 20 + stb_height])
                 pygame.display.flip()
                 if click[0] == 1:
+                    pygame.time.wait(100)
                     main = False
                     break
                 
@@ -101,6 +103,7 @@ class Intro():
                 screen.blit(self.big_setting_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height + 20 + stb_height])                
                 pygame.display.flip()
                 if click[0]==1:
+                    pygame.time.wait(100)
                     main = False
                     about = False
                     setting = True
@@ -111,6 +114,7 @@ class Intro():
                 screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
                 pygame.display.flip()
                 if click[0] == 1:
+                    pygame.time.wait(100)
                     main = True
                     about = False
                     setting = False
@@ -119,8 +123,11 @@ class Intro():
             elif setting and bb_top_left_x < mouse[0] < bb_top_left_x+bb_width and sb_top_left_y+200 < mouse[1] < sb_top_left_y+200 + bb_height:
                 self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image,0,1.2)
                 screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
+                screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
+                screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y + 20 + mb_height])             
                 pygame.display.flip()
                 if click[0] == 1:
+                    pygame.time.wait(100)
                     main = True
                     about = False
                     setting = False
@@ -133,8 +140,10 @@ class Intro():
                 screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
                 pygame.display.flip()
                 if click[0] == 1:
-                    pygame.mixer.pause()
-
+                    pygame.time.wait(100)
+                    pygame.mixer.unpause()
+                    
+            # Volume button for setting
             elif setting and mb_top_left_x < mouse[0] < mb_top_left_x + vb_width and mb_top_left_y + 20 + vb_height < mouse[1] < mb_top_left_y + 20 + mb_height + vb_height:
                 self.big_volume_button_image = pygame.transform.rotozoom(self.volume_button_image,0,1.2)
                 screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
@@ -142,7 +151,8 @@ class Intro():
                 screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
                 pygame.display.flip()
                 if click[0]==1:
-                    pygame.mixer.unpause()
+                    pygame.time.wait(100)
+                    pygame.mixer.pause()
 
             else:
                 if main:
