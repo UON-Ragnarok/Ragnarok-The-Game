@@ -180,6 +180,15 @@ while not done:
                         bullet.speed = 0
                     for power_up in power_up_list:
                         power_up.speed = 0
+                    if event.key == pygame.K_r:
+                        score = 0
+                        alive = True
+                        intro.show_intro(screen)
+                        player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
+                        #update highscore when you press r
+                        f = open('highscore.txt', 'w')
+                        f.write(str(highscore))
+                        f.close()
                     pause = True
                     player.pause = True
                     pause_start_time = time.time()
@@ -190,11 +199,24 @@ while not done:
                         bullet.speed = temp_speed[1]
                     for power_up in power_up_list:
                         power_up.speed = temp_speed[0] * 1.5
+
                     pause = False
                     player.pause = False
                     pause_time += time.time() - pause_start_time
+                    """
+                    milliseconds = 0
+                    second = 1
+                    countdown = 3
+                    while second < 3:
+                        milliseconds += clock.tick_busy_loop(60)
+                        if milliseconds > second*1000:
+                            second = milliseconds/1000
+                            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 200, True).render(str(countdown - 1), 1, (91, 109, 131)), (50, 200))
+    
+                    """
 
     sprites_list.update()
+
     # --- Game mechanics
 
     if alive and not pause:

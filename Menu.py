@@ -25,6 +25,7 @@ class Menu(object):
             
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Paused", 1, (91, 109, 131)), (50, 200))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press Escape to resume", 1, (91, 109, 131)), (170, 370))
+            screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press R to go to main menu", 1, (91, 109, 131)), (170, 390))
         elif menu == "c":
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Over", 1, (91, 109, 131)), (105, 300))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Press R to go to main menu", 1, (91, 109, 131)), (170, 370))
