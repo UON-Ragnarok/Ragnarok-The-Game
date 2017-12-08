@@ -1,36 +1,72 @@
 import pygame
-from Bullet import *
+
 
 class Boss(pygame.sprite.Sprite):
 
-    #List of bullets
-    bullet_list = pygame.sprite.Group()
-    def __init__(self, screen, screen_width, boss_image, speed, current_level, *groups):
+    forward = True
+    
+    def __init__(self, boss_id, screen, screen_width, boss_image, speed, current_level, *groups):
         super().__init__(*groups)
+        self.boss_id = boss_id
         self.screen = screen
         self.image = boss_image
         self.range = screen_width
         self.speed = speed
         self.health = 10 * current_level
         self.rect = self.image.get_rect()
-        
 
-##    def update(self):
-####        print("test")bullet_speed = 5
-##        bullet_speed = 5
-##        bullet = Bullet((self.rect.x + self.image.get_rect().width/2), self.rect.y, bullet_speed, [boss_bullet_list, sprites_list],forward = False)
-####        self.fire_bullet()
-####        self.bullet_list.draw(self.screen)
-####        pygame.display.flip()
-##        
-    
+    # update the boss
+    def update(self):
+
+        if self.forward:
+            self.rect.x += self.speed
+        else:
+            self.rect.x -= self.speed
+        # if the boss go out of the bound  
+        if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
+            
+            self.forward = not self.forward
+     
+    # if hit boss health -1
     def is_hit(self):
         self.health -= 1
 
     def is_alive(self):
         return self.health > 0
 
-##    def fire_bullet(self, bullet_speed = 5):
-##
-##        bullet = Bullet((self.rect.x + self.image.get_rect().width/2), self.rect.y, bullet_speed, [self.bullet_list],forward = False)
-####        pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
+class Boss_Bullet(pygame.sprite.Sprite):
+    bullet_speed=3
+    prev_x_pos = -1
+    def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
+        super().__init__(*groups)
+        self.boss =  boss
+        self.boss_id = boss.boss_id
+        self.image = pygame.Surface([5,10])
+        self.image.fill([255,255,0]) #yellow bullet, place holder, need to find image or something
+        self.rect = self.image.get_rect()
+        self.rect.x  = x_pos
+        self.origin_pos_x = x_pos
+        self.boss_origin_pos_x =  boss.rect.x + boss.image.get_rect().width/2
+        self.rect.y  = y_pos
+        self.speed = bullet_speed
+
+    # different bullets with different bosses
+    def update(self):
+
+        if self.boss_id == 1:
+            
+##            if self.prev_x_pos == -1:
+##                self.prev_x_pos = self.rect.x
+##                self.rect.x += ((self.prev_x_pos - self.boss.rect.x - self.boss.image.get_rect().width/2)/20)
+##            else:
+##                self.rect.x += (self.rect.x - self.prev_x_pos)
+##                self.prev_x_pos = self.rect.x
+
+
+            self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
+            self.rect.y += self.speed
+        
+            
+        
+        
+

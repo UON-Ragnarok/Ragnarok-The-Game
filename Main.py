@@ -15,6 +15,7 @@ score = 0
 current_level = 0
 difficulty = 10
 bullet_speed = 5
+boss_speed = 1
 enemies_speed = math.sqrt(10 + current_level)
 start_time = time.time()
 pause_time = 0
@@ -82,10 +83,15 @@ player = PlayerShip(screen_width, screen_height,ship_image, [sprites_list])
 #Setting up firing bullet delay
 fire_bullet_event = pygame.USEREVENT + 1
 fire_bullet_delay = 500
-print(fire_bullet_event)
 pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
+boss_id = 0
+
 #Setting up the boss firing bullet delay
+boss_bullet_event = pygame.USEREVENT + 2
+boss_bullet_delay = 100
+boss_bullet_counter = 0
+pygame.time.set_timer(boss_bullet_event, boss_bullet_delay)
 
 # load the highscore
 f = open('highscore.txt', 'r')
@@ -116,23 +122,28 @@ def spawn_meteor(speed):
     meteor.rect.y = -200
     meteor.rect.x = random.randrange(0, screen_width - meteor.rect.width)
 
-def spawn_boss(speed):
-    boss = Boss(screen,screen_width, boss_image, speed, current_level, [boss_list,boss_bullet_list, sprites_list])
+#!!!!!!!!!!!!! can add different boss images!!
+def spawn_boss(speed, boss_id, boss_image):
+    boss = Boss(boss_id,screen,screen_width, boss_image, speed, current_level, [boss_list,boss_bullet_list, sprites_list])
     boss.rect.x = screen_width/2 - boss.rect.width/2
     boss.rect.y = 50
 
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
     pygame.mixer.Channel(1).set_volume(0.2)
-    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list],forward = True)
+    bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
 def boss_fire_bullet(boss):
+    #can add music
 ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
 ##    pygame.mixer.Channel(1).set_volume(0.2)
-    bullet_speed = 5
-    bullet = Bullet((boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, bullet_speed, [sprites_list, boss_bullet_list],forward = False)
-
+    # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
+    if boss.boss_id == 1:
+        Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 -  50), boss.rect.y + boss.image.get_rect().height, bullet_speed, [sprites_list, boss_bullet_list])
+        Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, bullet_speed, [sprites_list, boss_bullet_list])
+        Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, bullet_speed, [sprites_list, boss_bullet_list])
+##    pygame.time.set_timer(boss_bullet_event, 0)
 
 # -------- Intro Screen -----------
 intro = Intro(screen, menu_background,screen_width,screen_height,title, start_button_image, about_button_image, back_button_image, setting_button_image, mute_button_image, volume_button_image)
@@ -164,8 +175,18 @@ while not done:
 
         if alive and event.type == fire_bullet_event and not pause:
             fire_bullet()
+        # update the boss bullet
+        if alive and event.type == boss_bullet_event and not pause:
             if boss_list:
                 boss_fire_bullet(boss_list.sprites()[0])
+                boss_bullet_counter +=  1
+                if boss_bullet_counter >= 2:
+                    pygame.time.set_timer(boss_bullet_event, 2500)
+                    boss_bullet_counter = 0
+                else:
+                    pygame.time.set_timer(boss_bullet_event, boss_bullet_delay)
+                    
+            
                 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and (not alive):
@@ -260,7 +281,7 @@ while not done:
                     pygame.mixer.Channel(3).play(pygame.mixer.Sound('Sound/explo.ogg'))
                     pygame.mixer.Channel(3).set_volume(0.5)
 
-
+            #when player bullet colliding boss
             boss_hit_list = pygame.sprite.spritecollide(bullet, boss_list, False)
             for boss in boss_hit_list:
                  bullet.kill()
@@ -270,21 +291,18 @@ while not done:
                      current_level += 1
                      score += 100
                      boss.kill()
-                     boss_bullet.kill()
-                     #boss_bullet.kill()
-                     #if boss_bullet_delay >= 500:
-                        #boss_bullet_delay -= 100
+                     # can add sound here
+                     for boss_bullet in boss_bullet_list:
+                         boss_bullet.kill()
+##                     boss_bullet.kill()
+##                     if boss_bullet_delay >= 500:
+##                        boss_bullet_delay -= 100
+            
                         
             #if player bullet goes off screen
             if bullet.rect.y < -10:
                 bullet.kill()
-        #if boss bullet goes off screen
-        for boss_bullet in boss_bullet_list:
-            if boss_bullet.rect.y < -10:
-                boss_bullet.kill()
-            
-
-
+        # when player colliding boss bullet
         player_hit_list = pygame.sprite.spritecollide(player, boss_bullet_list, False)
         for hit in player_hit_list:
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
@@ -298,11 +316,13 @@ while not done:
 
        #Spawn enemies if there aren't any, levels and speeds fix later
         if not mob_list and not boss_list:
-            if current_level % 2 != 0 or current_level == 0:
+            if current_level % 5 != 0 or current_level == 0:
                 spawn_enemy(enemies_speed)
                 current_level += 1
             else:
-                spawn_boss(0)
+                boss_id += 1
+                
+                spawn_boss(boss_speed,boss_id, boss_image)
 
         #Spawn power ups
         if not power_up_list:
@@ -311,7 +331,7 @@ while not done:
 
         #Spawn meteor:
         if not meteor_list:
-            if current_level % 3 == 0:
+            if current_level % 5 == 0:
                 spawn_meteor(enemies_speed * 2)
 
         for sprite in sprites_list  :
