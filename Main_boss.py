@@ -2,11 +2,11 @@ import pygame
 import random
 import time
 import math
+import os import path
 
 from PlayerShip import *
 from Bullet import *
 from Enemy import *
-from Bosses import *
 from Menu import *
 from PowerUp import *
 
@@ -18,7 +18,7 @@ enemies_speed = math.sqrt(10 + current_level)
 boss_health = 10
 start_time = time.time()
 pause_time = 0
-pause_start_time=time.time()
+pause_start_time = time.time()
 alive = True
 pause = False
 flag = True
@@ -30,7 +30,7 @@ FPS = 60
 
 # initialize pygame and creat window
 pygame.init()
-screen = pygame.display.set_mode([screen_width,screen_height])
+screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Ragnarok The Game")
 clock = pygame.time.Clock()
 
@@ -41,36 +41,38 @@ ship_image = pygame.image.load('img/spaceship.png').convert_alpha()
 boss_image = pygame.image.load('img/thor.png').convert()
 enemy_image = pygame.image.load('img/mob.png').convert_alpha()
 meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
-
+electricball = pygame.image.load('img/electricball.png').convert()
 start_button_image = pygame.image.load('img/start_button.png').convert()
 about_button_image = pygame.image.load('img/about_button.png').convert()
 back_button_image = pygame.image.load('img/back_button.png').convert()
 
-#List of all sprites
+# List of all sprites
 sprites_list = pygame.sprite.Group()
 
-#List of bullets
+# List of bullets
 bullet_list = pygame.sprite.Group()
 
-#BOSS
+# BOSS
 boss_list = pygame.sprite.Group()
 
-#List of all enemies
+# List of all enemies
 enemy_list = pygame.sprite.Group()
 
-#List of mobs
+# List of mobs
 mob_list = pygame.sprite.Group()
 
-#List of PowerUps
+# List of PowerUps
 power_up_list = pygame.sprite.Group()
 
-#List of meteor
+# List of meteor
 meteor_list = pygame.sprite.Group()
 
-#Creating sprites
-player = PlayerShip(screen_width, screen_height,ship_image, [sprites_list])
+balls_list = pygame.sprite.Group()
 
-#Setting up firing bullet delay
+# Creating sprites
+player = PlayerShip(screen_width, screen_height, ship_image, [sprites_list])
+
+# Setting up firing bullet delay
 fire_bullet_event = pygame.USEREVENT + 1
 fire_bullet_delay = 500
 pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
@@ -83,6 +85,53 @@ if temp != "":
 else:
     highscore = 0
 f.close()
+
+
+class Boss(pygame.sprite.Sprite):
+    def __init__(self, width, image_location, speed, *groups):
+        super().__init__(*groups)
+        self.image = image_location
+        self.image.set_colorkey((255, 255, 255))
+        self.speed = speed
+        self.range = width
+        self.rect = self.image.get_rect()
+        self.last = pygame.time.get_ticks()
+        self.cooldown = 120*8
+        # LifeBar() # need a new class for that
+
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.right > self.range or self.rect.left < 1:
+            self.speed = -self.speed
+            self.fire()
+
+    def fire(self):
+        # fire gun, only if cooldown has been 0.3 seconds since last
+        now = pygame.time.get_ticks()
+        if now - self.last >= self.cooldown:
+            self.last = now
+            spwan_ball(self.rect.centerx, self.rect.centery+50)
+            print("shoot")
+
+
+class Circle(pygame.sprite.Sprite):
+    def __init__(self, x, y, *groups):
+        super().__init__(*groups)
+        self.image = pygame.transform.scale(electricball, (20, 20))
+        self.image.set_colorkey((255, 255, 255))
+        # pygame.draw.circle(self.image, (0, 0, 255), (x, y), 25, 0)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        self.rect.y += 3
+
+
+def spwan_ball(c, bot):
+    for i in range(-100, 150, 50):
+        Circle(c-i, bot, [balls_list, sprites_list])
+
 
 # main menu
 # set up the height and width
@@ -98,9 +147,10 @@ bb_width = back_button_image.get_rect().width
 
 
 def spawn_boss(speed):
-    boss = Boss(screen_width, boss_image, speed, boss_health, [boss_list, sprites_list])
-    boss.rect.x = screen_width/2-boss.rect.width/2
-    boss.rect.y = 50
+    boss = Boss(screen_width, boss_image, speed, [boss_list, sprites_list])
+    boss.rect.center = (screen_width/2, 150)
+boss = spawn_boss(5)
+
 
 def fire_bullet():
     pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
@@ -114,7 +164,7 @@ def intro():
     about = False
     menu_background_x = 0
     while True:
-    
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -132,12 +182,12 @@ def intro():
 
         screen.blit(title, [screen_width / 9, screen_height / 6])
 
-        #mute
+        # mute
         if pressedkeys[pygame.K_m]:
             pygame.mixer.pause()
-            #pygame.mixer.unpause()
+            # pygame.mixer.unpause()
 
-            
+
         # start button
         if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
             big_start_button_image = pygame.transform.rotozoom(start_button_image,0,1.2)
@@ -156,7 +206,7 @@ def intro():
             if click[0]==1:
                 main = False
                 about = True
-        
+
         elif about and bb_top_left_x < mouse[0] < bb_top_left_x+bb_width and sb_top_left_y+200 < mouse[1] < sb_top_left_y+200 + bb_height:
             big_back_button_image = pygame.transform.rotozoom(back_button_image,0,1.2)
             screen.blit(big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
@@ -171,7 +221,7 @@ def intro():
             elif about:
                 screen.blit(back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
             pygame.display.flip()
-        
+
 
         clock.tick(FPS)
 
@@ -205,11 +255,11 @@ while not done:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and (not alive):
-                score = 0 
+                score = 0
                 alive = True
                 intro()
                 player = PlayerShip(screen_width,screen_height,ship_image, [sprites_list])
-                #update highscore when you die 
+                #update highscore when you die
                 f = open('highscore.txt', 'w')
                 f.write(str(highscore))
                 f.close()
@@ -240,24 +290,26 @@ while not done:
                     pause_time += time.time() - pause_start_time
 
     sprites_list.update()
+
     # --- Game mechanics
 
     if alive and not pause:
 
-        if not boss_kill:
-            spawn_boss(0)
-        
         for bullet in bullet_list:
 
             boss_hit = pygame.sprite.spritecollide(bullet, boss_list, False)
-            for boss in boss_hit:
-                boss.health -= 1
-                bullet.kill()
-                if boss.health <= 0:
-                    boss.kill()
-                    score += 100
+            if boss_health > 0:
+                if boss_hit:
+                    boss_health -= 1
+                    bullet.kill()
+
+                if boss_health == 0:
                     boss_kill = True
-                        
+                    score += 100
+                    boss_list.remove(boss_hit)
+                    sprites_list.remove(boss_hit)
+                    boss_health = 10**current_level
+
             #if bullet goes off screen
             if bullet.rect.y < -10:
                 bullet.kill()
@@ -268,8 +320,8 @@ while not done:
                 sprite.kill()
 
         screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (screen_width-100,50 ))
+        screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(boss_health), 1, (91, 109, 131)), (50,50 ))
 
-		
     #m = Menu(screen_width/2,screen_height/2)
     if not alive:
        # sprites_list.remove(player))
@@ -287,4 +339,4 @@ while not done:
     clock.tick(FPS)
 
 # Close the window and quit.
-pygame.quit()
+quit()
