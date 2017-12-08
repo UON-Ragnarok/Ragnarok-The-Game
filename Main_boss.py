@@ -2,7 +2,7 @@ import pygame
 import random
 import time
 import math
-import os import path
+import os
 
 from PlayerShip import *
 from Bullet import *
@@ -34,17 +34,22 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Ragnarok The Game")
 clock = pygame.time.Clock()
 
-background = pygame.image.load('img/background.jpg').convert()
-menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
-title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
-ship_image = pygame.image.load('img/spaceship.png').convert_alpha()
-boss_image = pygame.image.load('img/thor.png').convert()
-enemy_image = pygame.image.load('img/mob.png').convert_alpha()
-meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
-electricball = pygame.image.load('img/electricball.png').convert()
-start_button_image = pygame.image.load('img/start_button.png').convert()
-about_button_image = pygame.image.load('img/about_button.png').convert()
-back_button_image = pygame.image.load('img/back_button.png').convert()
+img_folder = os.path.dirname(__file__) + "\img"
+def image(filename):
+    img = pygame.image.load(os.path.join(img_folder, filename)).convert_alpha()
+    return img
+
+background = image('background.jpg')
+menu_background = image('main_menu_bg.jpg')
+title = image('Ragnarok_logo.png')
+ship_image = image('spaceship.png')
+boss_image = image('thor.png')
+enemy_image = image('mob.png')
+meteor_image = image('meteor.png')
+electricball = image('electricball.png')
+start_button_image = image('start_button.png')
+about_button_image = image('about_button.png')
+back_button_image = image('back_button.png')
 
 # List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -86,12 +91,19 @@ else:
     highscore = 0
 f.close()
 
+class cooldown():
+    def __init__(self):
+        pass
+
+    def ball(self):
+        pass
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self, width, image_location, speed, *groups):
         super().__init__(*groups)
         self.image = image_location
         self.image.set_colorkey((255, 255, 255))
+
         self.speed = speed
         self.range = width
         self.rect = self.image.get_rect()
@@ -127,6 +139,8 @@ class Circle(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += 3
 
+class Hammer(pygame.sprite.Sprite):
+    pass
 
 def spwan_ball(c, bot):
     for i in range(-100, 150, 50):
@@ -337,6 +351,8 @@ while not done:
     pygame.display.flip()
 
     clock.tick(FPS)
+    pygame.display.set_caption(str(clock.get_fps()))
+
 
 # Close the window and quit.
 quit()
