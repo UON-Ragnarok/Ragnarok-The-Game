@@ -143,11 +143,12 @@ class Game():
                     f = open('highscore.txt', 'w')
                     f.write(str(self.highscore))
                     f.close()
-                    if not self.alive:
-                        self.alive = True
-                        self.intro.show_intro(self.screen)
-                        self.new_game()
-                    if self.alive and self.pause:
+                    self.alive = True
+                    self.intro.show_intro(self.screen)
+                    self.new_game()
+                if self.pause:
+                    if event.key == pygame.K_r and self.alive:
+                        self.pause = False
                         self.intro.show_intro(self.screen)
                         self.new_game()
 
