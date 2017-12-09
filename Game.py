@@ -81,11 +81,13 @@ class Game():
         self.boss_bullet_delay = 100
         self.boss_bullet_counter = 0
         pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
+        self.run()
 
     def intro(self):
         self.intro = Intro(self.screen,SCREEN_WIDTH,SCREEN_HEIGHT, ARCADE_FUNK)
         self.intro.show_intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
+        self.new_game()
 
     def run(self):
         # Game Loop
@@ -108,49 +110,6 @@ class Game():
         self.sprites_list.draw(self.screen)
         pygame.display.flip()
 
-    #Spawning enemies
-    def spawn_enemy(self, speed, current_level, difficulty, groups):
-        health = int(current_level / difficulty) + 1
-        for i in range (5):
-            self.enemy = Enemy(speed, health, groups)
-            self.enemy.rect.x = 10 + 100*i
-            self.enemy.rect.y = -50
-
-    def spawn_power_ups(self, speed, pos_x, pos_y, groups):
-        self.power_up = PowerUp(SCREEN_WIDTH, SCREEN_HEIGHT, speed, groups)
-        self.power_up.rect.x = pos_x
-        self.power_up.rect.y = pos_y
-
-    def spawn_meteor(self, speed, groups):
-        pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
-        pygame.mixer.Channel(2).set_volume(0.8)
-        self.meteor = Meteor(speed, groups)
-        self.meteor.rect.y = -200
-        self.meteor.rect.x = random.randrange(0, SCREEN_WIDTH - self.meteor.rect.width)
-
-    #!!!!!!!!!!!!! can add different boss images!!
-    def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        self.boss = Boss(boss_id,screen,SCREEN_WIDTH, speed, current_level, groups)
-        self.boss.rect.x = SCREEN_WIDTH/2 - self.boss.rect.width/2
-        self.boss.rect.y = 50
-
-    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
-        pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
-        pygame.mixer.Channel(1).set_volume(0.2)
-        self.bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, groups)
-        pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
-
-    def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
-        #can add music
-    ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
-    ##    pygame.mixer.Channel(1).set_volume(0.2)
-        # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
-        if boss.boss_id == 1:
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-    ##    pygame.time.set_timer(boss_bullet_event, 0)
-
     def events(self):
         key = pygame.key.get_pressed()
         for event in pygame.event.get():
@@ -159,7 +118,8 @@ class Game():
                 f = open('highscore.txt', 'w')
                 f.write(str(self.highscore))
                 f.close()
-                done = True
+                self.playing = False
+                self.running = False
 
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
                 self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
@@ -176,20 +136,25 @@ class Game():
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and (not self.alive):
-                    self.score = 0
-                    self.alive = True
-                    self.intro.show_intro(self.screen)
-                    self.new_game()
                     #update highscore when you press r
                     f = open('highscore.txt', 'w')
                     f.write(str(self.highscore))
                     f.close()
+                    if not self.alive:
+                        self.alive = True
+                        self.intro.show_intro(self.screen)
+                        self.new_game()
+                    if self.alive and self.pause:
+                        self.intro.show_intro(self.screen)
+                        self.new_game()
+
                 if event.key == pygame.K_n and (not self.alive):
                     #update highscore when you press n
                     f = open('highscore.txt', 'w')
                     f.write(str(self.highscore))
                     f.close()
-                    done = True
+                    self.playing = False
+                    self.running = False
                 if event.key == pygame.K_ESCAPE and self.alive:
                     if not self.pause:
                         self.temp_speed = [self.enemies_speed, self.bullet_speed, self.boss_bullet_speed]
@@ -206,16 +171,6 @@ class Game():
                         if self.boss_list:
                             self.boss.pause = True
                         self.pause_start_time = time.time()
-
-                        if event.key == pygame.K_r and (not self.alive):
-                            self.score = 0
-                            self.alive = True
-                            self.intro.show_intro(self.screen)
-                            self.new_game()
-                            #update highscore when you press r
-                            f = open('highscore.txt', 'w')
-                            f.write(str(self.highscore))
-                            f.close()
                     else:
                         for enemy in self.enemy_list:
                             enemy.speed = self.temp_speed[0]
@@ -237,21 +192,21 @@ class Game():
 
         if self.alive and not self.pause:
             # player colliding with enemy
-            self.enemy_hit_list = pygame.sprite.spritecollide(self.player, self.enemy_list, True)
-            if self.enemy_hit_list:
+            enemy_hit_list = pygame.sprite.spritecollide(self.player, self.enemy_list, True)
+            if enemy_hit_list:
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
                 self.alive = False
 
             #Increase speed of bullets if get power up
-            self.power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
-            for hit in self.power_up_hit_list:
+            power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
+            for hit in power_up_hit_list:
                 hit.kill()
                 if self.fire_bullet_delay >= 150:
                     self.fire_bullet_delay -= 50
 
             for bullet in self.bullet_list:
-                self.enemies_hit_list = pygame.sprite.spritecollide(self.bullet, self.mob_list, False)
-                for enemy in self.enemies_hit_list:
+                enemies_hit_list = pygame.sprite.spritecollide(bullet, self.mob_list, False)
+                for enemy in enemies_hit_list:
                     enemy.health -= 1
                     bullet.kill()
                     if enemy.health <= 0:
@@ -265,8 +220,8 @@ class Game():
                         pygame.mixer.Channel(3).set_volume(0.5)
 
                 #when player bullet colliding boss
-                self.boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
-                for boss in self.boss_hit_list:
+                boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
+                for boss in boss_hit_list:
                      bullet.kill()
                      boss.is_hit()
 
@@ -286,14 +241,14 @@ class Game():
                 if bullet.rect.y < -10:
                     bullet.kill()
             # when player colliding boss bullet
-            self.player_hit_list = pygame.sprite.spritecollide(self.player, self.boss_bullet_list, False)
-            if self.player_hit_list:
+            player_hit_list = pygame.sprite.spritecollide(self.player, self.boss_bullet_list, False)
+            if player_hit_list:
                     pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
                     self.alive = False
 
             #Kill bullet if it hits meteors
             for meteor in self.meteor_list:
-                self.meteor_hit_list = pygame.sprite.spritecollide(meteor, self.bullet_list, True)
+                meteor_hit_list = pygame.sprite.spritecollide(meteor, self.bullet_list, True)
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
@@ -309,7 +264,7 @@ class Game():
                 if self.current_level % 5 == 0:
                     self.spawn_meteor(self.enemies_speed * 2,  [self.enemy_list, self.meteor_list, self.sprites_list])
 
-            for sprite in self.sprites_list  :
+            for sprite in self.sprites_list :
                 #If enemies go off screen
                 if sprite.rect.y > SCREEN_HEIGHT:
                     sprite.kill()
@@ -321,7 +276,6 @@ class Game():
                 self.highscore = self.score
            # sprites_list.remove(player))
             Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen,"c",self.score,self.highscore)
-            self.current_level = 0
             for sprite in self.sprites_list:
                 sprite.kill()
 
@@ -329,10 +283,53 @@ class Game():
             Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen, "b")
             #Erm, why is pressing R doesn't make it go back to screen can someone fix
 
+    #Spawning enemies
+    def spawn_enemy(self, speed, current_level, difficulty, groups):
+        health = int(current_level / difficulty) + 1
+        for i in range (5):
+            enemy = Enemy(speed, health, groups)
+            enemy.rect.x = 10 + 100*i
+            enemy.rect.y = -50
+
+    def spawn_power_ups(self, speed, pos_x, pos_y, groups):
+        power_up = PowerUp(SCREEN_WIDTH, SCREEN_HEIGHT, speed, groups)
+        power_up.rect.x = pos_x
+        power_up.rect.y = pos_y
+
+    def spawn_meteor(self, speed, groups):
+        pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
+        pygame.mixer.Channel(2).set_volume(0.8)
+        meteor = Meteor(speed, groups)
+        meteor.rect.y = -200
+        meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
+
+    #!!!!!!!!!!!!! can add different boss images!!
+    def spawn_boss(self, speed, screen, current_level, boss_id, groups):
+        self.boss = Boss(boss_id,screen,SCREEN_WIDTH, speed, current_level, groups)
+        self.boss.rect.x = SCREEN_WIDTH/2 - self.boss.rect.width/2
+        self.boss.rect.y = 50
+
+    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
+        pygame.mixer.Channel(1).set_volume(0.2)
+        bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, groups)
+        pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
+
+    def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
+        #can add music
+    ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
+    ##    pygame.mixer.Channel(1).set_volume(0.2)
+        # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
+        if boss.boss_id == 1:
+            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
+            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
+            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
+    ##    pygame.time.set_timer(boss_bullet_event, 0)
+
+
 g = Game()
 g.intro()
 while g.running:
     g.new_game()
-    g.run()
 
 pygame.quit()

@@ -16,23 +16,20 @@ class Boss(pygame.sprite.Sprite):
         self.health = 10 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
-        self.pause = False
+
 
     # update the boss
     def update(self):
-        if self.pause == False:
-            if self.forward:
-                self.rect.x += self.speed
-            else:
-                self.rect.x -= self.speed
+        if self.forward:
+            self.rect.x += self.speed
+        else:
+            self.rect.x -= self.speed
             # if the boss go out of the screen
-            if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
-
-                self.forward = not self.forward
+        if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
+            self.forward = not self.forward
             # print the hp
-            pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
-
-            pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
+        pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
+        pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
 
 
     # if hit boss health -1
