@@ -18,7 +18,7 @@ class Player(pg.sprite.Sprite):
             if pos[0] > (self.screen_width - self.image.get_rect().width):
                 self.rect.x = (self.screen_width - self.image.get_rect().width)
 
-class Player(pg.sprite.Sprite):
+class Mob(pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.sprites_list
         # need another group, what am i suppose to do?

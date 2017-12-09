@@ -6,6 +6,7 @@ import sys
 from os import path
 from settings import *  # * make it doesnt need prepen such as settings.xxx
 from sprites import *
+from Intro import *
 
 
 class Game:
@@ -19,13 +20,14 @@ class Game:
         self.load_data()
 
     def new(self):
+        self.score = 0
         self.sprites_list = pg.sprite.Group()
         self.run()
 
     def load_data(self):
         # load high score
-        game_folder = path.dirname(__file__)
-        with open(path.join(game_folder, HS_FILE), 'r') as f:
+        self.game_folder = path.dirname(__file__)
+        with open(path.join(self.game_folder, HS_FILE), 'r') as f:
             try:
                 self.highscore = int(f.read())
             except:
@@ -33,12 +35,23 @@ class Game:
         # load images
         img_folder = path.join(path.dirname(__file__), 'img')
         self.bg = pg.image.load(path.join(img_folder, 'background.jpg')).convert()
+        self.menu_background = pygame.image.load(path.join(img_folder, 'main_menu_bg.jpg')).convert()
         self.ship_img = pg.image.load(path.join(img_folder, "spaceship.png")).convert_alpha()
+        self.title = pygame.image.load(path.join(img_folder, 'Ragnarok_logo.png')).convert_alpha()
+        self.boss_image = pygame.image.load(path.join(img_folder, 'thor.png')).convert()
+        self.enemy_image = pygame.image.load(path.join(img_folder, 'mob.png')).convert_alpha()
+        self.meteor_image = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
 
-    def save_data(self):
-        self.f = open('highscore.txt', 'w')
-        self.f.write(str(highscore))
-        self.f.close()
+        self.start_button_image = pygame.image.load(path.join(img_folder, 'start_button.png')).convert()
+        self.about_button_image = pygame.image.load(path.join(img_folder, 'about_button.png')).convert()
+        self.back_button_image = pygame.image.load(path.join(img_folder, 'back_button.png')).convert()
+        self.setting_button_image = pygame.image.load(path.join(img_folder, 'setting_button.png')).convert()
+        self.mute_button_image = pygame.image.load(path.join(img_folder, 'mute.png')).convert()
+        self.volume_button_image = pygame.image.load(path.join(img_folder, 'volume.png')).convert()
+
+        # Sound
+        self.sound_folder = path.join(self.game_folder, 'Sound')
+
 
     def run(self):
         # game loop - set self.playing = False to end the game == go to menu
@@ -59,7 +72,7 @@ class Game:
 
     def draw(self):
         # game loop
-        self.screen.fill(BGCOLOR)
+        # self.screen.fill(BGCOLOR)  # no longer needed
         self.screen.blit(self.bg, self.bg.get_rect())
         self.sprites_list.draw(self.screen)
         # after drawing everything, flip the display
@@ -74,20 +87,25 @@ class Game:
                 self.running = False
                 self.quit()
 
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-
 
     def show_start_screen(self):  # == intro
-        pass
+        intro = Intro(self.screen, self.menu_background, screen_width, screen_height, self.title, self.start_button_image, self.about_button_image, self.back_button_image, self.setting_button_image, self.mute_button_image, self.volume_button_image)
+        intro.show_intro(self.screen)
 
     def show_go_screen(self):  # the game over screen == menu
         pass
 
+
+    def New_high_score(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                f.write(str(self.score))
+
+
 # create the game object
-game = Game()
-game.show_start_screen()
-while game.running:
-    game.new()
-    game.show_go_screen()
+Ragnarok = Game()
+Ragnarok.show_start_screen()
+while Ragnarok.running:
+    Ragnarok.new()
+    Ragnarok.show_go_screen()
