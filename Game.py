@@ -120,7 +120,8 @@ class Game():
         # *after* drawing everything, flip the display
         self.screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(self.score), 1, (91, 109, 131)), (SCREEN_WIDTH-100,50 ))
         if self.boss_list:
-            self.boss.update_health_bar()
+            for boss in self.boss_list:
+                boss.update_health_bar()
         self.sprites_list.draw(self.screen)
         pygame.display.flip()
 
@@ -175,9 +176,10 @@ class Game():
                             bullet.pause = True
                         for power_up in self.power_up_list:
                             power_up.pause = True
+                        for boss in self.boss_list:
+                            boss.pause = True
                         self.player.pause = True
-                        if self.boss_list:
-                            self.boss.pause = True
+
                     else:
                         self.pause = False
                         for enemy in self.enemy_list:
@@ -188,9 +190,10 @@ class Game():
                             bullet.pause = False
                         for power_up in self.power_up_list:
                             power_up.pause = False
+                        for boss in self.boss_list:
+                            boss.pause = False
                         self.player.pause = False
-                        if self.boss_list:
-                            self.boss.pause = False
+
 
     def update(self):
         self.sprites_list.update()
@@ -247,6 +250,7 @@ class Game():
                      boss.is_hit(self.bullet_damage)
 
                      if not boss.is_alive():
+                         boss.going_in = False
                          self.current_level += 1
                          self.score += 100
                          boss.kill()
@@ -273,7 +277,7 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 5 != 0 or self.current_level == 0:
+                if self.current_level % 2 != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, self.difficulty, [self.enemy_list, self.mob_list, self.sprites_list])
                     self.current_level += 1
                 else:
@@ -334,9 +338,9 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        self.boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
-        self.boss.rect.x = SCREEN_WIDTH/2 - self.boss.rect.width/2
-        self.boss.rect.y = 50
+        boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
+        boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
+        boss.rect.y = -200
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
@@ -353,7 +357,7 @@ class Game():
     ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
     ##    pygame.mixer.Channel(1).set_volume(0.2)
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
-        if boss.boss_id == 1:
+        if boss.boss_id == 1 and boss.going_in:
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
