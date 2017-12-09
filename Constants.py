@@ -9,7 +9,7 @@ BACKGROUND_IMG = 'img/background.jpg'
 ARCADE_FUNK = 'Sound/Arcade Funk.ogg'
 
 #Gameplay Properties
-POWERUP_PERCENTAGE = 99
+POWERUP_PERCENTAGE = 30
 SPEED_POWER_UP_ID = 'A'
 DAMAGE_POWER_UP_ID = 'B'
 DOUBLE_POWER_UP_ID = 'C'

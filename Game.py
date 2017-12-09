@@ -137,8 +137,7 @@ class Game():
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
                 self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
             # update the boss bullet
-            if self.alive and event.type == self.boss_bullet_event and not self.pause:
-                if self.boss_list:
+            if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list:
                     self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
                     self.boss_bullet_counter += 1
                     if self.boss_bullet_counter >= 2:
@@ -286,7 +285,7 @@ class Game():
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
-                if self.current_level % 5 == 0:
+                if self.current_level % 4 == 0:
                     self.spawn_meteor(self.enemies_speed * 2,  [self.enemy_list, self.meteor_list, self.sprites_list])
 
             for sprite in self.sprites_list :
@@ -357,7 +356,9 @@ class Game():
     ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
     ##    pygame.mixer.Channel(1).set_volume(0.2)
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
-        if boss.boss_id == 1 and boss.going_in:
+        if boss.going_in:
+            if boss.anger == True:
+                boss_bullet_speed = boss_bullet_speed * boss.bullet_anger_speed_multiplier
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
