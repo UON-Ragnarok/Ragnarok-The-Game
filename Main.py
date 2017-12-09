@@ -316,7 +316,7 @@ while not done:
 
        #Spawn enemies if there aren't any, levels and speeds fix later
         if not mob_list and not boss_list:
-            if current_level % 5 != 0 or current_level == 0:
+            if current_level % 1 != 0 or current_level == 0:
                 spawn_enemy(enemies_speed)
                 current_level += 1
             else:
@@ -349,13 +349,13 @@ while not done:
         if score > highscore:
             highscore = score
        # sprites_list.remove(player))
-        Menu().displayMenu(screen,"c",score,highscore)
+        Menu(screen_width,screen_height).displayMenu(screen,"c",score,highscore)
         current_level = 0
         for sprite in sprites_list:
             sprite.kill()
             
     elif pause :
-        Menu().displayMenu(screen, "b")
+        Menu(screen_width,screen_height).displayMenu(screen, "b")
 
     sprites_list.draw(screen)
 
