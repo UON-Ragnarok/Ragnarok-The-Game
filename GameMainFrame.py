@@ -19,13 +19,14 @@ class Game:
         self.load_data()
 
     def new(self):
+        self.score = 0
         self.sprites_list = pg.sprite.Group()
         self.run()
 
     def load_data(self):
         # load high score
-        game_folder = path.dirname(__file__)
-        with open(path.join(game_folder, HS_FILE), 'r') as f:
+        self.game_folder = path.dirname(__file__)
+        with open(path.join(self.game_folder, HS_FILE), 'r') as f:
             try:
                 self.highscore = int(f.read())
             except:
@@ -34,11 +35,9 @@ class Game:
         img_folder = path.join(path.dirname(__file__), 'img')
         self.bg = pg.image.load(path.join(img_folder, 'background.jpg')).convert()
         self.ship_img = pg.image.load(path.join(img_folder, "spaceship.png")).convert_alpha()
+        # Sound
+        self.sound_folder = path.join(self.game_folder, 'Sound')
 
-    def save_data(self):
-        self.f = open('highscore.txt', 'w')
-        self.f.write(str(highscore))
-        self.f.close()
 
     def run(self):
         # game loop - set self.playing = False to end the game == go to menu
@@ -59,7 +58,7 @@ class Game:
 
     def draw(self):
         # game loop
-        self.screen.fill(BGCOLOR)
+        # self.screen.fill(BGCOLOR)  # no longer needed
         self.screen.blit(self.bg, self.bg.get_rect())
         self.sprites_list.draw(self.screen)
         # after drawing everything, flip the display
@@ -85,9 +84,17 @@ class Game:
     def show_go_screen(self):  # the game over screen == menu
         pass
 
+
+    def New_high_score(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                f.write(str(self.score))
+
+
 # create the game object
-game = Game()
-game.show_start_screen()
-while game.running:
-    game.new()
-    game.show_go_screen()
+Ragnarok = Game()
+Ragnarok.show_start_screen()
+while Ragnarok.running:
+    Ragnarok.new()
+    Ragnarok.show_go_screen()
