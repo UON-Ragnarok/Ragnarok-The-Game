@@ -23,7 +23,14 @@ class Game:
         self.run()
 
     def load_data(self):
+        # load high score
         game_folder = path.dirname(__file__)
+        with open(path.join(game_folder, HS_FILE), 'r') as f:
+            try:
+                self.highscore = int(f.read())
+            except:
+                self.highscore = 0
+        # load images
         img_folder = path.join(path.dirname(__file__), 'img')
         self.bg = pg.image.load(path.join(img_folder, 'background.jpg')).convert()
         self.ship_img = pg.image.load(path.join(img_folder, "spaceship.png")).convert_alpha()
@@ -53,7 +60,7 @@ class Game:
     def draw(self):
         # game loop
         self.screen.fill(BGCOLOR)
-        self.screen.blit(self.bg, self.bg.get_rect().height)
+        self.screen.blit(self.bg, self.bg.get_rect())
         self.sprites_list.draw(self.screen)
         # after drawing everything, flip the display
         pg.display.flip()

@@ -15,6 +15,7 @@ screen_height = 800
 FPS = 120
 TITLE = "Ragnarok The Game"
 BGCOLOR = DARKGREY
+HS_FILE = "highscore.txt"
 
 #relative_y = background_y % background.get_rect().height
 #screen.blit(background, [0, relative_y - background.get_rect().height])
