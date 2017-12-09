@@ -39,6 +39,7 @@ def image(filename):
     img = pygame.image.load(os.path.join(img_folder, filename)).convert_alpha()
     return img
 
+
 background = image('background.jpg')
 menu_background = image('main_menu_bg.jpg')
 title = image('Ragnarok_logo.png')
@@ -50,6 +51,7 @@ electricball = image('electricball.png')
 start_button_image = image('start_button.png')
 about_button_image = image('about_button.png')
 back_button_image = image('back_button.png')
+hammer_image = image("hammersheets2.png")
 
 # List of all sprites
 sprites_list = pygame.sprite.Group()
@@ -82,54 +84,70 @@ fire_bullet_event = pygame.USEREVENT + 1
 fire_bullet_delay = 500
 pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
-# load the highscore
-f = open('highscore.txt', 'r')
-temp = f.read()
-if temp != "":
-    highscore = int(temp)
-else:
-    highscore = 0
-f.close()
 
-class cooldown():
+class Cooldown():
     def __init__(self):
         pass
 
     def ball(self):
         pass
 
+
+class Spritesheets:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, img):
+        self.spritesheet = img
+
+    def get_image(self, x, y, witdth, height):
+        # grab on image out of a larger spritesheet
+        image = pygame.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, witdth, height))
+        return image
+
+
 class Boss(pygame.sprite.Sprite):
     def __init__(self, width, image_location, speed, *groups):
         super().__init__(*groups)
+        # self.load_images()
+        # self.image = boss_img[0]
         self.image = image_location
         self.image.set_colorkey((255, 255, 255))
-
         self.speed = speed
         self.range = width
         self.rect = self.image.get_rect()
-        self.last = pygame.time.get_ticks()
-        self.cooldown = 120*8
+        self.last_fire = pygame.time.get_ticks()
+        self.cooldown = random.randrange(480, 600, 30)
         # LifeBar() # need a new class for that
+        # self.image_face_right = pygame.transform.flip(self.image, 1, 0)
+
+#    def load_images(self):
+#        self.boss_img = [self.image_location, pygame.transform.flip(self.image_location, 1, 0)]
 
     def update(self):
-        self.rect.x += self.speed
-        if self.rect.right > self.range or self.rect.left < 1:
+        self.rect.x -= self.speed
+        if self.rect.right > self.range:
+            self.speed = -self.speed
+        if self.rect.left < 1:
             self.speed = -self.speed
             self.fire()
+            print (self.cooldown)
 
     def fire(self):
-        # fire gun, only if cooldown has been 0.3 seconds since last
         now = pygame.time.get_ticks()
-        if now - self.last >= self.cooldown:
-            self.last = now
-            spwan_ball(self.rect.centerx, self.rect.centery+50)
+        if now - self.last_fire >= self.cooldown:
+            self.last_fire = now
+            spwan_ball(self.rect.centerx, self.rect.centery + 50)
+            print (self.cooldown, self.last_fire)
             print("shoot")
 
+    def boss_kill(self):
+        pass
 
-class Circle(pygame.sprite.Sprite):
+
+class Chidori(pygame.sprite.Sprite):
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
-        self.image = pygame.transform.scale(electricball, (20, 20))
+        self.image = pygame.transform.scale(electricball, (30, 30))
         self.image.set_colorkey((255, 255, 255))
         # pygame.draw.circle(self.image, (0, 0, 255), (x, y), 25, 0)
         self.rect = self.image.get_rect()
@@ -139,12 +157,24 @@ class Circle(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += 3
 
+
 class Hammer(pygame.sprite.Sprite):
-    pass
+    def __init__(self, image_location, *groups):
+        super().__init__(*groups)
+        self.load_images()
+        self.image = rotate_hammer[0]
+        self.image.set_colorkey((255, 255, 255))
+
+    def load_images(self):
+        self.rotate_hammer = [self.spritesheet.get_image(0, 0, 50, 50),
+        self.spritesheet.get_image(50, 0, 50, 50)]
+
+    def update(self):
+        pass
 
 def spwan_ball(c, bot):
     for i in range(-100, 150, 50):
-        Circle(c-i, bot, [balls_list, sprites_list])
+        Chidori(c-i, bot, [balls_list, sprites_list])
 
 
 # main menu
@@ -167,8 +197,6 @@ boss = spawn_boss(5)
 
 
 def fire_bullet():
-    pygame.mixer.Channel(1).play(pygame.mixer.Sound('laser.ogg'))
-    pygame.mixer.Channel(1).set_volume(0.2)
     bullet = Bullet((player.rect.x + ship_image.get_rect().width/2), player.rect.y, bullet_speed, [sprites_list, bullet_list])
     pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
@@ -197,10 +225,6 @@ def intro():
         screen.blit(title, [screen_width / 9, screen_height / 6])
 
         # mute
-        if pressedkeys[pygame.K_m]:
-            pygame.mixer.pause()
-            # pygame.mixer.unpause()
-
 
         # start button
         if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
@@ -259,9 +283,6 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             #update highscore when you quit
-            f = open('highscore.txt', 'w')
-            f.write(str(highscore))
-            f.close()
             done = True
 
         if alive and event.type == fire_bullet_event and not pause:
