@@ -216,7 +216,6 @@ class Game():
                 hit.kill()
 
             if self.double_power:
-                print(time.time() - self.double_power_old_time)
                 if time.time() - self.double_power_old_time > 10:
                     self.double_power = False
 
@@ -335,7 +334,7 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        self.boss = Boss(boss_id,screen,SCREEN_WIDTH, speed, current_level, groups)
+        self.boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
         self.boss.rect.x = SCREEN_WIDTH/2 - self.boss.rect.width/2
         self.boss.rect.y = 50
 

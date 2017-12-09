@@ -10,7 +10,7 @@ class Boss(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
-        self.image = pygame.image.load('img/thor.png').convert_alpha()
+        self.image = pygame.image.load('img/thorsten.png').convert_alpha()
         self.range = screen_width
         self.speed = speed
         self.health = 10 * current_level
