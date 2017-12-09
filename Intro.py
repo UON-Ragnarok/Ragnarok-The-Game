@@ -2,6 +2,7 @@ import pygame
 
 class Intro():
     pygame.init()
+    
 
     def __init__(self, screen,screen_width,screen_height, intro_music):
         self.screen = screen
@@ -18,7 +19,7 @@ class Intro():
         self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
         self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
         self.thor_image = pygame.image.load('img/thor.png').convert_alpha()
-        self.power_up_image = pygame.image.load('img/PowerUps/1.png').convert_alpha()
+        self.power_up_image = pygame.image.load('img/PowerUps/A1.png').convert_alpha()
         self.intro_music = intro_music
         
         
