@@ -9,9 +9,6 @@ class Menu(object):
     #menua = Instro
     #menub = Pause
     #menuc = Game Over
-
-        
-    
         gp_width = pygame.font.SysFont("'freesansbold.ttf'", 70, True) .size("Game Paused")[0]
         res_width = pygame.font.SysFont("'freesansbold.ttf'", 30, True).size("Press Escape to resume")[0]
         r_width = pygame.font.SysFont("'freesansbold.ttf'", 30, True).size("Press R to go to main menu")[0]
@@ -22,8 +19,8 @@ class Menu(object):
         s_string_width =pygame.font.SysFont("'freesansbold.ttf'", 70, True) .size(str(score))[0]
         b_width = pygame.font.SysFont("'freesansbold.ttf'", 30, True).size("Best")[0]
         b_string_width = pygame.font.SysFont("'freesansbold.ttf'", 70, True).size(str(highscore))[0]
+
         if menu == "b":
-            
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 70, True).render("Game Paused", 1, (91, 109, 131)), (self.mid_x - gp_width/2 ,self.mid_y/2 ))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 30, True).render("Press Escape to resume", 1, (91, 109, 131)), (self.mid_x - (res_width/2), self.mid_y-40))
             screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 30, True).render("Press R to go to main menu", 1, (91, 109, 131)), (self.mid_x - (r_width/2), self.mid_y))

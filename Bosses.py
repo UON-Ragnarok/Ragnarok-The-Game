@@ -6,33 +6,35 @@ class Boss(pygame.sprite.Sprite):
     forward = True
     RED = (255,0,0)
     GREEN = (0,255,0)
-    def __init__(self, boss_id, screen, screen_width, boss_image, speed, current_level, *groups):
+    def __init__(self, boss_id, screen, screen_width, speed, current_level, *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
-        self.image = boss_image
+        self.image = pygame.image.load('img/thor.png').convert_alpha()
         self.range = screen_width
         self.speed = speed
         self.health = 10 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
+        self.pause = False
 
     # update the boss
     def update(self):
+        if self.pause == False:
+            if self.forward:
+                self.rect.x += self.speed
+            else:
+                self.rect.x -= self.speed
+            # if the boss go out of the screen
+            if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
 
-        if self.forward:
-            self.rect.x += self.speed
-        else:
-            self.rect.x -= self.speed
-        # if the boss go out of the screen
-        if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
-            
-            self.forward = not self.forward
-        # print the hp
-        pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
+                self.forward = not self.forward
+            # print the hp
+            pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
 
-        pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
-     
+            pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
+
+
     # if hit boss health -1
     def is_hit(self):
         self.health -= 1

@@ -2,9 +2,9 @@ import pygame
 
 class PlayerShip(pygame.sprite.Sprite):
 
-    def __init__(self, screen_width, screen_height, image_location, *group):
+    def __init__(self, screen_width, screen_height, *group):
         super().__init__(*group)
-        self.image = image_location
+        self.image = pygame.image.load('img/spaceship.png').convert_alpha()
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.rect = self.image.get_rect()

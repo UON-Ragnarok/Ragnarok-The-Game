@@ -4,23 +4,22 @@ class Intro():
     pygame.init()
     
 
-    def __init__(self, screen, menu_background,screen_width,screen_height, title, start_button_image, about_button_image, back_button_image, setting_button_image, volume_button_image, mute_button_image):
+    def __init__(self, screen,screen_width,screen_height, intro_music):
         self.screen = screen
-        self.menu_background = menu_background
+        self.menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.title = title
-        self.start_button_image = start_button_image
-        self.about_button_image = about_button_image
-        self.back_button_image = back_button_image
-        self.setting_button_image = setting_button_image
-        self.mute_button_image = pygame.transform.scale(mute_button_image,(100,100))
-        self.volume_button_image = pygame.transform.scale(volume_button_image,(100,100)) 
-
+        self.title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
+        self.start_button_image = pygame.image.load('img/start_button.png').convert()
+        self.about_button_image = pygame.image.load('img/about_button.png').convert()
+        self.back_button_image = pygame.image.load('img/back_button.png').convert()
+        self.setting_button_image = pygame.image.load('img/setting_button.png').convert()
+        self.mute_button_image = pygame.image.load('img/mute.png').convert()
+        self.volume_button_image = pygame.image.load('img/volume.png').convert()
+        self.intro_music = intro_music
         
         
     def show_intro(self,screen):
-
         main = True
         about = False
         setting = False
@@ -46,10 +45,10 @@ class Intro():
         mb_width = self.mute_button_image.get_rect().width
         vb_height = self.volume_button_image.get_rect().height
         vb_width = self.volume_button_image.get_rect().width       
-
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
+        pygame.mixer.Channel(0).set_volume(0.5)
         
         while True:
-    
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
