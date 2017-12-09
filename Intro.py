@@ -19,6 +19,7 @@ class Intro():
         self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
         self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
         self.thor_image = pygame.image.load('img/thor.png').convert_alpha()
+        self.power_up_image = pygame.image.load('img/PowerUps/1.png').convert_alpha()
         self.intro_music = intro_music
         
         
@@ -35,7 +36,7 @@ class Intro():
         bb_top_left_x = self.screen_width / 2 - self.back_button_image.get_rect().width / 2
         mb_top_left_x = 130
         ss_top_left_x = 50
-        ss_top_left_y = 100
+        ss_top_left_y = 50
         sb_height = self.start_button_image.get_rect().height
         sb_width = self.start_button_image.get_rect().width
         ab_height = self.about_button_image.get_rect().height
@@ -54,6 +55,8 @@ class Intro():
         mt_width = self.meteor_image.get_rect().width
         th_height = self.thor_image.get_rect().height
         th_width = self.thor_image.get_rect().width
+        pw_height = self.power_up_image.get_rect().height
+        pw_width = self.power_up_image.get_rect().width
         
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
         pygame.mixer.Channel(0).set_volume(0.5)
@@ -137,9 +140,18 @@ class Intro():
             elif about and bb_top_left_x < mouse[0] < bb_top_left_x + bb_width and sb_top_left_y + 300 < mouse[1] < sb_top_left_y + 300 + bb_height:
                 self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image,0,1.2)
                 screen.blit(self.spaceship_image, [ss_top_left_x, ss_top_left_y])
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Use mouse or trackpad to control", 1, (91, 109, 131)), (190, 75))
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("the spacship and destroy Asgard", 1, (91, 109, 131)), (190, 85))
                 screen.blit(self.mob_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height])
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Sworn protectors of Asgard,", 1, (91, 109, 131)), (190, 175))
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("destroy them to earn points", 1, (91, 109, 131)), (190, 185))
                 screen.blit(self.meteor_image, [ss_top_left_x - 10, ss_top_left_y + 25 + ss_height + 25 + mo_height])
-                screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Meteorites are indestructable,", 1, (91, 109, 131)), (190, 290))
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("avoid them at all cost", 1, (91, 109, 131)), (190, 300))
+                screen.blit(self.power_up_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Collect to gain awesome powers", 1, (91, 109, 131)), (190, 410))
+                screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height + 25 + pw_height])
+                screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 60, True).render("???", 1, (91, 109, 131)), (190, 590))
                 screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 300])
                 pygame.display.flip()
                 if click[0] == 1:
@@ -160,9 +172,18 @@ class Intro():
                         screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 elif about:
                     screen.blit(self.spaceship_image, [ss_top_left_x, ss_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Use mouse or trackpad to control", 1, (91, 109, 131)), (190, 75))
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("the spacship and destroy Asgard", 1, (91, 109, 131)), (190, 85))
                     screen.blit(self.mob_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Sworn protectors of Asgard,", 1, (91, 109, 131)), (190, 175))
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("destroy them to earn points", 1, (91, 109, 131)), (190, 185))
                     screen.blit(self.meteor_image, [ss_top_left_x - 10, ss_top_left_y + 25 + ss_height + 25 + mo_height])
-                    screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Meteorites are indestructable,", 1, (91, 109, 131)), (190, 290))
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("avoid them at all cost", 1, (91, 109, 131)), (190, 300))
+                    screen.blit(self.power_up_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 20, True).render("Collect to gain awesome powers", 1, (91, 109, 131)), (190, 410))
+                    screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height + 25 + pw_height])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 60, True).render("???", 1, (91, 109, 131)), (190, 590))
                     screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y + 300 ]);
                 pygame.display.flip()
             
