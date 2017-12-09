@@ -38,8 +38,8 @@ class Boss(pygame.sprite.Sprite):
 
 
     # if hit boss health -1
-    def is_hit(self):
-        self.health -= 1
+    def is_hit(self, bullet_damage):
+        self.health -= 1 + bullet_damage
 
     def is_alive(self):
         return self.health > 0

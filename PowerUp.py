@@ -2,9 +2,10 @@ import pygame
 
 class PowerUp(pygame.sprite.Sprite):
 
-    def __init__(self, screen_width, screen_height, speed, *group):
+    def __init__(self, power_ups_id, screen_width, screen_height, *group):
         super().__init__(*group)
-        self.images_list = ["img/PowerUps/" + str(number) + ".png" for number in range(1,6)]
+        self.power_ups_id = power_ups_id
+        self.images_list = ["img/PowerUps/" + str(power_ups_id) + str(number) + ".png" for number in range(1,6)]
         self.images = []
         #Load all images
         for file in self.images_list:
@@ -17,12 +18,9 @@ class PowerUp(pygame.sprite.Sprite):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.rect = self.image.get_rect()
-
         self.animation_frames = 10
         self.current_frame = 0
-
-        self.speed = speed
-
+        self.speed = 5
         self.pause = False
 
     def update(self):

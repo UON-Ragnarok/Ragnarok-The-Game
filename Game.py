@@ -54,6 +54,10 @@ class Game():
         self.mob_list = pygame.sprite.Group()
         #List of PowerUps
         self.power_up_list = pygame.sprite.Group()
+        #List of speed power ups
+        self.speed_power_up_list = pygame.sprite.Group()
+        #List of damage power ups
+        self.damage_power_up_list = pygame.sprite.Group()
         #List of meteor
         self.meteor_list = pygame.sprite.Group()
         #Creating sprites
@@ -66,6 +70,7 @@ class Game():
 
         #Player Properties
         self.bullet_speed = 5
+        self.bullet_damage = 0
 
         #Enemies Properties
         self.boss_speed = 1
@@ -196,21 +201,28 @@ class Game():
             #Increase speed of bullets if get power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
             for hit in power_up_hit_list:
+                if hit in self.speed_power_up_list:
+                    if self.fire_bullet_delay >= 150:
+                        self.fire_bullet_delay -= 50
+                elif hit in self.damage_power_up_list:
+                    self.bullet_damage += 1
                 hit.kill()
-                if self.fire_bullet_delay >= 150:
-                    self.fire_bullet_delay -= 50
 
             for bullet in self.bullet_list:
                 enemies_hit_list = pygame.sprite.spritecollide(bullet, self.mob_list, False)
                 for enemy in enemies_hit_list:
-                    enemy.health -= 1
+                    enemy.health -= 1 + self.bullet_damage
                     bullet.kill()
                     if enemy.health <= 0:
                         enemy.kill()
                         #Spawn power ups
                         if not self.power_up_list:
                             if random.randint(0,100) < POWERUP_PERCENTAGE:
-                                self.spawn_power_ups(self.enemies_speed * 1.5, enemy.rect.x, enemy.rect.y, [self.power_up_list, self.sprites_list])
+                                which_power_up = random.randint(1,2)
+                                if which_power_up == 1:
+                                    self.spawn_speed_power_ups(SPEED_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                elif which_power_up == 2:
+                                    self.spawn_damage_power_ups(DAMAGE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                         self.score += 1
                         pygame.mixer.Channel(3).play(pygame.mixer.Sound('Sound/explo.ogg'))
                         pygame.mixer.Channel(3).set_volume(0.5)
@@ -219,7 +231,7 @@ class Game():
                 boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
                 for boss in boss_hit_list:
                      bullet.kill()
-                     boss.is_hit()
+                     boss.is_hit(self.bullet_damage)
 
                      if not boss.is_alive():
                          self.current_level += 1
@@ -285,10 +297,15 @@ class Game():
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
-    def spawn_power_ups(self, speed, pos_x, pos_y, groups):
-        power_up = PowerUp(SCREEN_WIDTH, SCREEN_HEIGHT, speed, groups)
-        power_up.rect.x = pos_x
-        power_up.rect.y = pos_y
+    def spawn_speed_power_ups(self, id, pos_x, pos_y, groups):
+        speed_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
+        speed_power_up.rect.x = pos_x
+        speed_power_up.rect.y = pos_y
+
+    def spawn_damage_power_ups(self, id, pos_x, pos_y, groups):
+        damage_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
+        damage_power_up.rect.x = pos_x
+        damage_power_up.rect.y = pos_y
 
     def spawn_meteor(self, speed, groups):
         pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
