@@ -33,4 +33,7 @@ class PowerUp(pygame.sprite.Sprite):
                 self.index = (self.index + 1) % len(self.images)
                 self.image = self.images[self.index]
             self.rect.y += self.speed
+        else:
+            self.current_frame += 0
+            self.rect.y += 0
 

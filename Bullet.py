@@ -9,7 +9,11 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x  = x_pos
         self.rect.y  = y_pos
         self.speed = speed
+        self.pause = False
         
     def update(self):
-        self.rect.y -= self.speed
+        if self.pause == False:
+            self.rect.y -= self.speed
+        else:
+            self.rect.y += 0
 

@@ -1,6 +1,5 @@
 import pygame
 import random
-import time
 import math
 
 from PlayerShip import *
@@ -25,9 +24,6 @@ class Game():
         self.alive = True
         self.pause = False
         self.background_y = 0
-        self.start_time = time.time()
-        self.pause_time = 0
-        self.pause_start_time=time.time()
 
     def load_highscore(self):
         f = open('highscore.txt', 'r')
@@ -160,34 +156,32 @@ class Game():
                     self.running = False
                 if event.key == pygame.K_ESCAPE and self.alive:
                     if not self.pause:
+                        self.pause = True
                         self.temp_speed = [self.enemies_speed, self.bullet_speed, self.boss_bullet_speed]
                         for enemy in self.enemy_list:
-                            enemy.speed = 0
+                            enemy.pause = True
                         for bullet in self.bullet_list:
-                            bullet.speed = 0
+                            bullet.pause = True
                         for bullet in self.boss_bullet_list:
                             bullet.pause = True
                         for power_up in self.power_up_list:
-                            power_up.speed = 0
-                        self.pause = True
+                            power_up.pause = True
                         self.player.pause = True
                         if self.boss_list:
                             self.boss.pause = True
-                        self.pause_start_time = time.time()
                     else:
+                        self.pause = False
                         for enemy in self.enemy_list:
-                            enemy.speed = self.temp_speed[0]
+                            enemy.pause = False
                         for bullet in self.bullet_list:
-                            bullet.speed = self.temp_speed[1]
+                            bullet.pause = False
                         for bullet in self.boss_bullet_list:
                             bullet.pause = False
                         for power_up in self.power_up_list:
-                            power_up.speed = self.temp_speed[0] * 1.5
-                        self.pause = False
+                            power_up.pause = False
                         self.player.pause = False
                         if self.boss_list:
                             self.boss.pause = False
-                        self.pause_time += time.time() - self.pause_start_time
 
     def update(self):
         self.sprites_list.update()

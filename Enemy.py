@@ -7,9 +7,13 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed
         self.health = health
         self.rect = self.image.get_rect()
+        self.pause = False
 
     def update(self):
-        self.rect.y += self.speed
+        if self.pause == False:
+            self.rect.y += self.speed
+        else:
+            self.rect.y += 0
 
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, speed, *groups):
@@ -17,12 +21,16 @@ class Meteor(pygame.sprite.Sprite):
         self.image = pygame.image.load('img/meteor.png').convert_alpha()
         self.speed = speed
         self.rect = self.image.get_rect()
+        self.pause = False
 
     def update(self):
-        self.rect.y += self.speed
+        if self.pause == False:
+            self.rect.y += self.speed
+        else:
+            self.rect.y += 0
 	
 class mob(Enemy):
-	pass
+    pass
 	
 	
 		
