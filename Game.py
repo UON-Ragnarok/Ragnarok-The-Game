@@ -93,10 +93,10 @@ class Game():
         # Game Loop
         self.playing = True
         while self.playing:
-            self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
+            self.clock.tick(FPS)
 
     def draw(self):
         # Game Loop - draw
@@ -107,6 +107,9 @@ class Game():
                 self.screen.blit(self.background, [0, relative_y])
             self.background_y += 1
         # *after* drawing everything, flip the display
+        self.screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(self.score), 1, (91, 109, 131)), (SCREEN_WIDTH-100,50 ))
+        if self.boss_list:
+            self.boss.update_health_bar()
         self.sprites_list.draw(self.screen)
         pygame.display.flip()
 
@@ -140,11 +143,12 @@ class Game():
                     f = open('highscore.txt', 'w')
                     f.write(str(self.highscore))
                     f.close()
-                    if not self.alive:
-                        self.alive = True
-                        self.intro.show_intro(self.screen)
-                        self.new_game()
-                    if self.alive and self.pause:
+                    self.alive = True
+                    self.intro.show_intro(self.screen)
+                    self.new_game()
+                if self.pause:
+                    if event.key == pygame.K_r and self.alive:
+                        self.pause = False
                         self.intro.show_intro(self.screen)
                         self.new_game()
 
@@ -163,7 +167,7 @@ class Game():
                         for bullet in self.bullet_list:
                             bullet.speed = 0
                         for bullet in self.boss_bullet_list:
-                            bullet.speed = 0
+                            bullet.pause = True
                         for power_up in self.power_up_list:
                             power_up.speed = 0
                         self.pause = True
@@ -177,10 +181,9 @@ class Game():
                         for bullet in self.bullet_list:
                             bullet.speed = self.temp_speed[1]
                         for bullet in self.boss_bullet_list:
-                            bullet.speed = self.temp_speed[2]
+                            bullet.pause = False
                         for power_up in self.power_up_list:
                             power_up.speed = self.temp_speed[0] * 1.5
-
                         self.pause = False
                         self.player.pause = False
                         if self.boss_list:
@@ -268,8 +271,6 @@ class Game():
                 #If enemies go off screen
                 if sprite.rect.y > SCREEN_HEIGHT:
                     sprite.kill()
-            self.screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(self.score), 1, (91, 109, 131)), (SCREEN_WIDTH-100,50 ))
-
         #m = Menu(screen_width/2,screen_height/2)
         if not self.alive:
             if self.score > self.highscore:
