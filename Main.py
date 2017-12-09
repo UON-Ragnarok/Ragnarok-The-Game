@@ -53,7 +53,9 @@ def boss_fire_bullet(boss, boss_bullet_speed, groups):
         Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 -  50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
         Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
         Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-##    pygame.time.set_timer(boss_bullet_event, 0)z
+##    pygame.time.set_timer(boss_bullet_event, 0)
+
+
 
 # -------- Main Program Loop -----------
 def main():
@@ -243,10 +245,11 @@ def main():
         sprites_list.update()
 
         # --- Game mechanics
+
         if alive and not pause:
             # player colliding with enemy
             enemy_hit_list = pygame.sprite.spritecollide(player, enemy_list, True)
-            if enemy_hit_list:
+            for hit in enemy_hit_list:
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
                 alive = False
 
@@ -295,13 +298,15 @@ def main():
                     bullet.kill()
             # when player colliding boss bullet
             player_hit_list = pygame.sprite.spritecollide(player, boss_bullet_list, False)
-            if player_hit_list:
+            for hit in player_hit_list:
                     pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
                     alive = False
 
             #Kill bullet if it hits meteors
             for meteor in meteor_list:
                 meteor_hit_list = pygame.sprite.spritecollide(meteor, bullet_list, True)
+
+
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not mob_list and not boss_list:
@@ -310,7 +315,10 @@ def main():
                     current_level += 1
                 else:
                     boss_id += 1
+
                     spawn_boss(boss_speed,screen, current_level, boss_id, [boss_list,boss_bullet_list, sprites_list])
+
+
 
             #Spawn meteor:
             if not meteor_list and not boss_list:
@@ -321,6 +329,7 @@ def main():
                 #If enemies go off screen
                 if sprite.rect.y > SCREEN_HEIGHT:
                     sprite.kill()
+
             screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(score), 1, (91, 109, 131)), (SCREEN_WIDTH-100,50 ))
 
         #m = Menu(screen_width/2,screen_height/2)
