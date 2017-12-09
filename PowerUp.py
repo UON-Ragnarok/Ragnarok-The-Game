@@ -5,7 +5,7 @@ class PowerUp(pygame.sprite.Sprite):
     def __init__(self, power_ups_id, screen_width, screen_height, *group):
         super().__init__(*group)
         self.power_ups_id = power_ups_id
-        self.images_list = ["img/PowerUps/" + str(power_ups_id) + str(number) + ".png" for number in range(1,6)]
+        self.images_list = ["img/PowerUps/" + str(power_ups_id) + str(number) + ".png" for number in range(1,11)]
         self.images = []
         #Load all images
         for file in self.images_list:
