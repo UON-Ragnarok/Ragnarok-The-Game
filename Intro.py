@@ -13,8 +13,8 @@ class Intro():
         self.start_button_image = pygame.image.load('img/start_button.png').convert()
         self.about_button_image = pygame.image.load('img/about_button.png').convert()
         self.back_button_image = pygame.image.load('img/back_button.png').convert()
-        self.mute_button_image = pygame.image.load('img/mute.png').convert()
-        self.volume_button_image = pygame.image.load('img/volume.png').convert()
+        self.mute_button_image = pygame.transform.scale(pygame.image.load('img/mute.png').convert_alpha(), (50,50))
+        self.volume_button_image = pygame.transform.scale(pygame.image.load('img/volume.png').convert_alpha(), (50,50))
         self.intro_music = intro_music
         
         
@@ -27,10 +27,9 @@ class Intro():
         menu_background_x = 0
         sb_top_left_x = self.screen_width / 2 - self.start_button_image.get_rect().width / 2
         sb_top_left_y = self.screen_height / 2
-        mb_top_left_y = 600
+        mb_top_left_y = 620
         bb_top_left_x = self.screen_width / 2 - self.back_button_image.get_rect().width / 2
-        mb_top_left_x = 100 - self.mute_button_image.get_rect().width / 2
-        vb_top_left_x = 100 - self.volume_button_image.get_rect().width / 2        
+        mb_top_left_x = 130    
         sb_height = self.start_button_image.get_rect().height
         sb_width = self.start_button_image.get_rect().width
         ab_height = self.about_button_image.get_rect().height
@@ -67,7 +66,13 @@ class Intro():
             if main and sb_top_left_x < mouse[0] < sb_top_left_x+sb_width and sb_top_left_y < mouse[1] < sb_top_left_y + sb_height:
                 self.big_start_button_image = pygame.transform.rotozoom(self.start_button_image,0,1.2)
                 screen.blit(self.big_start_button_image, [sb_top_left_x, sb_top_left_y])
-                screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+                screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
+                if m_pause == True:
+                    screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
+                elif m_pause == False:
+                    screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 pygame.display.flip()
                 if click[0] == 1:
                     pygame.time.wait(100)
@@ -75,10 +80,16 @@ class Intro():
                     break
                 
             # about button
-            elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 20 + ab_height < mouse[1] < sb_top_left_y + 20 + sb_height + ab_height:
+            elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 25 + ab_height < mouse[1] < sb_top_left_y + 25 + sb_height + ab_height:
                 self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image,0,1.2)
                 screen.blit(self.start_button_image, [sb_top_left_x, sb_top_left_y])
-                screen.blit(self.big_about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+                screen.blit(self.big_about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
+                if m_pause == True:
+                    screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
+                elif m_pause == False:
+                    screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 pygame.display.flip()
                 if click[0]==1:
                     main = False
@@ -86,7 +97,7 @@ class Intro():
                     setting = False
             
             #back button for about                   
-            elif about and bb_top_left_x < mouse[0] < bb_top_left_x+bb_width and sb_top_left_y+200 < mouse[1] < sb_top_left_y+200 + bb_height:
+            elif about and bb_top_left_x < mouse[0] < bb_top_left_x + bb_width and sb_top_left_y + 200 < mouse[1] < sb_top_left_y + 200 + bb_height:
                 self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image,0,1.2)
                 screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
                 pygame.display.flip()
@@ -97,16 +108,17 @@ class Intro():
                     setting = False
                     
             # mute/ volume button for music setting
-            elif setting and mb_top_left_x < mouse[0] < mb_top_left_x + mb_width and mb_top_left_y < mouse[1] < mb_top_left_y + mb_height:
+            elif main and mb_top_left_x < mouse[0] < mb_top_left_x + mb_width and mb_top_left_y < mouse[1] < mb_top_left_y + mb_height:
                 self.big_mute_button_image = pygame.transform.rotozoom(self.mute_button_image,0,1.2)
                 self.big_volume_button_image = pygame.transform.rotozoom(self.volume_button_image,0,1.2)
+                screen.blit(self.start_button_image, [sb_top_left_x, sb_top_left_y])
+                screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
                 if m_pause == True:
                     screen.blit(self.big_volume_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 135))
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
                 elif m_pause == False:
                     screen.blit(self.big_mute_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 135))
-                screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 pygame.display.flip()
                 if click[0] == 1:
                     pygame.time.wait(100)
@@ -120,30 +132,14 @@ class Intro():
             else:
                 if main:
                     screen.blit(self.start_button_image, [sb_top_left_x, sb_top_left_y])
-                    screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 20 + sb_height])
+                    screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
+                    if m_pause == True:
+                        screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y ])
+                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
+                    elif m_pause == False:
+                        screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y ])
+                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 elif about:
-                    screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
-                elif setting:
-                    if m_pause == True and s_pause == True:
-                        screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 135))
-                        screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y + 20 + mb_height])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("SOUND ON", 1, (91, 109, 131)), (200, 240))
-                    elif m_pause == False and s_pause == True:
-                        screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 135))
-                        screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y + 20 + mb_height])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("SOUND ON", 1, (91, 109, 131)), (200, 240))
-                    elif m_pause == True and s_pause == False:
-                        screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 135))
-                        screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y + 20 + mb_height])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("SOUND OFF", 1, (91, 109, 131)), (200, 240))
-                    elif m_pause == False and s_pause == False:
-                        screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 135))
-                        screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y + 20 + mb_height])
-                        screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 50, True).render("SOUND OFF", 1, (91, 109, 131)), (200, 240))
                     screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
                 pygame.display.flip()
             
