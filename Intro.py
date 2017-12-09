@@ -2,7 +2,6 @@ import pygame
 
 class Intro():
     pygame.init()
-    
 
     def __init__(self, screen,screen_width,screen_height, intro_music):
         self.screen = screen

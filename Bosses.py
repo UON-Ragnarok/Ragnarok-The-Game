@@ -10,36 +10,44 @@ class Boss(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
-        self.image = pygame.image.load('img/thor.png').convert_alpha()
+        self.image = pygame.image.load('img/thorsten.png').convert_alpha()
         self.range = screen_width
         self.speed = speed
         self.health = 10 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
+        self.going_in = False
         self.pause = False
 
     # update the boss
     def update(self):
         if self.pause == False:
-            if self.forward:
-                self.rect.x += self.speed
+            if not self.going_in:
+                if self.rect.y < 50:
+                    self.rect.y += 2
+                else: self.going_in = True
             else:
-                self.rect.x -= self.speed
-                # if the boss go out of the screen
-            if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
-                self.forward = not self.forward
-                # print the hp
+                if self.forward:
+                    self.rect.x += self.speed
+                else:
+                    self.rect.x -= self.speed
+                    # if the boss go out of the screen
+                if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
+                    self.forward = not self.forward
+                    # print the hp
         else:
             self.rect.x += 0
 
     def update_health_bar(self):
-        pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
-        pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
+        if self.going_in:
+            pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
+            pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
 
 
     # if hit boss health -1
-    def is_hit(self):
-        self.health -= 1
+    def is_hit(self, bullet_damage):
+        if self.going_in:
+            self.health -= 1 + bullet_damage
 
     def is_alive(self):
         return self.health > 0

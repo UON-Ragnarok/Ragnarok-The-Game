@@ -10,4 +10,6 @@ ARCADE_FUNK = 'Sound/Arcade Funk.ogg'
 
 #Gameplay Properties
 POWERUP_PERCENTAGE = 99
-
+SPEED_POWER_UP_ID = 'A'
+DAMAGE_POWER_UP_ID = 'B'
+DOUBLE_POWER_UP_ID = 'C'
