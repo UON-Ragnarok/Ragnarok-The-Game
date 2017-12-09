@@ -6,6 +6,7 @@ import sys
 from os import path
 from settings import *  # * make it doesnt need prepen such as settings.xxx
 from sprites import *
+from Intro import *
 
 
 class Game:
@@ -34,7 +35,20 @@ class Game:
         # load images
         img_folder = path.join(path.dirname(__file__), 'img')
         self.bg = pg.image.load(path.join(img_folder, 'background.jpg')).convert()
+        self.menu_background = pygame.image.load(path.join(img_folder, 'main_menu_bg.jpg')).convert()
         self.ship_img = pg.image.load(path.join(img_folder, "spaceship.png")).convert_alpha()
+        self.title = pygame.image.load(path.join(img_folder, 'Ragnarok_logo.png')).convert_alpha()
+        self.boss_image = pygame.image.load(path.join(img_folder, 'thor.png')).convert()
+        self.enemy_image = pygame.image.load(path.join(img_folder, 'mob.png')).convert_alpha()
+        self.meteor_image = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
+
+        self.start_button_image = pygame.image.load(path.join(img_folder, 'start_button.png')).convert()
+        self.about_button_image = pygame.image.load(path.join(img_folder, 'about_button.png')).convert()
+        self.back_button_image = pygame.image.load(path.join(img_folder, 'back_button.png')).convert()
+        self.setting_button_image = pygame.image.load(path.join(img_folder, 'setting_button.png')).convert()
+        self.mute_button_image = pygame.image.load(path.join(img_folder, 'mute.png')).convert()
+        self.volume_button_image = pygame.image.load(path.join(img_folder, 'volume.png')).convert()
+
         # Sound
         self.sound_folder = path.join(self.game_folder, 'Sound')
 
@@ -73,13 +87,10 @@ class Game:
                 self.running = False
                 self.quit()
 
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-
 
     def show_start_screen(self):  # == intro
-        pass
+        intro = Intro(self.screen, self.menu_background, screen_width, screen_height, self.title, self.start_button_image, self.about_button_image, self.back_button_image, self.setting_button_image, self.mute_button_image, self.volume_button_image)
+        intro.show_intro(self.screen)
 
     def show_go_screen(self):  # the game over screen == menu
         pass
