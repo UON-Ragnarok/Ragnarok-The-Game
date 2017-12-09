@@ -21,7 +21,7 @@ class Game():
         pygame.display.set_caption('Ragnarok The Game')
         self.clock = pygame.time.Clock()
         self.running = True
-        self.load_data()
+        self.load_highscore()
         self.alive = True
         self.pause = False
         self.background_y = 0
@@ -29,7 +29,7 @@ class Game():
         self.pause_time = 0
         self.pause_start_time=time.time()
 
-    def load_data(self):
+    def load_highscore(self):
         f = open('highscore.txt', 'r')
         temp = f.read()
         if temp != "":
@@ -37,6 +37,12 @@ class Game():
         else:
             self.highscore = 0
         f.close()
+
+    def write_highscore(self):
+        if self.score >= self.highscore:
+            f = open('highscore.txt', 'w')
+            f.write(str(self.score))
+            f.close()
 
     def new_game(self):
         #List of all sprites
@@ -118,9 +124,7 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 #update highscore when you quit
-                f = open('highscore.txt', 'w')
-                f.write(str(self.highscore))
-                f.close()
+                self.write_highscore()
                 self.playing = False
                 self.running = False
 
@@ -140,9 +144,7 @@ class Game():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and (not self.alive):
                     #update highscore when you press r
-                    f = open('highscore.txt', 'w')
-                    f.write(str(self.highscore))
-                    f.close()
+                    self.write_highscore()
                     self.alive = True
                     self.intro.show_intro(self.screen)
                     self.new_game()
@@ -151,12 +153,9 @@ class Game():
                         self.pause = False
                         self.intro.show_intro(self.screen)
                         self.new_game()
-
                 if event.key == pygame.K_n and (not self.alive):
                     #update highscore when you press n
-                    f = open('highscore.txt', 'w')
-                    f.write(str(self.highscore))
-                    f.close()
+                    self.write_highscore()
                     self.playing = False
                     self.running = False
                 if event.key == pygame.K_ESCAPE and self.alive:
