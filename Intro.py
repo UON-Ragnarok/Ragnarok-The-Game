@@ -15,6 +15,10 @@ class Intro():
         self.back_button_image = pygame.image.load('img/back_button.png').convert()
         self.mute_button_image = pygame.transform.scale(pygame.image.load('img/mute.png').convert_alpha(), (50,50))
         self.volume_button_image = pygame.transform.scale(pygame.image.load('img/volume.png').convert_alpha(), (50,50))
+        self.spaceship_image = pygame.image.load('img/spaceship.png').convert_alpha()
+        self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
+        self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
+        self.thor_image = pygame.image.load('img/thor.png').convert_alpha()
         self.intro_music = intro_music
         
         
@@ -29,7 +33,9 @@ class Intro():
         sb_top_left_y = self.screen_height / 2
         mb_top_left_y = 620
         bb_top_left_x = self.screen_width / 2 - self.back_button_image.get_rect().width / 2
-        mb_top_left_x = 130    
+        mb_top_left_x = 130
+        ss_top_left_x = 50
+        ss_top_left_y = 100
         sb_height = self.start_button_image.get_rect().height
         sb_width = self.start_button_image.get_rect().width
         ab_height = self.about_button_image.get_rect().height
@@ -39,7 +45,16 @@ class Intro():
         mb_height = self.mute_button_image.get_rect().height
         mb_width = self.mute_button_image.get_rect().width
         vb_height = self.volume_button_image.get_rect().height
-        vb_width = self.volume_button_image.get_rect().width       
+        vb_width = self.volume_button_image.get_rect().width
+        ss_height = self.spaceship_image.get_rect().height
+        ss_width = self.spaceship_image.get_rect().width
+        mo_height = self.mob_image.get_rect().height
+        mo_width = self.mob_image.get_rect().width
+        mt_height = self.meteor_image.get_rect().height
+        mt_width = self.meteor_image.get_rect().width
+        th_height = self.thor_image.get_rect().height
+        th_width = self.thor_image.get_rect().width
+        
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
         pygame.mixer.Channel(0).set_volume(0.5)
         
@@ -79,34 +94,6 @@ class Intro():
                     main = False
                     break
                 
-            # about button
-            elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 25 + ab_height < mouse[1] < sb_top_left_y + 25 + sb_height + ab_height:
-                self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image,0,1.2)
-                screen.blit(self.start_button_image, [sb_top_left_x, sb_top_left_y])
-                screen.blit(self.big_about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
-                if m_pause == True:
-                    screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
-                elif m_pause == False:
-                    screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
-                pygame.display.flip()
-                if click[0]==1:
-                    main = False
-                    about = True
-                    setting = False
-            
-            #back button for about                   
-            elif about and bb_top_left_x < mouse[0] < bb_top_left_x + bb_width and sb_top_left_y + 200 < mouse[1] < sb_top_left_y + 200 + bb_height:
-                self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image,0,1.2)
-                screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 200])
-                pygame.display.flip()
-                if click[0] == 1:
-                    pygame.time.wait(100)
-                    main = True
-                    about = False
-                    setting = False
-                    
             # mute/ volume button for music setting
             elif main and mb_top_left_x < mouse[0] < mb_top_left_x + mb_width and mb_top_left_y < mouse[1] < mb_top_left_y + mb_height:
                 self.big_mute_button_image = pygame.transform.rotozoom(self.mute_button_image,0,1.2)
@@ -128,6 +115,38 @@ class Intro():
                     else:
                         pygame.mixer.Channel(0).unpause()
                         m_pause = True
+                        
+            # about button
+            elif main and sb_top_left_x < mouse[0] < sb_top_left_x+ab_width and sb_top_left_y + 25 + ab_height < mouse[1] < sb_top_left_y + 25 + sb_height + ab_height:
+                self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image,0,1.2)
+                screen.blit(self.start_button_image, [sb_top_left_x, sb_top_left_y])
+                screen.blit(self.big_about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
+                if m_pause == True:
+                    screen.blit(self.volume_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
+                elif m_pause == False:
+                    screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y])
+                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
+                pygame.display.flip()
+                if click[0]==1:
+                    main = False
+                    about = True
+                    setting = False
+            
+            #back button for about                   
+            elif about and bb_top_left_x < mouse[0] < bb_top_left_x + bb_width and sb_top_left_y + 300 < mouse[1] < sb_top_left_y + 300 + bb_height:
+                self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image,0,1.2)
+                screen.blit(self.spaceship_image, [ss_top_left_x, ss_top_left_y])
+                screen.blit(self.mob_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height])
+                screen.blit(self.meteor_image, [ss_top_left_x - 10, ss_top_left_y + 25 + ss_height + 25 + mo_height])
+                screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                screen.blit(self.big_back_button_image, [bb_top_left_x, sb_top_left_y + 300])
+                pygame.display.flip()
+                if click[0] == 1:
+                    pygame.time.wait(100)
+                    main = True
+                    about = False
+                    setting = False
                 
             else:
                 if main:
@@ -140,7 +159,11 @@ class Intro():
                         screen.blit(self.mute_button_image, [mb_top_left_x, mb_top_left_y ])
                         screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 elif about:
-                    screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y+200 ]);
+                    screen.blit(self.spaceship_image, [ss_top_left_x, ss_top_left_y])
+                    screen.blit(self.mob_image, [ss_top_left_x, ss_top_left_y + 25 + ss_height])
+                    screen.blit(self.meteor_image, [ss_top_left_x - 10, ss_top_left_y + 25 + ss_height + 25 + mo_height])
+                    screen.blit(self.thor_image, [ss_top_left_x - 50, ss_top_left_y + 25 + ss_height + 25 + mo_height + 25 + mt_height])
+                    screen.blit(self.back_button_image, [bb_top_left_x,sb_top_left_y + 300 ]);
                 pygame.display.flip()
             
 
