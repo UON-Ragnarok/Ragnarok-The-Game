@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import time
 
 from PlayerShip import *
 from Bullet import *
@@ -58,6 +59,8 @@ class Game():
         self.speed_power_up_list = pygame.sprite.Group()
         #List of damage power ups
         self.damage_power_up_list = pygame.sprite.Group()
+        #List of double power ups
+        self.double_power_up_list = pygame.sprite.Group()
         #List of meteor
         self.meteor_list = pygame.sprite.Group()
         #Creating sprites
@@ -71,6 +74,7 @@ class Game():
         #Player Properties
         self.bullet_speed = 5
         self.bullet_damage = 0
+        self.double_power = False
 
         #Enemies Properties
         self.boss_speed = 1
@@ -198,7 +202,7 @@ class Game():
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
                 self.alive = False
 
-            #Increase speed of bullets if get power up
+            #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
             for hit in power_up_hit_list:
                 if hit in self.speed_power_up_list:
@@ -206,7 +210,15 @@ class Game():
                         self.fire_bullet_delay -= 50
                 elif hit in self.damage_power_up_list:
                     self.bullet_damage += 1
+                elif hit in self.double_power_up_list:
+                    self.double_power = True
+                    self.double_power_old_time = time.time()
                 hit.kill()
+
+            if self.double_power:
+                print(time.time() - self.double_power_old_time)
+                if time.time() - self.double_power_old_time > 10:
+                    self.double_power = False
 
             for bullet in self.bullet_list:
                 enemies_hit_list = pygame.sprite.spritecollide(bullet, self.mob_list, False)
@@ -218,11 +230,13 @@ class Game():
                         #Spawn power ups
                         if not self.power_up_list:
                             if random.randint(0,100) < POWERUP_PERCENTAGE:
-                                which_power_up = random.randint(1,2)
+                                which_power_up = random.randint(1,3)
                                 if which_power_up == 1:
                                     self.spawn_speed_power_ups(SPEED_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
                                 elif which_power_up == 2:
                                     self.spawn_damage_power_ups(DAMAGE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                elif which_power_up == 3:
+                                    self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                         self.score += 1
                         pygame.mixer.Channel(3).play(pygame.mixer.Sound('Sound/explo.ogg'))
                         pygame.mixer.Channel(3).set_volume(0.5)
@@ -307,6 +321,11 @@ class Game():
         damage_power_up.rect.x = pos_x
         damage_power_up.rect.y = pos_y
 
+    def spawn_double_power_ups(self, id, pos_x, pos_y, groups):
+        damage_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
+        damage_power_up.rect.x = pos_x
+        damage_power_up.rect.y = pos_y
+
     def spawn_meteor(self, speed, groups):
         pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
         pygame.mixer.Channel(2).set_volume(0.8)
@@ -323,7 +342,11 @@ class Game():
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
         pygame.mixer.Channel(1).set_volume(0.2)
-        bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, groups)
+        if self.double_power:
+            bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed, groups)
+            bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed, groups)
+        else:
+            bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, groups)
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
