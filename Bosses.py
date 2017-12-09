@@ -16,18 +16,23 @@ class Boss(pygame.sprite.Sprite):
         self.health = 10 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
-
+        self.pause = False
 
     # update the boss
     def update(self):
-        if self.forward:
-            self.rect.x += self.speed
+        if self.pause == False:
+            if self.forward:
+                self.rect.x += self.speed
+            else:
+                self.rect.x -= self.speed
+                # if the boss go out of the screen
+            if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
+                self.forward = not self.forward
+                # print the hp
         else:
-            self.rect.x -= self.speed
-            # if the boss go out of the screen
-        if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
-            self.forward = not self.forward
-            # print the hp
+            self.rect.x += 0
+
+    def update_health_bar(self):
         pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
         pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
 
@@ -54,22 +59,23 @@ class Boss_Bullet(pygame.sprite.Sprite):
         self.boss_origin_pos_x =  boss.rect.x + boss.image.get_rect().width/2
         self.rect.y  = y_pos
         self.speed = bullet_speed
+        self.pause = False
 
     # different bullets with different bosses
     def update(self):
-
         if self.boss_id == 1:
-            
+            if self.pause == False:
 ##            if self.prev_x_pos == -1:
 ##                self.prev_x_pos = self.rect.x
 ##                self.rect.x += ((self.prev_x_pos - self.boss.rect.x - self.boss.image.get_rect().width/2)/20)
 ##            else:
 ##                self.rect.x += (self.rect.x - self.prev_x_pos)
 ##                self.prev_x_pos = self.rect.x
-
-
-            self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
-            self.rect.y += self.speed
+                self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
+                self.rect.y += self.speed
+            else:
+                self.rect.x += 0
+                self.rect.y += 0
         
             
         

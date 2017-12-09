@@ -193,7 +193,7 @@ def main():
                         for bullet in bullet_list:
                             bullet.speed = 0
                         for bullet in boss_bullet_list:
-                            bullet.speed = 0
+                            bullet.pause = True
                         for power_up in power_up_list:
                             power_up.speed = 0
                         pause = True
@@ -218,7 +218,7 @@ def main():
                         for bullet in bullet_list:
                             bullet.speed = temp_speed[1]
                         for bullet in boss_bullet_list:
-                            bullet.speed = temp_speed[2]
+                            bullet.pause = False
                         for power_up in power_up_list:
                             power_up.speed = temp_speed[0] * 1.5
 
