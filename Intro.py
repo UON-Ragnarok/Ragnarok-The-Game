@@ -59,7 +59,7 @@ class Intro():
         pw_width = self.power_up_image.get_rect().width
         
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
-        pygame.mixer.Channel(0).set_volume(0.5)
+        pygame.mixer.Channel(0).set_volume(0.3)
         
         while True:
             for event in pygame.event.get():

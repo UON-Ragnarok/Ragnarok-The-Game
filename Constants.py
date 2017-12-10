@@ -1,3 +1,5 @@
+import pygame
+
 #Game Settings
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 800
@@ -6,6 +8,7 @@ GAME_TITLE = 'Ragnarok The Game'
 BACKGROUND_IMG = 'img/background.jpg'
 
 #Music
+pygame.mixer.set_num_channels(15)
 ARCADE_FUNK = 'Sound/Arcade Funk.ogg'
 
 #Gameplay Properties

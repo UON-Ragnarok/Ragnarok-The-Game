@@ -253,7 +253,16 @@ class Game():
                          self.current_level += 1
                          self.score += 100
                          boss.kill()
-                         # can add sound here
+                         phrase = random.randint(1,3)
+                         if phrase == 1:
+                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
+           
+                         elif phrase == 2:
+                            pygame.mixer.Channel(6).play(pygame.mixer.Sound('Sound/Rah.ogg'))
+       
+                         elif phrase == 3:
+                            pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/Lecture resumes next week.ogg'))
+       
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
     ##                     boss_bullet.kill()
@@ -330,7 +339,7 @@ class Game():
 
     def spawn_meteor(self, speed, groups):
         pygame.mixer.Channel(2).play(pygame.mixer.Sound('Sound/comet.ogg'))
-        pygame.mixer.Channel(2).set_volume(0.8)
+        pygame.mixer.Channel(2).set_volume(0.3)
         meteor = Meteor(speed, groups)
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
@@ -340,10 +349,23 @@ class Game():
         boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
+        phrase = random.randint(1,4)
+        if phrase == 1:
+            pygame.mixer.Channel(8).play(pygame.mixer.Sound('Sound/I am Thor fear me.ogg'))
+     
+        elif phrase == 2:
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound('Sound/I am the starting point of the Asgard.ogg'))
+       
+        elif phrase == 3:
+            pygame.mixer.Channel(10).play(pygame.mixer.Sound('Sound/My name is Thorsten Altenkirch.ogg'))
+       
+        elif phrase == 4:
+            pygame.mixer.Channel(11).play(pygame.mixer.Sound('Obviously I am the big boss.ogg'))
+            
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
-        pygame.mixer.Channel(1).set_volume(0.2)
+        pygame.mixer.Channel(1).set_volume(0.1)
         if self.double_power:
             bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed, groups)
             bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed, groups)
