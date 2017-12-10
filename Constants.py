@@ -18,9 +18,21 @@ pygame.mixer.set_num_channels(15)
 ARCADE_FUNK = 'Sound/Arcade Funk.ogg'
 MOB_DYING = pygame.mixer.Sound('Sound/killed_explo.ogg')
 EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg')
+COIN = pygame.mixer.Sound('Sound/coin.ogg')
+KILLED = pygame.mixer.Sound('Sound/killed_explo.ogg')
+COMET = pygame.mixer.Sound('Sound/comet.ogg')
+LASER = pygame.mixer.Sound('Sound/laser.ogg')
+BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')
+pygame.mixer.Channel(1).set_volume(0.1)
+pygame.mixer.Channel(2).set_volume(0.3)
+pygame.mixer.Channel(3).set_volume(0.5)
+pygame.mixer.Channel(4).set_volume(0.5)
+pygame.mixer.Channel(4).set_volume(1.0)
+pygame.mixer.Channel(6).set_volume(0.3)
+pygame.mixer.Channel(7).set_volume(0.2)
 
 #Gameplay Properties
-POWERUP_PERCENTAGE = 30
+POWERUP_PERCENTAGE = 90
 SPEED_POWER_UP_ID = 'A'
 DAMAGE_POWER_UP_ID = 'B'
 DOUBLE_POWER_UP_ID = 'C'
