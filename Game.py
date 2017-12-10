@@ -96,7 +96,7 @@ class Game():
         self.run()
 
     def menu_screen(self):
-        self.intro = Intro(self.screen,SCREEN_WIDTH,SCREEN_HEIGHT, ARCADE_FUNK)
+        self.intro = Intro(self.screen, ARCADE_FUNK)
         self.intro.show_intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
