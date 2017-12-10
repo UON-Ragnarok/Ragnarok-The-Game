@@ -272,19 +272,11 @@ class Game():
                      boss.is_hit(self.bullet_damage)
 
                      if not boss.is_alive():
-                         boss.going_in = False
                          self.current_level += 1
                          self.score += 100
+                         boss.death_speech = True
+                         boss.say_phrases()
                          boss.kill()
-                         phrase = random.randint(1,4)
-                         if phrase == 1:
-                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
-                         elif phrase == 2:
-                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/rah.ogg'))
-                         elif phrase == 3:
-                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/lecture resumes next week.ogg'))
-                         elif phrase == 4:
-                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
 
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
@@ -371,16 +363,6 @@ class Game():
         boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
-        phrase = random.randint(1,4)
-        if phrase == 1:
-            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am thor fear me.ogg'))
-        elif phrase == 2:
-            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am the starting point of the asgard.ogg'))
-        elif phrase == 3:
-            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/my name is thorsten altenkirch.ogg'))
-        elif phrase == 4:
-            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/obviously I am the big boss.ogg'))
-
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
