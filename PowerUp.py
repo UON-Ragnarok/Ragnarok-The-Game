@@ -12,7 +12,6 @@ class PowerUp(pygame.sprite.Sprite):
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (50,50))
             self.images.append(image)
-
         self.index = 0
         self.image = self.images[self.index]
         self.screen_width = screen_width
