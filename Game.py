@@ -262,16 +262,16 @@ class Game():
                          self.current_level += 1
                          self.score += 100
                          boss.kill()
-                         phrase = random.randint(1,3)
+                         phrase = random.randint(1,4)
                          if phrase == 1:
                             pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
-           
                          elif phrase == 2:
-                            pygame.mixer.Channel(6).play(pygame.mixer.Sound('Sound/Rah.ogg'))
-       
+                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/rah.ogg'))
                          elif phrase == 3:
-                            pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/Lecture resumes next week.ogg'))
-       
+                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/lecture resumes next week.ogg'))
+                         elif phrase == 4:
+                            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
+
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
     ##                     boss_bullet.kill()
@@ -359,13 +359,13 @@ class Game():
         boss.rect.y = -200
         phrase = random.randint(1,4)
         if phrase == 1:
-            pygame.mixer.Channel(8).play(pygame.mixer.Sound('Sound/I am Thor fear me.ogg'))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am thor fear me.ogg'))
         elif phrase == 2:
-            pygame.mixer.Channel(9).play(pygame.mixer.Sound('Sound/I am the starting point of the Asgard.ogg'))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am the starting point of the asgard.ogg'))
         elif phrase == 3:
-            pygame.mixer.Channel(10).play(pygame.mixer.Sound('Sound/My name is Thorsten Altenkirch.ogg'))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/my name is thorsten altenkirch.ogg'))
         elif phrase == 4:
-            pygame.mixer.Channel(11).play(pygame.mixer.Sound('Sound/Obviously I am the big boss.ogg'))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/obviously I am the big boss.ogg'))
 
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
