@@ -1,5 +1,5 @@
 import pygame
-
+import random
 
 class Boss(pygame.sprite.Sprite):
 
@@ -79,8 +79,21 @@ class Boss(pygame.sprite.Sprite):
     def is_hit(self, bullet_damage):
         if self.going_in:
             self.health -= 1 + bullet_damage
+            if self.health == self.total_health/2:
+                phrase = random.randint(1,4)
+                if phrase == 1:
+                    pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/i made an error for you to spot.ogg'))
+                elif phrase == 2:
+                    pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/stupid question.ogg'))
+                elif phrase == 3:
+                    pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/you cannot pickle my brain.ogg'))
+                elif phrase == 4:
+                    pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/this is easy exercise.ogg'))
+        
+
             if self.health < self.total_health * self.anger_value:
                 self.anger = True
+                
 
     def is_alive(self):
         return self.health > 0
