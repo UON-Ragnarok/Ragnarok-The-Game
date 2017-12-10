@@ -89,7 +89,6 @@ class Boss(pygame.sprite.Sprite):
                     pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/you cannot pickle my brain.ogg'))
                 elif phrase == 4:
                     pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/this is easy exercise.ogg'))
-        
 
             if self.health < self.total_health * self.anger_value:
                 self.anger = True

@@ -25,7 +25,16 @@ class Game():
         self.alive = True
         self.pause = False
         self.background_y = 0
+        self.load_mob_images()
         self.menu_screen()
+
+    def load_mob_images(self):
+        self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0,12)]
+        self.mob_images = []
+        for file in self.mob_images_list:
+            image = pygame.image.load(file).convert_alpha()
+            image = pygame.transform.scale(image, (80,80))
+            self.mob_images.append(image)
 
     def load_highscore(self):
         f = open('highscore.txt', 'r')
@@ -233,23 +242,28 @@ class Game():
             for bullet in self.bullet_list:
                 enemies_hit_list = pygame.sprite.spritecollide(bullet, self.mob_list, False)
                 for enemy in enemies_hit_list:
-                    enemy.health -= 1 + self.bullet_damage
-                    bullet.kill()
-                    if enemy.health <= 0:
-                        enemy.kill()
-                        #Spawn power ups
-                        if not self.power_up_list:
-                            if random.randint(0,100) < POWERUP_PERCENTAGE:
-                                which_power_up = random.randint(1,3)
-                                if which_power_up == 1:
-                                    self.spawn_speed_power_ups(SPEED_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
-                                elif which_power_up == 2:
-                                    self.spawn_damage_power_ups(DAMAGE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
-                                elif which_power_up == 3:
-                                    self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                    if enemy.death == False:
+                        enemy.health -= 1 + self.bullet_damage
                         self.score += 1
-                        pygame.mixer.Channel(3).play(EXPLOSION)
-                        pygame.mixer.Channel(3).set_volume(0.5)
+                        bullet.kill()
+                        if enemy.health <= 0:
+                            enemy.death = True
+                            enemy.remove(self.mob_list, self.enemy_list)
+                            #Spawn power ups
+                            if not self.power_up_list:
+                                if random.randint(0,100) < POWERUP_PERCENTAGE:
+                                    which_power_up = random.randint(1,3)
+                                    if which_power_up == 1:
+                                        self.spawn_speed_power_ups(SPEED_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                    elif which_power_up == 2:
+                                        self.spawn_damage_power_ups(DAMAGE_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                    elif which_power_up == 3:
+                                        self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                            pygame.mixer.Channel(3).play(EXPLOSION)
+                            pygame.mixer.Channel(3).set_volume(0.5)
+                    if enemy.killed == True:
+                        enemy.kill()
+
 
                 #when player bullet colliding boss
                 boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
@@ -326,7 +340,7 @@ class Game():
     def spawn_enemy(self, speed, current_level, difficulty, groups):
         health = int(current_level / difficulty) + 1
         for i in range (5):
-            enemy = Enemy(speed, health, groups)
+            enemy = Enemy(speed, health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 

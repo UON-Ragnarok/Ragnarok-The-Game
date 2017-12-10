@@ -20,7 +20,7 @@ MOB_DYING = pygame.mixer.Sound('Sound/killed_explo.ogg')
 EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg')
 
 #Gameplay Properties
-POWERUP_PERCENTAGE = 30
+POWERUP_PERCENTAGE = 90
 SPEED_POWER_UP_ID = 'A'
 DAMAGE_POWER_UP_ID = 'B'
 DOUBLE_POWER_UP_ID = 'C'
