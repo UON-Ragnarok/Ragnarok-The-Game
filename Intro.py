@@ -21,7 +21,7 @@ class Intro():
         self.thor_image = pygame.image.load('img/thor.png').convert_alpha()
         self.power_up_image = pygame.image.load('img/PowerUps/A1.png').convert_alpha()
         self.intro_music = intro_music
-        
+
         
     def show_intro(self,screen):
         main = True
@@ -57,9 +57,9 @@ class Intro():
         th_width = self.thor_image.get_rect().width
         pw_height = self.power_up_image.get_rect().height
         pw_width = self.power_up_image.get_rect().width
-        
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
-        pygame.mixer.Channel(0).set_volume(0.3)
+        if not pygame.mixer.Channel(0).get_busy():
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
+            pygame.mixer.Channel(0).set_volume(0.3)
         
         while True:
             for event in pygame.event.get():
@@ -105,10 +105,10 @@ class Intro():
                 screen.blit(self.about_button_image, [sb_top_left_x, sb_top_left_y + 25 + sb_height])
                 if m_pause == True:
                     screen.blit(self.big_volume_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
+                    screen.blit(pygame.font.SysFont('freesansbold', 40, True).render("MUSIC ON", 1, (91, 109, 131)), (200, 635))
                 elif m_pause == False:
                     screen.blit(self.big_mute_button_image, [mb_top_left_x, mb_top_left_y])
-                    screen.blit(pygame.font.SysFont("'freesansbold.ttf'", 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
+                    screen.blit(pygame.font.SysFont('freesansbold', 40, True).render("MUSIC OFF", 1, (91, 109, 131)), (200, 635))
                 pygame.display.flip()
                 if click[0] == 1:
                     pygame.time.wait(100)

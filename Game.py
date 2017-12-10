@@ -25,6 +25,7 @@ class Game():
         self.alive = True
         self.pause = False
         self.background_y = 0
+        self.menu_screen()
 
     def load_highscore(self):
         f = open('highscore.txt', 'r')
@@ -94,11 +95,14 @@ class Game():
         pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
         self.run()
 
-    def intro(self):
+    def menu_screen(self):
         self.intro = Intro(self.screen,SCREEN_WIDTH,SCREEN_HEIGHT, ARCADE_FUNK)
         self.intro.show_intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
+
+    def show_menu(self, id):
+        Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen, id ,self.score,self.highscore)
 
     def run(self):
         # Game Loop
@@ -109,16 +113,24 @@ class Game():
             self.draw()
             self.clock.tick(FPS)
 
-    def draw(self):
-        # Game Loop - draw
+    def draw_background(self):
         if not self.pause and self.alive:
             relative_y = self.background_y % self.background.get_rect().height
             self.screen.blit(self.background, [0, relative_y - self.background.get_rect().height])
             if relative_y < SCREEN_HEIGHT:
                 self.screen.blit(self.background, [0, relative_y])
             self.background_y += 1
+
+    def draw(self):
+        self.draw_background()
         # *after* drawing everything, flip the display
-        self.screen.blit(pygame.font.SysFont("'freesansbold.ttf", 60, True).render(str(self.score), 1, (91, 109, 131)), (SCREEN_WIDTH-100,50 ))
+        if self.alive and not self.pause:
+            if self.score >= self.highscore:
+                self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
+            else:
+                self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
+        else:
+            self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score), 0, BLACK), (SCREEN_WIDTH - 100, 50))
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
@@ -151,13 +163,11 @@ class Game():
                     #update highscore when you press r
                     self.write_highscore()
                     self.alive = True
-                    self.intro.show_intro(self.screen)
-                    self.new_game()
+                    self.menu_screen()
                 if self.pause:
                     if event.key == pygame.K_r and self.alive:
                         self.pause = False
-                        self.intro.show_intro(self.screen)
-                        self.new_game()
+                        self.menu_screen()
                 if event.key == pygame.K_n and (not self.alive):
                     #update highscore when you press n
                     self.write_highscore()
@@ -193,7 +203,6 @@ class Game():
                             boss.pause = False
                         self.player.pause = False
 
-
     def update(self):
         self.sprites_list.update()
 
@@ -201,7 +210,7 @@ class Game():
             # player colliding with enemy
             enemy_hit_list = pygame.sprite.spritecollide(self.player, self.enemy_list, True)
             if enemy_hit_list:
-                pygame.mixer.Channel(4).play(pygame.mixer.Sound('Sound/killed_explo.ogg'))
+                pygame.mixer.Channel(4).play(MOB_DYING)
                 self.alive = False
 
             #If hit a power up
@@ -239,7 +248,7 @@ class Game():
                                 elif which_power_up == 3:
                                     self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                         self.score += 1
-                        pygame.mixer.Channel(3).play(pygame.mixer.Sound('Sound/explo.ogg'))
+                        pygame.mixer.Channel(3).play(EXPLOSION)
                         pygame.mixer.Channel(3).set_volume(0.5)
 
                 #when player bullet colliding boss
@@ -285,7 +294,7 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 2 != 0 or self.current_level == 0:
+                if self.current_level % 5 != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, self.difficulty, [self.enemy_list, self.mob_list, self.sprites_list])
                     self.current_level += 1
                 else:
@@ -306,13 +315,12 @@ class Game():
             if self.score > self.highscore:
                 self.highscore = self.score
            # sprites_list.remove(player))
-            Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen,"c",self.score,self.highscore)
+            self.show_menu('c')
             for sprite in self.sprites_list:
                 sprite.kill()
 
         elif self.pause :
-            Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen, "b")
-            #Erm, why is pressing R doesn't make it go back to screen can someone fix
+            self.show_menu('b')
 
     #Spawning enemies
     def spawn_enemy(self, speed, current_level, difficulty, groups):
@@ -352,16 +360,13 @@ class Game():
         phrase = random.randint(1,4)
         if phrase == 1:
             pygame.mixer.Channel(8).play(pygame.mixer.Sound('Sound/I am Thor fear me.ogg'))
-     
         elif phrase == 2:
             pygame.mixer.Channel(9).play(pygame.mixer.Sound('Sound/I am the starting point of the Asgard.ogg'))
-       
         elif phrase == 3:
             pygame.mixer.Channel(10).play(pygame.mixer.Sound('Sound/My name is Thorsten Altenkirch.ogg'))
-       
         elif phrase == 4:
-            pygame.mixer.Channel(11).play(pygame.mixer.Sound('Obviously I am the big boss.ogg'))
-            
+            pygame.mixer.Channel(11).play(pygame.mixer.Sound('Sound/Obviously I am the big boss.ogg'))
+
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
@@ -388,7 +393,7 @@ class Game():
 
 
 g = Game()
-g.intro()
+
 while g.running:
     g.new_game()
 
