@@ -26,6 +26,7 @@ class Game():
         self.pause = False
         self.background_y = 0
         self.load_mob_images()
+        self.load_boss_images()
         self.menu_screen()
 
     def load_mob_images(self):
@@ -35,6 +36,14 @@ class Game():
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (80,80))
             self.mob_images.append(image)
+
+    def load_boss_images(self):
+        self.boss_images_list = ["img/Thorsten/" + str(number) + ".png" for number in range(1,32)]
+        self.boss_images = []
+        for file in self.boss_images_list:
+            image = pygame.image.load(file).convert_alpha()
+            image = pygame.transform.scale(image, (170,190))
+            self.boss_images.append(image)
 
     def load_highscore(self):
         f = open('highscore.txt', 'r')
@@ -135,11 +144,11 @@ class Game():
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
             if self.score >= self.highscore:
-                self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
+                self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
-                self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
+                self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
         else:
-            self.screen.blit(pygame.font.SysFont(FONT, 60, True).render(str(self.score), 0, BLACK), (SCREEN_WIDTH - 100, 50))
+            self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, BLACK), (SCREEN_WIDTH - 100, 50))
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
@@ -185,32 +194,12 @@ class Game():
                 if event.key == pygame.K_ESCAPE and self.alive:
                     if not self.pause:
                         self.pause = True
-                        self.temp_speed = [self.enemies_speed, self.bullet_speed, self.boss_bullet_speed]
-                        for enemy in self.enemy_list:
-                            enemy.pause = True
-                        for bullet in self.bullet_list:
-                            bullet.pause = True
-                        for bullet in self.boss_bullet_list:
-                            bullet.pause = True
-                        for power_up in self.power_up_list:
-                            power_up.pause = True
-                        for boss in self.boss_list:
-                            boss.pause = True
-                        self.player.pause = True
-
+                        for sprite in self.sprites_list:
+                            sprite.pause = True
                     else:
                         self.pause = False
-                        for enemy in self.enemy_list:
-                            enemy.pause = False
-                        for bullet in self.bullet_list:
-                            bullet.pause = False
-                        for bullet in self.boss_bullet_list:
-                            bullet.pause = False
-                        for power_up in self.power_up_list:
-                            power_up.pause = False
-                        for boss in self.boss_list:
-                            boss.pause = False
-                        self.player.pause = False
+                        for sprite in self.sprites_list:
+                            sprite.pause = False
 
     def update(self):
         self.sprites_list.update()
@@ -261,22 +250,24 @@ class Game():
                                         self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                             pygame.mixer.Channel(3).play(EXPLOSION)
                             pygame.mixer.Channel(3).set_volume(0.5)
-                    if enemy.killed == True:
+                    if enemy.killed:
                         enemy.kill()
 
 
                 #when player bullet colliding boss
                 boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
                 for boss in boss_hit_list:
-                     bullet.kill()
+                     if not boss.death:
+                        bullet.kill()
                      boss.is_hit(self.bullet_damage)
 
-                     if not boss.is_alive():
-                         self.current_level += 1
+                     if not boss.is_alive() and not boss.death:
                          self.score += 100
-                         boss.death_speech = True
+                         boss.death = True
                          boss.say_phrases()
+                     if boss.killed:
                          boss.kill()
+                         self.current_level += 1
 
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
@@ -360,7 +351,7 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, groups)
+        boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, self.boss_images, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 
@@ -379,7 +370,7 @@ class Game():
     ##    pygame.mixer.Channel(1).play(pygame.mixer.Sound('Sound/laser.ogg'))
     ##    pygame.mixer.Channel(1).set_volume(0.2)
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
-        if boss.going_in:
+        if boss.going_in and not boss.death:
             if boss.anger == True:
                 boss_bullet_speed = boss_bullet_speed * boss.bullet_anger_speed_multiplier
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)

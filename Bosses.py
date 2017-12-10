@@ -6,21 +6,16 @@ class Boss(pygame.sprite.Sprite):
     forward = True
     RED = (255,0,0)
     GREEN = (0,255,0)
-    def __init__(self, boss_id, screen, screen_width, speed, current_level, *groups):
+    def __init__(self, boss_id, screen, screen_width, speed, current_level, images,  *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
-        self.images_list = ["img/Thorsten/" + str(number) + ".png" for number in range(1,21)]
-        self.images = []
-        #Load all images
-        for file in self.images_list:
-            image = pygame.image.load(file).convert_alpha()
-            self.images.append(image)
+        self.images = images
         self.index = 0
         self.image = self.images[self.index]
         self.range = screen_width
         self.speed = speed
-        self.health = 10 * current_level
+        self.health = 5 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
         self.going_in = False
@@ -29,7 +24,9 @@ class Boss(pygame.sprite.Sprite):
         self.current_frame = 0
         self.anger = False
         self.anger_speech = False
+        self.death = False
         self.death_speech = False
+        self.killed = False
         self.anger_value = 0.5
         self.bullet_anger_speed_multiplier = 1.5
 
@@ -38,20 +35,25 @@ class Boss(pygame.sprite.Sprite):
     def update(self):
         if self.pause == False:
             self.say_phrases()
-            if self.health < (self.total_health / 100 * 50) and self.index != 19:
-                self.update_sprite_animation()
-            if not self.going_in:
+            if self.health < (self.total_health / 100 * 50) and self.index < 19:
+                self.update_animation()
+            if self.death and self.index < 30:
+                self.animation_frames = 10
+                self.update_animation()
+                if self.index >= 30:
+                    self.killed = True
+            if not self.going_in :
                 if self.rect.y < 50:
                     self.rect.y += 2
                 else:
                     self.going_in = True
             else:
-                if self.forward:
+                if self.forward and not self.death:
                     if self.anger:
                         self.rect.x += self.speed * 2
                     else:
                         self.rect.x += self.speed
-                else:
+                elif not self.forward and not self.death:
                     if self.anger:
                         self.rect.x -= self.speed * 2
                     else:
@@ -62,21 +64,21 @@ class Boss(pygame.sprite.Sprite):
                     # print the hp
         else:
             self.rect.x += 0
+            self.current_frame += 0
+
 
     def update_health_bar(self):
-        if self.going_in:
+        if self.going_in and not self.death:
             pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
             pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
 
-    def update_sprite_animation(self):
-        if self.pause == False:
-            self.current_frame += 1
-            if self.current_frame >= self.animation_frames:
-                self.current_frame = 0
-                self.index = (self.index + 1) % len(self.images)
-                self.image = self.images[self.index]
-        else:
-            self.current_frame += 0
+    def update_animation(self):
+        self.current_frame += 1
+        if self.current_frame >= self.animation_frames:
+            self.current_frame = 0
+            self.index = (self.index + 1) % len(self.images)
+            self.image = self.images[self.index]
+
 
     def say_phrases(self):
         phrase = random.randint(1,4)
@@ -99,7 +101,7 @@ class Boss(pygame.sprite.Sprite):
             elif phrase == 4:
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/this is easy exercise.ogg'))
             self.anger_speech = True
-        if self.death_speech:
+        if self.death and not self.death_speech:
             if phrase == 1:
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
             elif phrase == 2:
@@ -108,6 +110,7 @@ class Boss(pygame.sprite.Sprite):
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/lecture resumes next week.ogg'))
             elif phrase == 4:
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
+            self.death_speech = True
 
 
     # if hit boss health -1
