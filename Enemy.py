@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from Constants import *
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, speed, health, images, *groups):

@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-from settings import *
+from Constants import *
 
 class Boss(pygame.sprite.Sprite):
 
@@ -178,7 +178,7 @@ class Boss_Bullet(pygame.sprite.Sprite):
 
     # different bullets with different bosses
     def update(self):
-        
+
         if self.pause == False:
             self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
             self.rect.y += self.speed

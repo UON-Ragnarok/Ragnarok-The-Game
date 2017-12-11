@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from Constants import *
 
 class PlayerShip(pygame.sprite.Sprite):
     def __init__(self, game):

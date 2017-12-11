@@ -12,6 +12,8 @@ HIGHSCORE = 'highscore.txt'
 #COLORS
 RED = (214, 72, 72)
 GREY = (91, 109, 131)
+GREEN = (0, 255, 0)
+WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (240, 255, 0)
 
