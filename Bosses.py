@@ -121,32 +121,32 @@ class Boss(pygame.sprite.Sprite):
         phrase = random.randint(1,4)
         if not self.going_in:
             if phrase == 1:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am thor fear me.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/I am thor fear me.ogg'))
             elif phrase == 2:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/I am the starting point of the asgard.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/I am the starting point of the asgard.ogg'))
             elif phrase == 3:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/my name is thorsten altenkirch.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/my name is thorsten altenkirch.ogg'))
             elif phrase == 4:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/obviously I am the big boss.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/obviously I am the big boss.ogg'))
         if self.anger and not self.anger_speech:
             if phrase == 1:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/i made an error for you to spot.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/i made an error for you to spot.ogg'))
             elif phrase == 2:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/stupid question.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/stupid question.ogg'))
             elif phrase == 3:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/you cannot pickle my brain.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/you cannot pickle my brain.ogg'))
             elif phrase == 4:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/this is easy exercise.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/this is easy exercise.ogg'))
             self.anger_speech = True
         if self.death and not self.death_speech:
             if phrase == 1:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/Ill be back.ogg'))
             elif phrase == 2:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/rah.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/rah.ogg'))
             elif phrase == 3:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/lecture resumes next week.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/lecture resumes next week.ogg'))
             elif phrase == 4:
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
             self.death_speech = True
 
     # if hit boss health -1

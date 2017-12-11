@@ -67,8 +67,8 @@ class Intro:
                 self.bg_music()  # music mute/ volume down and up
             if about:
                 self.about()
+                self.menu_background_x += -0.7
                 if self.back_button_image.get_rect(topleft=(self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.click_x, self.click_y):
-                    # If clicked the back button bring you back to main menu page
                     main = True
                     about = False
 

@@ -28,7 +28,26 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
+        self.load_music()
         self.menu_screen()
+
+
+    def load_music(self):
+        self.ARCADE_FUNK = pygame.mixer.Sound('Sound/Arcade Funk.ogg')  # Channel 0
+        self.EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg') # Channel 1
+        self.COIN = pygame.mixer.Sound('Sound/coin.ogg')  # Channel 2
+        self.KILLED = pygame.mixer.Sound('Sound/killed_explo.ogg')  # Channel 3
+        self.COMET = pygame.mixer.Sound('Sound/comet.ogg')  # Channel 4
+        self.LASER = pygame.mixer.Sound('Sound/laser.ogg')  # Channel 5
+        self.BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')  # Channel 6
+        pygame.mixer.Channel(1).set_volume(0.3) # Explosion
+        pygame.mixer.Channel(2).set_volume(0.3) # Coin
+        pygame.mixer.Channel(3).set_volume(0.3) # Killed
+        pygame.mixer.Channel(4).set_volume(0.3) # Comet
+        pygame.mixer.Channel(5).set_volume(0.1) # Laser
+        pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
+        pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
+
 
     def load_mob_images(self):
         self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0,12)]
@@ -126,7 +145,7 @@ class Game:
 
     def menu_screen(self):
         pygame.mixer.Channel(0).get_busy()
-        pygame.mixer.Channel(0).play(ARCADE_FUNK, -1)
+        pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
         self.intro = Intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
@@ -222,13 +241,13 @@ class Game:
             # player colliding with enemy
             enemy_hit_list = pygame.sprite.spritecollide(self.player, self.enemy_list, True)
             if enemy_hit_list:
-                pygame.mixer.Channel(4).play(MOB_DYING)
+                pygame.mixer.Channel(3).play(self.KILLED)
                 self.alive = False
 
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
             for hit in power_up_hit_list:
-                pygame.mixer.Channel(6).play(COIN)
+                pygame.mixer.Channel(2).play(self.COIN)
                 if hit in self.speed_power_up_list:
                     if self.fire_bullet_delay >= 150:
                         self.fire_bullet_delay -= 50
@@ -263,7 +282,7 @@ class Game:
                                         self.spawn_power_up(POWER_UP_ID_LIST[1], enemy.rect.x + 15, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 3:
                                         self.spawn_power_up(POWER_UP_ID_LIST[2], enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
-                            pygame.mixer.Channel(3).play(EXPLOSION)
+                            pygame.mixer.Channel(1).play(self.EXPLOSION)
                     if enemy.killed:
                         enemy.kill()
 
@@ -277,6 +296,7 @@ class Game:
                      if not boss.is_alive() and not boss.death:
                          self.score += 100
                          boss.death = True
+                         pygame.mixer.Channel(1).play(self.EXPLOSION)
 
                      if boss.killed:
                          boss.kill()
@@ -287,7 +307,7 @@ class Game:
             # when player colliding boss bullet
             player_hit_list = pygame.sprite.spritecollide(self.player, self.boss_bullet_list, False)
             if player_hit_list:
-                    pygame.mixer.Channel(4).play(KILLED)
+                    pygame.mixer.Channel(3).play(self.KILLED)
                     self.alive = False
 
             #Kill bullet if it hits meteors
@@ -338,7 +358,7 @@ class Game:
         power_up.rect.y = pos_y
 
     def spawn_meteor(self, speed):
-        pygame.mixer.Channel(2).play(COMET)
+        pygame.mixer.Channel(4).play(self.COMET)
         meteor = Meteor(self, speed)
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
@@ -350,7 +370,7 @@ class Game:
         boss.rect.y = -200
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
-        pygame.mixer.Channel(1).play(LASER)
+        pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
             bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed)
             bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed)
@@ -367,7 +387,7 @@ class Game:
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
             Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-            pygame.mixer.Channel(7).play(BOSS_LASER)
+            pygame.mixer.Channel(6).play(self.BOSS_LASER)
     ##    pygame.time.set_timer(boss_bullet_event, 0)
 
 
