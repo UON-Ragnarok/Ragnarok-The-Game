@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 
-class Intro():
+class Intro:
     pygame.init()
 
     def __init__(self, screen, intro_music):
@@ -37,8 +37,7 @@ class Intro():
         self.sb_width, self.sb_height = self.start_button_image.get_rect().size  # start image size (width, height)
         self.ab_width, self.ab_height = self.about_button_image.get_rect().size  # about image size
         self.bb_width, self.bb_height = self.back_button_image.get_rect().size  # back image size
-        self.mb_width, self.mb_height = self.mute_button_image.get_rect().size  # mute image size
-        # self.vb_width, self.vb_height = self.volume_button_image.get_rect().size  # mute image size , not in use
+        self.mb_width, self.mb_height = self.mute_button_image.get_rect().size  # mute/volume image size
 
         self.ss_height = self.spaceship_image.get_rect().height
         self.mo_height = self.mob_image.get_rect().height

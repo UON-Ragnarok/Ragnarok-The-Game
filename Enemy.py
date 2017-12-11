@@ -1,4 +1,5 @@
 import pygame
+from settings import *
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, speed, health, images,  *groups):
@@ -38,16 +39,19 @@ class Enemy(pygame.sprite.Sprite):
                 self.killed = True
 
 class Meteor(pygame.sprite.Sprite):
-    def __init__(self, speed, *groups):
-        super().__init__(*groups)
+    def __init__(self, game, speed):
+        self.groups = game.enemy_list, game.meteor_list, game.sprites_list
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
         self.image = pygame.image.load('img/meteor.png').convert_alpha()
         self.speed = speed
         self.rect = self.image.get_rect()
         self.pause = False
 
     def update(self):
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
         if self.pause == False:
             self.rect.y += self.speed
         else:
             self.rect.y += 0
-

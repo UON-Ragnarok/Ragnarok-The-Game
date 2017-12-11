@@ -13,6 +13,7 @@ HIGHSCORE = 'highscore.txt'
 RED = (214, 72, 72)
 GREY = (91, 109, 131)
 BLACK = (0, 0, 0)
+YELLOW = (240, 255, 0)
 
 #Music
 pygame.mixer.set_num_channels(15)

@@ -12,7 +12,7 @@ from PowerUp import *
 from Intro import *
 from Constants import *
 
-class Game():
+class Game:
     def __init__(self):
         # initialize game window, etc
         pygame.init()
@@ -130,7 +130,7 @@ class Game():
         self.new_game()
 
     def show_menu(self, id):
-        Menu(SCREEN_WIDTH,SCREEN_HEIGHT).displayMenu(self.screen, id ,self.score,self.highscore)
+        Menu().displayMenu(self.screen, id ,self.score, self.highscore)
 
     def run(self):
         # Game Loop
@@ -176,7 +176,7 @@ class Game():
                 self.running = False
 
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
-                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
+                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay)
              # update the boss bullet
             if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
                 self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
@@ -281,9 +281,6 @@ class Game():
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
 
-                #if player bullet goes off screen
-                if bullet.rect.y < -10:
-                    bullet.kill()
             # when player colliding boss bullet
             player_hit_list = pygame.sprite.spritecollide(self.player, self.boss_bullet_list, False)
             if player_hit_list:
@@ -306,7 +303,7 @@ class Game():
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
                 if self.current_level % METEOR_SPAWN_RATE == 0:
-                    self.spawn_meteor(self.enemies_speed * 2,  [self.enemy_list, self.meteor_list, self.sprites_list])
+                    self.spawn_meteor(self.enemies_speed * 2)
 
             for sprite in self.sprites_list :
                 #If enemies go off screen
@@ -337,9 +334,9 @@ class Game():
         power_up.rect.x = pos_x
         power_up.rect.y = pos_y
 
-    def spawn_meteor(self, speed, groups):
+    def spawn_meteor(self, speed):
         pygame.mixer.Channel(2).play(COMET)
-        meteor = Meteor(speed, groups)
+        meteor = Meteor(self, speed)
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
 
@@ -349,13 +346,13 @@ class Game():
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 
-    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
+    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(1).play(LASER)
         if self.double_power:
-            bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed, groups)
-            bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed, groups)
+            bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed)
+            bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed)
         else:
-            bullet = Bullet((player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed, groups)
+            bullet = Bullet(self, (player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed)
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
