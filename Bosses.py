@@ -73,11 +73,11 @@ class Boss(pygame.sprite.Sprite):
                     self.rect.x += self.speed
             elif not self.forward:
                 if self.anger:
-                    self.rect.x -= self.speed * 2
-                else:
                     self.rect.x -= self.speed
+                else:
+                    self.rect.x -= self.speed / 2
                 # if the boss go out of the screen
-            if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
+            if self.rect.x + self.image.get_rect().width >= self.screen_width - 50 or self.rect.x <= 50:
                 self.forward = not self.forward
 
     def boss_two_movement(self):
@@ -86,7 +86,7 @@ class Boss(pygame.sprite.Sprite):
                 if self.forward:
                     self.rect.x += self.speed
                 elif not self.forward:
-                    self.rect.x -= self.speed
+                    self.rect.x -= self.speed / 2
                     # if the boss go out of the screen
                 if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
                     self.forward = not self.forward
