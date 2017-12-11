@@ -2,7 +2,7 @@ import pygame
 from settings import *
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, speed, health, images,  *groups):
+    def __init__(self, speed, health, images, *groups):
         super().__init__(*groups)
         self.images = images
         self.index = 0
@@ -49,6 +49,7 @@ class Meteor(pygame.sprite.Sprite):
         self.pause = False
 
     def update(self):
+        # kiind of duplicate for Game.py line 308
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()
         if self.pause == False:

@@ -115,7 +115,7 @@ class Intro:
 
     def bg_music(self):
         self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y)
-        self.draw_text(40, RED, self.mute_text[self.on_off], (200, 635))
+        self.draw_text(40, WHITE, self.mute_text[self.on_off], (200, 635))
         pygame.mixer.Channel(0).set_volume(self.music_on_off[0])
         if self.music_on_off_img[self.on_off].get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
             self.on_off = (self.on_off + 1) % 2

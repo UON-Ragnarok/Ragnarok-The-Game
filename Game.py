@@ -28,6 +28,7 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
+
         self.menu_screen()
 
     def load_mob_images(self):
@@ -96,7 +97,7 @@ class Game:
         #List of meteor
         self.meteor_list = pygame.sprite.Group()
         #Creating sprites
-        self.player = PlayerShip(SCREEN_WIDTH, SCREEN_HEIGHT, [self.sprites_list])
+        self.player = PlayerShip(self)
 
         #Game Properties
         self.score = 0
@@ -252,7 +253,7 @@ class Game:
                             enemy.remove(self.mob_list, self.enemy_list)
                             #Spawn power ups
                             if not self.power_up_list:
-                                if random.randint(0,100) < POWERUP_PERCENTAGE:
+                                if random.randint(0, 100) < POWERUP_PERCENTAGE:
                                     which_power_up = random.randint(1,3)
                                     if which_power_up == 1:
                                         self.spawn_power_up(POWER_UP_ID_LIST[0], enemy.rect.x + 15, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
@@ -306,8 +307,8 @@ class Game:
                     self.spawn_meteor(self.enemies_speed * 2)
 
             for sprite in self.sprites_list :
-                #If enemies go off screen
-                if sprite.rect.y > SCREEN_HEIGHT:
+                #If enemies go off screen, for meteor, boss moves, enemy/mobs
+                if sprite.rect.top > SCREEN_HEIGHT:
                     sprite.kill()
         #m = Menu(screen_width/2,screen_height/2)
         if not self.alive:
@@ -330,7 +331,7 @@ class Game:
             enemy.rect.y = -50
 
     def spawn_power_up(self, id, pos_x, pos_y, groups):
-        power_up = PowerUp(id, POWER_UP_ID_LIST, SCREEN_WIDTH, SCREEN_HEIGHT, self.power_up_images, groups)
+        power_up = PowerUp(id, POWER_UP_ID_LIST, self.power_up_images, groups)
         power_up.rect.x = pos_x
         power_up.rect.y = pos_y
 
@@ -342,7 +343,7 @@ class Game:
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed * (1 + current_level / 100), current_level, self.boss_images, groups)
+        boss = Boss(boss_id, screen, speed * (1 + current_level / 100), current_level, self.boss_images, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 

@@ -1,15 +1,14 @@
 import pygame
 import random
 import time
+from settings import *
 
 class Boss(pygame.sprite.Sprite):
 
     forward = True
     moving_vertical = False
     moving_horizontal = True
-    RED = (255,0,0)
-    GREEN = (0,255,0)
-    def __init__(self, boss_id, screen, screen_width, screen_height, speed, current_level, images,  *groups):
+    def __init__(self, boss_id, screen, speed, current_level, images,  *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
@@ -19,9 +18,6 @@ class Boss(pygame.sprite.Sprite):
         self.animation_frames = 5
         self.current_frame = 0
         self.moving_horizontal_old_time = time.time()
-
-        self.screen_width = screen_width
-        self.screen_height = screen_height
 
         self.speed = speed
         self.health = 5 * current_level
@@ -77,7 +73,7 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.rect.x -= self.speed
                 # if the boss go out of the screen
-            if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
+            if self.rect.x + self.image.get_rect().width > SCREEN_WIDTH - 50 or self.rect.x < 50:
                 self.forward = not self.forward
 
     def boss_two_movement(self):
@@ -88,7 +84,7 @@ class Boss(pygame.sprite.Sprite):
                 elif not self.forward:
                     self.rect.x -= self.speed
                     # if the boss go out of the screen
-                if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
+                if self.rect.x + self.image.get_rect().width > SCREEN_WIDTH - 50 or self.rect.x < 50:
                     self.forward = not self.forward
                 if time.time() - self.moving_horizontal_old_time > random.randint(3,5):
                     self.moving_horizontal = False
@@ -103,7 +99,7 @@ class Boss(pygame.sprite.Sprite):
                         self.rect.y += self.speed * 8
                     else:
                         self.rect.y += self.speed * 4
-                if self.rect.y + self.image.get_rect().height > (self.screen_height - 50) or self.rect.y < 50:
+                if self.rect.y + self.image.get_rect().height > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
                     self.moving_vertical = not self.moving_vertical
                     if self.rect.y < 50:
                         self.moving_horizontal_old_time = time.time()
@@ -111,8 +107,8 @@ class Boss(pygame.sprite.Sprite):
 
     def update_health_bar(self):
         if self.going_in and not self.death:
-            pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
-            pygame.draw.line(self.screen,self.GREEN,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
+            pygame.draw.line(self.screen, RED, (self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
+            pygame.draw.line(self.screen, GREEN, (self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
 
     def update_animation(self):
         self.current_frame += 1
@@ -168,33 +164,32 @@ class Boss_Bullet(pygame.sprite.Sprite):
     prev_x_pos = -1
     def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
         super().__init__(*groups)
-        self.boss =  boss
+        self.boss = boss
         self.boss_id = boss.boss_id
-        self.image = pygame.Surface([5,10])
-        self.image.fill([255,255,0]) #yellow bullet, place holder, need to find image or something
+        self.image = pygame.Surface([5, 10])
+        self.image.fill(YELLOW) #yellow bullet, place holder, need to find image or something
         self.rect = self.image.get_rect()
-        self.rect.x  = x_pos
+        self.rect.x = x_pos
         self.origin_pos_x = x_pos
-        self.boss_origin_pos_x =  boss.rect.x + boss.image.get_rect().width/2
-        self.rect.y  = y_pos
+        self.boss_origin_pos_x = boss.rect.x + boss.image.get_rect().width/2
+        self.rect.y = y_pos
         self.speed = bullet_speed
         self.pause = False
 
     # different bullets with different bosses
     def update(self):
+        
         if self.pause == False:
             self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
             self.rect.y += self.speed
         else:
             self.rect.x += 0
             self.rect.y += 0
-        
-            
+
+
 ##            if self.prev_x_pos == -1:
 ##                self.prev_x_pos = self.rect.x
 ##                self.rect.x += ((self.prev_x_pos - self.boss.rect.x - self.boss.image.get_rect().width/2)/20)
 ##            else:
 ##                self.rect.x += (self.rect.x - self.prev_x_pos)
 ##                self.prev_x_pos = self.rect.x
-        
-
