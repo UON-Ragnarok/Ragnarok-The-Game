@@ -17,6 +17,7 @@ class Intro():
         self.volume_button_image = pygame.transform.scale(pygame.image.load('img/volume.png').convert_alpha(), (50, 50))
         self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
         self.music_on_off = [0.3, 0]  # setting music volume/ on_off bg music
+        self.mute_text = ["MUSIC ON", "MUSIC OFF"]
         self.on_off = 0
         self.spaceship_image = pygame.image.load('img/spaceship.png').convert_alpha()
         self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
@@ -65,7 +66,7 @@ class Intro():
                 if self.about_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(self.x, self.y):
                     main = False
                     about = True
-            self.bg_music()  # music mute
+                self.bg_music()  # music mute
             if about:
                 self.about()
                 if self.back_button_image.get_rect(topleft=(self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.x, self.y):
@@ -114,10 +115,10 @@ class Intro():
                     self.x, self.y = event.pos
 
     def bg_music(self):
-        self.draw_img(self.music_on_off_img[self.on_off], 450, 0)
-        # self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y) # where it previously was
+        self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y)
+        self.draw_text(40, RED, self.mute_text[self.on_off], (200, 635))
         pygame.mixer.Channel(0).set_volume(self.music_on_off[0])
-        if self.music_on_off_img[self.on_off].get_rect(topleft=(450, 0)).collidepoint(self.x, self.y): # topleft=(self.mb_top_left_x, self.mb_top_left_y)
+        if self.music_on_off_img[self.on_off].get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
             self.on_off = (self.on_off + 1) % 2
             self.music_on_off[0], self.music_on_off[1] = self.music_on_off[1], self.music_on_off[0]
             self.x, self.y = 0, 0  # reset click position, should really do for all clicks
