@@ -37,8 +37,11 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
+        self.menu_screen()
+        self.load_music()
+        
 
-        #Music
+    def load_music(self):
         self.ARCADE_FUNK = 'Sound/Arcade Funk.ogg'  # Channel 0
         self.EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg') # Channel 1
         self.COIN = pygame.mixer.Sound('Sound/coin.ogg')  # Channel 2
@@ -47,7 +50,6 @@ class Game:
         self.LASER = pygame.mixer.Sound('Sound/laser.ogg')  # Channel 5
         self.BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')  # Channel 6
         
-        self.menu_screen()
         
     def load_mob_images(self):
         self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0,12)]
