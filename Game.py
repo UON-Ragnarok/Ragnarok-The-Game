@@ -28,7 +28,6 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
-
         self.menu_screen()
 
     def load_mob_images(self):
@@ -126,7 +125,9 @@ class Game:
         self.run()
 
     def menu_screen(self):
-        self.intro = Intro(self.screen, ARCADE_FUNK)
+        pygame.mixer.Channel(0).get_busy()
+        pygame.mixer.Channel(0).play(ARCADE_FUNK, -1)
+        self.intro = Intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
@@ -163,7 +164,9 @@ class Game:
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
+        #pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
         self.sprites_list.draw(self.screen)
+        #print (self.sprites_list)  # check the number of sprites
         pygame.display.flip()
 
     def events(self):
@@ -318,13 +321,13 @@ class Game:
             for sprite in self.sprites_list:
                 sprite.kill()
 
-        elif self.pause :
+        elif self.pause:
             self.show_menu('b')
 
     #Spawning enemies
     def spawn_enemy(self, speed, current_level, groups):
         health = int(current_level / DIFFICULTY) + 1
-        for i in range (5):
+        for i in range(5):
             enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
