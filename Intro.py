@@ -5,6 +5,8 @@ class Intro():
     pygame.init()
 
     def __init__(self, screen, intro_music):
+        self.x = 0
+        self.y = 0
         self.screen = screen
         self.menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
         self.title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
@@ -40,6 +42,7 @@ class Intro():
         self.mt_height = self.meteor_image.get_rect().height
         # self.th_height = self.thor_image.get_rect().height , not in use
         self.pw_height = self.power_up_image.get_rect().height
+
         pygame.mixer.Channel(0).get_busy()
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
         pygame.mixer.Channel(0).set_volume(0.3)
@@ -59,27 +62,27 @@ class Intro():
             self.menu_background_x += -0.2
             if main:
                 self.main_menu()
-            #    if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(): # need to replace with click somehow
-            #        pygame.time.wait(100)
-            #        break
-            #    if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
-            #        main = False
-            #        about = True
+                if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(self.x, self.y):
+                    pygame.time.wait(100)
+                    break
+                if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(self.x, self.y):
+                    main = False
+                    about = True
                 if unmute:
                     self.unmute()
-                #    if self.volume_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
-                #        mute = True
-                #        unmute = False
+                    if self.volume_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
+                        mute = True
+                        unmute = False
                 if mute:
                     self.mute()
-                #    if self.mute_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
-                #        mute = False
-                #        unmute = True
+                    if self.mute_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
+                        mute = False
+                        unmute = True
             if about:
                 self.about()
-            #    if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
-            #        main = True
-            #        about = False
+                if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.x, self.y):
+                    main = True
+                    about = False
 
             pygame.display.flip()
 
@@ -245,16 +248,10 @@ class Intro():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
-    def event_handler(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                 # Get the x, y postions of the mouse left click
-                    x, self.y = event.pos
+                    self.x, self.y = event.pos
                 #    if img.collideoint(event.pos): ???
 
     def mute(self):
