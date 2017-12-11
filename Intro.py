@@ -15,6 +15,9 @@ class Intro():
         self.back_button_image = pygame.image.load('img/back_button.png').convert()
         self.mute_button_image = pygame.transform.scale(pygame.image.load('img/mute.png').convert_alpha(), (50, 50))
         self.volume_button_image = pygame.transform.scale(pygame.image.load('img/volume.png').convert_alpha(), (50, 50))
+        self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
+        self.music_on_off = [0.3, 0]  # setting music volume/ on_off bg music
+        self.on_off = 0
         self.spaceship_image = pygame.image.load('img/spaceship.png').convert_alpha()
         self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
         self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
@@ -45,9 +48,9 @@ class Intro():
 
         pygame.mixer.Channel(0).get_busy()
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
-        pygame.mixer.Channel(0).set_volume(0.3)
 
         #self.show_intro()
+
         main = True
         about = False
         mute = False
@@ -65,22 +68,15 @@ class Intro():
                 if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(self.x, self.y):
                     pygame.time.wait(100)
                     break
-                if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(self.x, self.y):
+                if self.about_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(self.x, self.y):
                     main = False
                     about = True
-                if unmute:
-                    self.unmute()
-                    if self.volume_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
-                        mute = True
-                        unmute = False
-                if mute:
-                    self.mute()
-                    if self.mute_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.x, self.y):
-                        mute = False
-                        unmute = True
+
+            self.bg_music()
+
             if about:
                 self.about()
-                if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.x, self.y):
+                if self.back_button_image.get_rect(topleft=(self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.x, self.y):
                     main = True
                     about = False
 
@@ -252,17 +248,25 @@ class Intro():
                 if event.button == 1:
                 # Get the x, y postions of the mouse left click
                     self.x, self.y = event.pos
-                #    if img.collideoint(event.pos): ???
 
-    def mute(self):
-        pygame.mixer.Channel(0).pause()
-        self.draw_img(self.volume_button_image, self.mb_top_left_x, self.mb_top_left_y)
-        self.draw_text(40, RED, "MUSIC ON", (200, 635))
 
-    def unmute(self):
-        pygame.mixer.Channel(0).unpause()
-        self.draw_img(self.mute_button_image, self.mb_top_left_x, self.mb_top_left_y)
-        self.draw_text(40, GREY, "MUSIC OFF", (200, 635))
+    def bg_music(self):
+        self.draw_img(self.music_on_off_img[self.on_off], 450, 0)  # to be set on topleft=(450, 0)
+        # self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y)
+        pygame.mixer.Channel(0).set_volume(self.music_on_off[0])
+        if self.music_on_off_img[self.on_off].get_rect(topleft=(450, 0)).collidepoint(self.x, self.y): # self.mb_top_left_x, self.mb_top_left_y 
+            self.on_off = (self.on_off + 1) % 2
+            self.music_on_off[0], self.music_on_off[1] = self.music_on_off[1], self.music_on_off[0]
+            print (self.music_on_off[0], self.music_on_off[1])
+            self.x, self.y = 0, 0  # reset click position, should really do for all clicks
+
+#    def mute(self):
+#        pygame.mixer.Channel(0).pause()
+#        self.draw_img(self.volume_button_image, self.mb_top_left_x, self.mb_top_left_y)
+#        self.draw_text(40, RED, "MUSIC ON", (200, 635))
+#        pygame.mixer.Channel(0).unpause()
+#        self.draw_img(self.mute_button_image, self.mb_top_left_x, self.mb_top_left_y)
+#        self.draw_text(40, GREY, "MUSIC OFF", (200, 635))
 
     def draw_img(self, img, x, y, area = None):
         self.screen.blit(img, (x, y), area)
@@ -271,5 +275,7 @@ class Intro():
         font = pygame.font.SysFont("'freesansbold.ttf'", size, True)
         text_surface = font.render(text, True, color)
         self.screen.blit(text_surface, text_rect)
+
+
 
 ##        clock.tick(FPS)
