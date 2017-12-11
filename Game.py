@@ -154,6 +154,7 @@ class Game():
         self.draw_background()
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
+            self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.current_level),  0, RED), (SCREEN_WIDTH - 100, 30))
             if self.score >= self.highscore:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
@@ -175,17 +176,17 @@ class Game():
                 self.playing = False
                 self.running = False
 
-            if self.alive and not self.pause:
-                if event.type == self.fire_bullet_event:
-                    self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
-                if event.type == self.boss_bullet_event and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
-                    self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
-                    self.boss_bullet_counter += 1
-                    if self.boss_bullet_counter >= 2:
-                        pygame.time.set_timer(self.boss_bullet_event, 2500)
-                        self.boss_bullet_counter = 0
-                    else:
-                        pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
+            if self.alive and event.type == self.fire_bullet_event and not self.pause:
+                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
+             # update the boss bullet
+            if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
+                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
+                self.boss_bullet_counter += 1
+                if self.boss_bullet_counter >= 2:
+                    pygame.time.set_timer(self.boss_bullet_event, 2500)
+                    self.boss_bullet_counter = 0
+                else:
+                    pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and (not self.alive):
