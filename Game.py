@@ -104,7 +104,7 @@ class Game:
 
         #Player Properties
         self.bullet_speed = 5
-        self.bullet_damage = 2
+        self.bullet_damage = 0
         self.double_power = False
 
         #Enemies Properties
