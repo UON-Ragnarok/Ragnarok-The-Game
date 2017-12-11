@@ -3,6 +3,7 @@ from settings import *
 
 class Intro():
     pygame.init()
+    exit = False
 
     def __init__(self, screen, intro_music):
         self.screen = screen
@@ -43,16 +44,45 @@ class Intro():
         pygame.mixer.Channel(0).get_busy()
         pygame.mixer.Channel(0).play(pygame.mixer.Sound(self.intro_music),-1)
         pygame.mixer.Channel(0).set_volume(0.3)
-        relative_x = self.menu_background_x % self.menu_background.get_rect().width
-        self.draw_img(self.menu_background, relative_x - self.menu_background.get_rect().width, 0)
-        if relative_x < SCREEN_WIDTH:
-            self.draw_img(self.menu_background, relative_x, 0)
-        self.menu_background_x += -0.2
-        pygame.display.flip()
 
         #self.show_intro()
-        #self.main_menu()
-        self.about()
+        main = True
+        about = False
+        mute = False
+        unmute = True
+
+        while True:
+            self.click_event()
+            relative_x = self.menu_background_x % self.menu_background.get_rect().width
+            self.draw_img(self.menu_background, relative_x - self.menu_background.get_rect().width, 0)
+            if relative_x < SCREEN_WIDTH:
+                self.draw_img(self.menu_background, relative_x, 0)
+            self.menu_background_x += -0.2
+            if main:
+                self.main_menu()
+            #    if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()): # need to replace with click
+            #        pygame.time.wait(100)
+            #        break
+            #    if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
+            #        main = False
+            #        about = True
+                if unmute:
+                    self.unmute()
+                #    if self.volume_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
+                #        mute = True
+                #        unmute = False
+                if mute:
+                    self.mute()
+                #    if self.mute_button_image.get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
+                #        mute = False
+                #        unmute = True
+            if about:
+                self.about()
+            #    if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
+            #        main = True
+            #        about = False
+
+            pygame.display.flip()
 
     def show_intro(self):
         main = True
@@ -174,90 +204,55 @@ class Intro():
                 pygame.display.flip()
 
     def main_menu(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                # Set the x, y postions of the mouse click
-                    x, y = event.pos
-                    if self.start_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y)).collidepoint(x, y):
-                        pygame.time.wait(100)
-                        break
-                    if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(x, y):
-                        self.about()
-
-            self.draw_img(self.title, SCREEN_WIDTH / 9, SCREEN_HEIGHT / 6)
-
-            self.draw_img(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
-            if self.start_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
-                self.big_start_button_image = pygame.transform.rotozoom(self.start_button_image, 0, 1.2)
-                self.draw_img(self.big_start_button_image, self.sb_top_left_x, self.sb_top_left_y)
-
-            self.draw_img(self.about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
-            if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
-                self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image, 0, 1.2)
-                self.draw_img(self.big_about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
-
-            self.unmute()
-            pygame.display.flip()
+        self.draw_img(self.title, SCREEN_WIDTH / 9, SCREEN_HEIGHT / 6)
+        self.draw_img(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
+        if self.start_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
+            self.big_start_button_image = pygame.transform.rotozoom(self.start_button_image, 0, 1.2)
+            self.draw_img(self.big_start_button_image, self.sb_top_left_x, self.sb_top_left_y)
+        self.draw_img(self.about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
+        if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
+            self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image, 0, 1.2)
+            self.draw_img(self.big_about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
 
     def about(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                # Set the x, y postions of the mouse click
-                    x, y = event.pos
-                    if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(x, y):
-                        self.main_menu()
+        self.draw_img(self.spaceship_image, self.ss_top_left_x, self.ss_top_left_y)
+        self.draw_text(20, YELLOW, "Use mouse or trackpad to control", (190, 75))
+        self.draw_text(20, YELLOW, "the spacship and destroy Asgard", (190, 85))
+        self.draw_img(self.mob_image, self.ss_top_left_x, self.ss_top_left_y + 25 + self.ss_height)
+        self.draw_text(20, YELLOW, "Sworn protectors of Asgard,", (190, 175))
+        self.draw_text(20, YELLOW, "destroy them to earn points", (190, 185))
+        self.draw_img(self.meteor_image, self.ss_top_left_x - 10, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height)
+        self.draw_text(20, YELLOW, "Meteorites are indestructable,", (190, 290))
+        self.draw_text(20, YELLOW, "avoid them at all cost", (190, 300))
+        self.draw_img(self.power_up_image, self.ss_top_left_x, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height + 25 + self.mt_height)
+        self.draw_text(20, YELLOW, "Collect to gain awesome powers", (190, 410))
+        self.draw_img(self.thor_image, self.ss_top_left_x - 50, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height + 25 + self.mt_height + 25 + self.pw_height)
+        self.draw_text(60, YELLOW, "???", (190, 590))
+        self.draw_img(self.back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
 
-            self.draw_img(self.spaceship_image, self.ss_top_left_x, self.ss_top_left_y)
-            self.draw_text(20, YELLOW, "Use mouse or trackpad to control", (190, 75))
-            self.draw_text(20, YELLOW, "the spacship and destroy Asgard", (190, 85))
-            self.draw_img(self.mob_image, self.ss_top_left_x, self.ss_top_left_y + 25 + self.ss_height)
-            self.draw_text(20, YELLOW, "Sworn protectors of Asgard,", (190, 175))
-            self.draw_text(20, YELLOW, "destroy them to earn points", (190, 185))
-            self.draw_img(self.meteor_image, self.ss_top_left_x - 10, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height)
-            self.draw_text(20, YELLOW, "Meteorites are indestructable,", (190, 290))
-            self.draw_text(20, YELLOW, "avoid them at all cost", (190, 300))
-            self.draw_img(self.power_up_image, self.ss_top_left_x, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height + 25 + self.mt_height)
-            self.draw_text(20, YELLOW, "Collect to gain awesome powers", (190, 410))
-            self.draw_img(self.thor_image, self.ss_top_left_x - 50, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height + 25 + self.mt_height + 25 + self.pw_height)
-            self.draw_text(60, YELLOW, "???", (190, 590))
-            self.draw_img(self.back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
+        if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
+            self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image, 0, 1.2)
+            self.draw_img(self.big_back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
 
-            if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
-                self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image, 0, 1.2)
-                self.draw_img(self.big_back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
-
-            pygame.display.flip()
-
-
-
-
-
-    def event(self):
+    def click_event(self):
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                return even.pos
+                if event.button == 1:
+                # Get the x, y postions of the mouse left click
+                    self.x, self.y = event.pos
 
     def mute(self):
         pygame.mixer.Channel(0).pause()
         self.draw_img(self.volume_button_image, self.mb_top_left_x, self.mb_top_left_y)
         self.draw_text(40, RED, "MUSIC ON", (200, 635))
-        if self.volume_button_image.get_rect().collidepoint(self.event()):
-            self.unmute()
 
     def unmute(self):
         pygame.mixer.Channel(0).unpause()
         self.draw_img(self.mute_button_image, self.mb_top_left_x, self.mb_top_left_y)
         self.draw_text(40, GREY, "MUSIC OFF", (200, 635))
-        #if self.mute_button_image.get_rect().collidepoint(self.event()):
-        #    self.mute()
 
     def draw_img(self, img, x, y, area = None):
         self.screen.blit(img, (x, y), area)
