@@ -3,7 +3,6 @@ from settings import *
 
 class Intro():
     pygame.init()
-    exit = False
 
     def __init__(self, screen, intro_music):
         self.screen = screen
@@ -60,7 +59,7 @@ class Intro():
             self.menu_background_x += -0.2
             if main:
                 self.main_menu()
-            #    if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()): # need to replace with click
+            #    if self.start_button_image.get_rect(topleft=(self.sb_top_left_x, self.sb_top_left_y)).collidepoint(): # need to replace with click somehow
             #        pygame.time.wait(100)
             #        break
             #    if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
@@ -206,13 +205,15 @@ class Intro():
     def main_menu(self):
         self.draw_img(self.title, SCREEN_WIDTH / 9, SCREEN_HEIGHT / 6)
         self.draw_img(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
-        if self.start_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
-            self.big_start_button_image = pygame.transform.rotozoom(self.start_button_image, 0, 1.2)
-            self.draw_img(self.big_start_button_image, self.sb_top_left_x, self.sb_top_left_y)
+        self.mouse_over_enlarge(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
+        #if self.start_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y)).collidepoint(pygame.mouse.get_pos()):
+        #    self.big_start_button_image = pygame.transform.rotozoom(self.start_button_image, 0, 1.2)
+        #    self.draw_img(self.big_start_button_image, self.sb_top_left_x, self.sb_top_left_y)
         self.draw_img(self.about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
-        if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
-            self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image, 0, 1.2)
-            self.draw_img(self.big_about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
+        self.mouse_over_enlarge(self.about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
+        #if self.about_button_image.get_rect(topleft = (self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)).collidepoint(pygame.mouse.get_pos()):
+        #    self.big_about_button_image = pygame.transform.rotozoom(self.about_button_image, 0, 1.2)
+        #    self.draw_img(self.big_about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
 
     def about(self):
         self.draw_img(self.spaceship_image, self.ss_top_left_x, self.ss_top_left_y)
@@ -229,12 +230,23 @@ class Intro():
         self.draw_img(self.thor_image, self.ss_top_left_x - 50, self.ss_top_left_y + 25 + self.ss_height + 25 + self.mo_height + 25 + self.mt_height + 25 + self.pw_height)
         self.draw_text(60, YELLOW, "???", (190, 590))
         self.draw_img(self.back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
+        self.mouse_over_enlarge(self.back_button_image, self.bb_top_left_x, self. sb_top_left_y + 300)
+#        if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
+#            self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image, 0, 1.2)
+#            self.draw_img(self.big_back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
 
-        if self.back_button_image.get_rect(topleft = (self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(pygame.mouse.get_pos()):
-            self.big_back_button_image = pygame.transform.rotozoom(self.back_button_image, 0, 1.2)
-            self.draw_img(self.big_back_button_image, self.bb_top_left_x, self.sb_top_left_y + 300)
+    def mouse_over_enlarge(self, img_in, pos_x, pos_y):
+        if img_in.get_rect(topleft=(pos_x, pos_y)).collidepoint(pygame.mouse.get_pos()):
+            self.big_img_in = pygame.transform.rotozoom(img_in, 0, 1.2)
+            self.draw_img(self.big_img_in, pos_x, pos_y)
 
     def click_event(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+    def event_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -242,7 +254,8 @@ class Intro():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                 # Get the x, y postions of the mouse left click
-                    self.x, self.y = event.pos
+                    x, self.y = event.pos
+                #    if img.collideoint(event.pos): ???
 
     def mute(self):
         pygame.mixer.Channel(0).pause()
