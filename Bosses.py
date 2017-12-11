@@ -1,27 +1,36 @@
 import pygame
 import random
+import time
 
 class Boss(pygame.sprite.Sprite):
 
     forward = True
+    moving_vertical = False
+    moving_horizontal = True
     RED = (255,0,0)
     GREEN = (0,255,0)
-    def __init__(self, boss_id, screen, screen_width, speed, current_level, images,  *groups):
+    def __init__(self, boss_id, screen, screen_width, screen_height, speed, current_level, images,  *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.screen = screen
         self.images = images
         self.index = 0
         self.image = self.images[self.index]
-        self.range = screen_width
+        self.animation_frames = 5
+        self.current_frame = 0
+        self.moving_horizontal_old_time = time.time()
+
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+
         self.speed = speed
         self.health = 5 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
+
         self.going_in = False
         self.pause = False
-        self.animation_frames = 5
-        self.current_frame = 0
+
         self.anger = False
         self.anger_speech = False
         self.death = False
@@ -29,7 +38,6 @@ class Boss(pygame.sprite.Sprite):
         self.killed = False
         self.anger_value = 0.5
         self.bullet_anger_speed_multiplier = 1.5
-
 
     # update the bossz
     def update(self):
@@ -48,23 +56,60 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.going_in = True
             else:
-                if self.forward and not self.death:
-                    if self.anger:
-                        self.rect.x += self.speed * 2
-                    else:
-                        self.rect.x += self.speed
-                elif not self.forward and not self.death:
-                    if self.anger:
-                        self.rect.x -= self.speed * 2
-                    else:
-                        self.rect.x -= self.speed
-                    # if the boss go out of the screen
-                if self.rect.x + self.image.get_rect().width > self.range - 50 or self.rect.x < 50:
-                    self.forward = not self.forward
-                    # print the hp
+                if self.boss_id == 1:
+                    self.boss_one_movement()
+                elif self.boss_id == 2:
+                    self.boss_two_movement()
         else:
             self.rect.x += 0
             self.current_frame += 0
+
+    def boss_one_movement(self):
+        if not self.death:
+            if self.forward:
+                if self.anger:
+                    self.rect.x += self.speed * 2
+                else:
+                    self.rect.x += self.speed
+            elif not self.forward:
+                if self.anger:
+                    self.rect.x -= self.speed * 2
+                else:
+                    self.rect.x -= self.speed
+                # if the boss go out of the screen
+            if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
+                self.forward = not self.forward
+
+    def boss_two_movement(self):
+        if not self.death:
+            if self.moving_horizontal:
+                if self.forward:
+                    self.rect.x += self.speed
+                elif not self.forward:
+                    self.rect.x -= self.speed
+                    # if the boss go out of the screen
+                if self.rect.x + self.image.get_rect().width > self.screen_width - 50 or self.rect.x < 50:
+                    self.forward = not self.forward
+                if time.time() - self.moving_horizontal_old_time > random.randint(3,5):
+                    self.moving_horizontal = False
+            else:
+                if self.moving_vertical:
+                    if self.anger:
+                        self.rect.y -= self.speed * 8
+                    else:
+                        self.rect.y -= self.speed * 4
+                elif not self.moving_vertical:
+                    if self.anger:
+                        self.rect.y += self.speed * 8
+                    else:
+                        self.rect.y += self.speed * 4
+                if self.rect.y + self.image.get_rect().height > (self.screen_height - 50) or self.rect.y < 50:
+                    self.moving_vertical = not self.moving_vertical
+                    if self.rect.y < 50:
+                        self.moving_horizontal_old_time = time.time()
+                        self.moving_horizontal = True
+
+
 
     def update_health_bar(self):
         if self.going_in and not self.death:
@@ -110,7 +155,6 @@ class Boss(pygame.sprite.Sprite):
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('Sound/how can you pickle my brain.ogg'))
             self.death_speech = True
 
-
     # if hit boss health -1
     def is_hit(self, bullet_damage):
         if self.going_in:
@@ -140,20 +184,19 @@ class Boss_Bullet(pygame.sprite.Sprite):
 
     # different bullets with different bosses
     def update(self):
-            if self.pause == False:
+        if self.pause == False:
+            self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
+            self.rect.y += self.speed
+        else:
+            self.rect.x += 0
+            self.rect.y += 0
+        
+            
 ##            if self.prev_x_pos == -1:
 ##                self.prev_x_pos = self.rect.x
 ##                self.rect.x += ((self.prev_x_pos - self.boss.rect.x - self.boss.image.get_rect().width/2)/20)
 ##            else:
 ##                self.rect.x += (self.rect.x - self.prev_x_pos)
 ##                self.prev_x_pos = self.rect.x
-                self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
-                self.rect.y += self.speed
-            else:
-                self.rect.x += 0
-                self.rect.y += 0
-        
-            
-        
         
 

@@ -7,6 +7,7 @@ FPS = 120
 GAME_TITLE = 'Ragnarok The Game'
 BACKGROUND_IMG = 'img/background.jpg'
 FONT = 'Courier'
+HIGHSCORE = 'highscore.txt'
 
 #COLORS
 RED = (214, 72, 72)
@@ -32,7 +33,8 @@ pygame.mixer.Channel(6).set_volume(0.3)
 pygame.mixer.Channel(7).set_volume(0.2)
 
 #Gameplay Properties
-POWERUP_PERCENTAGE = 90
+DIFFICULTY = 10
+POWERUP_PERCENTAGE = 10
 POWER_UP_ID_LIST = ['A', 'B', 'C']
 #SPEED_POWER_UP_ID = 'A'
 #DAMAGE_POWER_UP_ID = 'B'

@@ -59,7 +59,7 @@ class Game():
 
 
     def load_highscore(self):
-        f = open('highscore.txt', 'r')
+        f = open(HIGHSCORE, 'r')
         temp = f.read()
         if temp != "":
             self.highscore = int(temp)
@@ -69,7 +69,7 @@ class Game():
 
     def write_highscore(self):
         if self.score >= self.highscore:
-            f = open('highscore.txt', 'w')
+            f = open(HIGHSCORE, 'w')
             f.write(str(self.score))
             f.close()
 
@@ -101,7 +101,6 @@ class Game():
         #Game Properties
         self.score = 0
         self.current_level = 0
-        self.difficulty = 10
 
         #Player Properties
         self.bullet_speed = 5
@@ -176,10 +175,10 @@ class Game():
                 self.playing = False
                 self.running = False
 
-            if self.alive and event.type == self.fire_bullet_event and not self.pause:
-                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
-            # update the boss bullet
-            if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list:
+            if self.alive and not self.pause:
+                if event.type == self.fire_bullet_event:
+                    self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
+                if event.type == self.boss_bullet_event and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
                     self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
                     self.boss_bullet_counter += 1
                     if self.boss_bullet_counter >= 2:
@@ -275,17 +274,13 @@ class Game():
                      if not boss.is_alive() and not boss.death:
                          self.score += 100
                          boss.death = True
-                         boss.say_phrases()
+
                      if boss.killed:
                          boss.kill()
                          self.current_level += 1
 
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
-    ##                     boss_bullet.kill()
-    ##                     if boss_bullet_delay >= 500:
-    ##                        boss_bullet_delay -= 100
-
 
                 #if player bullet goes off screen
                 if bullet.rect.y < -10:
@@ -302,12 +297,12 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 5 != 0 or self.current_level == 0:
-                    self.spawn_enemy(self.enemies_speed, self.current_level, self.difficulty, [self.enemy_list, self.mob_list, self.sprites_list])
+                if self.current_level % 2 != 0 or self.current_level == 0:
+                    self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
                     self.current_level += 1
                 else:
-                    self.boss_id += 1
-                    self.spawn_boss(self.boss_speed,self.screen, self.current_level, self.boss_id, [self.boss_list,self.boss_bullet_list, self.sprites_list])
+                    self.boss_id = 2
+                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list,self.boss_bullet_list, self.sprites_list])
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
@@ -331,8 +326,8 @@ class Game():
             self.show_menu('b')
 
     #Spawning enemies
-    def spawn_enemy(self, speed, current_level, difficulty, groups):
-        health = int(current_level / difficulty) + 1
+    def spawn_enemy(self, speed, current_level, groups):
+        health = int(current_level / DIFFICULTY) + 1
         for i in range (5):
             enemy = Enemy(speed, health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
@@ -351,7 +346,7 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, SCREEN_WIDTH, speed, current_level, self.boss_images, groups)
+        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed, current_level, self.boss_images, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 
