@@ -27,6 +27,7 @@ class Game():
         self.background_y = 0
         self.load_mob_images()
         self.load_boss_images()
+        self.load_power_up_images()
         self.menu_screen()
 
     def load_mob_images(self):
@@ -44,6 +45,18 @@ class Game():
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (170,190))
             self.boss_images.append(image)
+
+    def load_power_up_images(self):
+        self.power_up_images_list = []
+        self.power_up_images = [[] for i in range(1, len(POWER_UP_ID_LIST) + 1)]
+        for power_up_id in POWER_UP_ID_LIST:
+            self.power_up_images_list.append(["img/PowerUps/" + str(power_up_id) + str(number) + ".png" for number in range(1,11)])
+        for i in range(0, len(self.power_up_images)):
+            for file in self.power_up_images_list[i]:
+                image = pygame.image.load(file).convert_alpha()
+                image = pygame.transform.scale(image, (50,50))
+                self.power_up_images[i].append(image)
+
 
     def load_highscore(self):
         f = open('highscore.txt', 'r')
@@ -243,15 +256,14 @@ class Game():
                                 if random.randint(0,100) < POWERUP_PERCENTAGE:
                                     which_power_up = random.randint(1,3)
                                     if which_power_up == 1:
-                                        self.spawn_speed_power_ups(SPEED_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[0], enemy.rect.x + 15, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 2:
-                                        self.spawn_damage_power_ups(DAMAGE_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[1], enemy.rect.x + 15, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 3:
-                                        self.spawn_double_power_ups(DOUBLE_POWER_UP_ID, enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[2], enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                             pygame.mixer.Channel(3).play(EXPLOSION)
                     if enemy.killed:
                         enemy.kill()
-
 
                 #when player bullet colliding boss
                 boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
@@ -326,20 +338,10 @@ class Game():
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
-    def spawn_speed_power_ups(self, id, pos_x, pos_y, groups):
-        speed_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
-        speed_power_up.rect.x = pos_x
-        speed_power_up.rect.y = pos_y
-
-    def spawn_damage_power_ups(self, id, pos_x, pos_y, groups):
-        damage_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
-        damage_power_up.rect.x = pos_x
-        damage_power_up.rect.y = pos_y
-
-    def spawn_double_power_ups(self, id, pos_x, pos_y, groups):
-        damage_power_up = PowerUp(id, SCREEN_WIDTH, SCREEN_HEIGHT, groups)
-        damage_power_up.rect.x = pos_x
-        damage_power_up.rect.y = pos_y
+    def spawn_power_up(self, id, pos_x, pos_y, groups):
+        power_up = PowerUp(id, POWER_UP_ID_LIST, SCREEN_WIDTH, SCREEN_HEIGHT, self.power_up_images, groups)
+        power_up.rect.x = pos_x
+        power_up.rect.y = pos_y
 
     def spawn_meteor(self, speed, groups):
         pygame.mixer.Channel(2).play(COMET)

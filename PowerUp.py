@@ -2,18 +2,13 @@ import pygame
 
 class PowerUp(pygame.sprite.Sprite):
 
-    def __init__(self, power_ups_id, screen_width, screen_height, *group):
+    def __init__(self, power_ups_id, power_ups_id_list, screen_width, screen_height, images, *group):
         super().__init__(*group)
         self.power_ups_id = power_ups_id
-        self.images_list = ["img/PowerUps/" + str(power_ups_id) + str(number) + ".png" for number in range(1,11)]
-        self.images = []
-        #Load all images
-        for file in self.images_list:
-            image = pygame.image.load(file).convert_alpha()
-            image = pygame.transform.scale(image, (50,50))
-            self.images.append(image)
+        self.power_ups_id_list = power_ups_id_list
+        self.images = images
         self.index = 0
-        self.image = self.images[self.index]
+        self.image = self.images[self.power_ups_id_list.index(self.power_ups_id)][self.index]
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.rect = self.image.get_rect()
@@ -28,7 +23,7 @@ class PowerUp(pygame.sprite.Sprite):
             if self.current_frame >= self.animation_frames:
                 self.current_frame = 0
                 self.index = (self.index + 1) % len(self.images)
-                self.image = self.images[self.index]
+                self.image = self.images[self.power_ups_id_list.index(self.power_ups_id)][self.index]
             self.rect.y += self.speed
         else:
             self.current_frame += 0
