@@ -251,22 +251,14 @@ class Intro():
 
 
     def bg_music(self):
-        self.draw_img(self.music_on_off_img[self.on_off], 450, 0)  # to be set on topleft=(450, 0)
-        # self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y)
+        self.draw_img(self.music_on_off_img[self.on_off], 450, 0)
+        # self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y) # where it previously was
         pygame.mixer.Channel(0).set_volume(self.music_on_off[0])
-        if self.music_on_off_img[self.on_off].get_rect(topleft=(450, 0)).collidepoint(self.x, self.y): # self.mb_top_left_x, self.mb_top_left_y 
+        if self.music_on_off_img[self.on_off].get_rect(topleft=(450, 0)).collidepoint(self.x, self.y): # topleft=(self.mb_top_left_x, self.mb_top_left_y)
             self.on_off = (self.on_off + 1) % 2
             self.music_on_off[0], self.music_on_off[1] = self.music_on_off[1], self.music_on_off[0]
             print (self.music_on_off[0], self.music_on_off[1])
             self.x, self.y = 0, 0  # reset click position, should really do for all clicks
-
-#    def mute(self):
-#        pygame.mixer.Channel(0).pause()
-#        self.draw_img(self.volume_button_image, self.mb_top_left_x, self.mb_top_left_y)
-#        self.draw_text(40, RED, "MUSIC ON", (200, 635))
-#        pygame.mixer.Channel(0).unpause()
-#        self.draw_img(self.mute_button_image, self.mb_top_left_x, self.mb_top_left_y)
-#        self.draw_text(40, GREY, "MUSIC OFF", (200, 635))
 
     def draw_img(self, img, x, y, area = None):
         self.screen.blit(img, (x, y), area)
