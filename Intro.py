@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from Constants import *
 
 class Intro:
     pygame.init()
