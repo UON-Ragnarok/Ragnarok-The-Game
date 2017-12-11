@@ -110,8 +110,7 @@ class Game():
         #Enemies Properties
         self.boss_speed = 1
         self.boss_bullet_speed = 5
-        self.enemies_speed = math.sqrt(10 + self.current_level)
-        self.boss_id = 0
+        self.enemies_speed = 3
 
         #Setting up firing bullet delay
         self.fire_bullet_event = pygame.USEREVENT + 1
@@ -297,7 +296,7 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 5 != 0 or self.current_level == 0:
+                if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
                 else:
                     self.boss_id = random.randint(1,2)
@@ -306,7 +305,7 @@ class Game():
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
-                if self.current_level % 4 == 0:
+                if self.current_level % METEOR_SPAWN_RATE == 0:
                     self.spawn_meteor(self.enemies_speed * 2,  [self.enemy_list, self.meteor_list, self.sprites_list])
 
             for sprite in self.sprites_list :
@@ -329,7 +328,7 @@ class Game():
     def spawn_enemy(self, speed, current_level, groups):
         health = int(current_level / DIFFICULTY) + 1
         for i in range (5):
-            enemy = Enemy(speed, health, self.mob_images, groups)
+            enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
@@ -346,7 +345,7 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed, current_level, self.boss_images, groups)
+        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed * (1 + current_level / 100), current_level, self.boss_images, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 
