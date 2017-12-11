@@ -30,11 +30,10 @@ class Game:
         self.load_power_up_images()
         self.load_music()
         self.menu_screen()
-        
-        
+
 
     def load_music(self):
-        self.ARCADE_FUNK = 'Sound/Arcade Funk.ogg'  # Channel 0
+        self.ARCADE_FUNK = pygame.mixer.Sound('Sound/Arcade Funk.ogg')  # Channel 0
         self.EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg') # Channel 1
         self.COIN = pygame.mixer.Sound('Sound/coin.ogg')  # Channel 2
         self.KILLED = pygame.mixer.Sound('Sound/killed_explo.ogg')  # Channel 3
@@ -48,8 +47,8 @@ class Game:
         pygame.mixer.Channel(5).set_volume(0.1) # Laser
         pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
         pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
-        
-        
+
+
     def load_mob_images(self):
         self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0,12)]
         self.mob_images = []
@@ -145,7 +144,9 @@ class Game:
         self.run()
 
     def menu_screen(self):
-        self.intro = Intro(self.screen, self.ARCADE_FUNK)
+        pygame.mixer.Channel(0).get_busy()
+        pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
+        self.intro = Intro(self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
@@ -182,7 +183,9 @@ class Game:
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
+        #pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
         self.sprites_list.draw(self.screen)
+        #print (self.sprites_list)  # check the number of sprites
         pygame.display.flip()
 
     def events(self):
@@ -338,13 +341,13 @@ class Game:
             for sprite in self.sprites_list:
                 sprite.kill()
 
-        elif self.pause :
+        elif self.pause:
             self.show_menu('b')
 
     #Spawning enemies
     def spawn_enemy(self, speed, current_level, groups):
         health = int(current_level / DIFFICULTY) + 1
-        for i in range (5):
+        for i in range(5):
             enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
