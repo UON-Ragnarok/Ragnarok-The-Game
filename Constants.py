@@ -33,6 +33,7 @@ pygame.mixer.Channel(7).set_volume(0.2)
 
 #Gameplay Properties
 POWERUP_PERCENTAGE = 90
-SPEED_POWER_UP_ID = 'A'
-DAMAGE_POWER_UP_ID = 'B'
-DOUBLE_POWER_UP_ID = 'C'
+POWER_UP_ID_LIST = ['A', 'B', 'C']
+#SPEED_POWER_UP_ID = 'A'
+#DAMAGE_POWER_UP_ID = 'B'
+#DOUBLE_POWER_UP_ID = 'C'

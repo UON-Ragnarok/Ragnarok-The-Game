@@ -66,7 +66,6 @@ class Boss(pygame.sprite.Sprite):
             self.rect.x += 0
             self.current_frame += 0
 
-
     def update_health_bar(self):
         if self.going_in and not self.death:
             pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
@@ -78,7 +77,6 @@ class Boss(pygame.sprite.Sprite):
             self.current_frame = 0
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
-
 
     def say_phrases(self):
         phrase = random.randint(1,4)
@@ -119,7 +117,6 @@ class Boss(pygame.sprite.Sprite):
             self.health -= 1 + bullet_damage
             if self.health < self.total_health * self.anger_value:
                 self.anger = True
-                
 
     def is_alive(self):
         return self.health > 0
@@ -143,7 +140,6 @@ class Boss_Bullet(pygame.sprite.Sprite):
 
     # different bullets with different bosses
     def update(self):
-
             if self.pause == False:
 ##            if self.prev_x_pos == -1:
 ##                self.prev_x_pos = self.rect.x
