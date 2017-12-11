@@ -12,15 +12,6 @@ from PowerUp import *
 from Intro import *
 from Constants import *
 
-pygame.mixer.Channel(1).set_volume(0.3) # Explosion
-pygame.mixer.Channel(2).set_volume(0.3) # Coin
-pygame.mixer.Channel(3).set_volume(0.3) # Killed
-pygame.mixer.Channel(4).set_volume(0.3) # Comet
-pygame.mixer.Channel(5).set_volume(0.1) # Laser
-pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
-pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
-
-
 class Game:
     def __init__(self):
         # initialize game window, etc
@@ -37,8 +28,9 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
-        self.menu_screen()
         self.load_music()
+        self.menu_screen()
+        
         
 
     def load_music(self):
@@ -49,6 +41,13 @@ class Game:
         self.COMET = pygame.mixer.Sound('Sound/comet.ogg')  # Channel 4
         self.LASER = pygame.mixer.Sound('Sound/laser.ogg')  # Channel 5
         self.BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')  # Channel 6
+        pygame.mixer.Channel(1).set_volume(0.3) # Explosion
+        pygame.mixer.Channel(2).set_volume(0.3) # Coin
+        pygame.mixer.Channel(3).set_volume(0.3) # Killed
+        pygame.mixer.Channel(4).set_volume(0.3) # Comet
+        pygame.mixer.Channel(5).set_volume(0.1) # Laser
+        pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
+        pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
         
         
     def load_mob_images(self):
