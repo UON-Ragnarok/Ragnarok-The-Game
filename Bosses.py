@@ -109,8 +109,6 @@ class Boss(pygame.sprite.Sprite):
                         self.moving_horizontal_old_time = time.time()
                         self.moving_horizontal = True
 
-
-
     def update_health_bar(self):
         if self.going_in and not self.death:
             pygame.draw.line(self.screen,self.RED,(self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)

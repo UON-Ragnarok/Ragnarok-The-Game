@@ -278,7 +278,6 @@ class Game():
 
                      if boss.killed:
                          boss.kill()
-                         self.current_level += 1
 
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
@@ -298,12 +297,12 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 2 != 0 or self.current_level == 0:
+                if self.current_level % 5 != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
-                    self.current_level += 1
                 else:
-                    self.boss_id = 2
+                    self.boss_id = random.randint(1,2)
                     self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list,self.boss_bullet_list, self.sprites_list])
+                self.current_level += 1
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
