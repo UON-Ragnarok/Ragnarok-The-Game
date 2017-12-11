@@ -110,8 +110,7 @@ class Game():
         #Enemies Properties
         self.boss_speed = 1
         self.boss_bullet_speed = 5
-        self.enemies_speed = math.sqrt(10 + self.current_level)
-        self.boss_id = 0
+        self.enemies_speed = 3
 
         #Setting up firing bullet delay
         self.fire_bullet_event = pygame.USEREVENT + 1
@@ -154,6 +153,7 @@ class Game():
         self.draw_background()
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
+            self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.current_level),  0, RED), (SCREEN_WIDTH - 100, 30))
             if self.score >= self.highscore:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
@@ -175,17 +175,17 @@ class Game():
                 self.playing = False
                 self.running = False
 
-            if self.alive and not self.pause:
-                if event.type == self.fire_bullet_event:
-                    self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
-                if event.type == self.boss_bullet_event and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
-                    self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
-                    self.boss_bullet_counter += 1
-                    if self.boss_bullet_counter >= 2:
-                        pygame.time.set_timer(self.boss_bullet_event, 2500)
-                        self.boss_bullet_counter = 0
-                    else:
-                        pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
+            if self.alive and event.type == self.fire_bullet_event and not self.pause:
+                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.sprites_list, self.bullet_list])
+             # update the boss bullet
+            if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
+                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
+                self.boss_bullet_counter += 1
+                if self.boss_bullet_counter >= 2:
+                    pygame.time.set_timer(self.boss_bullet_event, 2500)
+                    self.boss_bullet_counter = 0
+                else:
+                    pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and (not self.alive):
@@ -277,7 +277,6 @@ class Game():
 
                      if boss.killed:
                          boss.kill()
-                         self.current_level += 1
 
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
@@ -297,16 +296,16 @@ class Game():
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
-                if self.current_level % 2 != 0 or self.current_level == 0:
+                if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
-                    self.current_level += 1
                 else:
-                    self.boss_id = 2
+                    self.boss_id = random.randint(1,2)
                     self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list,self.boss_bullet_list, self.sprites_list])
+                self.current_level += 1
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
-                if self.current_level % 4 == 0:
+                if self.current_level % METEOR_SPAWN_RATE == 0:
                     self.spawn_meteor(self.enemies_speed * 2,  [self.enemy_list, self.meteor_list, self.sprites_list])
 
             for sprite in self.sprites_list :
@@ -329,7 +328,7 @@ class Game():
     def spawn_enemy(self, speed, current_level, groups):
         health = int(current_level / DIFFICULTY) + 1
         for i in range (5):
-            enemy = Enemy(speed, health, self.mob_images, groups)
+            enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, groups)
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
@@ -346,7 +345,7 @@ class Game():
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed, current_level, self.boss_images, groups)
+        boss = Boss(boss_id, screen, SCREEN_WIDTH, SCREEN_HEIGHT, speed * (1 + current_level / 100), current_level, self.boss_images, groups)
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 

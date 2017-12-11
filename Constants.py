@@ -34,6 +34,7 @@ pygame.mixer.Channel(7).set_volume(0.2)
 
 #Gameplay Properties
 DIFFICULTY = 10
+METEOR_SPAWN_RATE = 4
 POWERUP_PERCENTAGE = 10
 POWER_UP_ID_LIST = ['A', 'B', 'C']
 #SPEED_POWER_UP_ID = 'A'
