@@ -40,6 +40,7 @@ class Game:
         self.COMET = pygame.mixer.Sound('Sound/comet.ogg')  # Channel 4
         self.LASER = pygame.mixer.Sound('Sound/laser.ogg')  # Channel 5
         self.BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')  # Channel 6
+        pygame.mixer.Channel(0).set_volume(0.5) # Arcade
         pygame.mixer.Channel(1).set_volume(0.3) # Explosion
         pygame.mixer.Channel(2).set_volume(0.3) # Coin
         pygame.mixer.Channel(3).set_volume(0.3) # Killed

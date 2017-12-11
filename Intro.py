@@ -15,7 +15,7 @@ class Intro:
         self.spaceship_image = pygame.image.load('img/spaceship.png').convert_alpha()
         self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
         self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
-        self.thor_image = pygame.image.load('img/thor.png').convert_alpha()
+        self.thor_image = pygame.image.load('img/thor1.png').convert_alpha()
         self.power_up_image = pygame.image.load('img/PowerUps/A1.png').convert_alpha()
         self.screen = screen
         self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
