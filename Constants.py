@@ -16,6 +16,7 @@ GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (240, 255, 0)
+BLUE = (127, 202, 255)
 
 #Gameplay Properties
 DIFFICULTY = 10
