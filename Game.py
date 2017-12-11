@@ -154,7 +154,6 @@ class Game:
         self.draw_background()
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
-            self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.current_level),  0, RED), (SCREEN_WIDTH - 100, 30))
             if self.score >= self.highscore:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
