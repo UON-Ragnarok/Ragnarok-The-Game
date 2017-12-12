@@ -5,6 +5,7 @@ from os import path
 from Constants import *
 
 class Boss(pygame.sprite.Sprite):
+    pygame.mixer.init()
 
     forward = True
     moving_vertical = False
@@ -185,12 +186,14 @@ class Boss(pygame.sprite.Sprite):
 class Boss_Bullet(pygame.sprite.Sprite):
     bullet_speed = 3
     prev_x_pos = -1
-    def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
+    def __init__(self, game, boss, x_pos, y_pos, bullet_speed, *groups):
         super().__init__(*groups)
+        self.game = game
         self.boss = boss
         self.boss_id = boss.boss_id
-        self.image = pygame.Surface([5, 10])
-        self.image.fill(YELLOW) #yellow bullet, place holder, need to find image or something
+        self.image = game.boss_bolt_image
+        #self.image = pygame.Surface([5, 10])
+        #self.image.fill(YELLOW) #yellow bullet, place holder, need to find image or something
         self.rect = self.image.get_rect()
         self.rect.x = x_pos
         self.origin_pos_x = x_pos

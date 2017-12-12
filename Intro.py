@@ -2,6 +2,14 @@ import pygame
 from Constants import *
 from os import path
 
+#pygame.init()
+#game_folder = path.dirname(__file__)
+#img_folder = path.join(game_folder, 'img')
+#IMG_NAMES 	= ["main_menu_bg", "Ragnarok_logo", "start_button", "about_button", "back_button", "mute", "volume",
+#				"spaceship", "mob", "meteor", "thor1", "PowerUps/A1"]
+#IMAGES 		= {name: pygame.image.load(path.join(img_folder, f"{name}.png")).convert_alpha()
+#				for name in IMG_NAMES}
+
 class Intro:
     pygame.init()
 
@@ -78,9 +86,6 @@ class Intro:
                     about = False
 
             pygame.display.flip()
-
-    def load_images(self):
-        pass
 
     def main_menu(self):
         # draw a and write a bunck of stuff

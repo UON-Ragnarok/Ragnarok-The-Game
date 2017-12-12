@@ -61,16 +61,14 @@ class Game:
             for i in range(0,8):
                 pygame.mixer.Channel(i).set_volume(0) # Arcade
 
-    def path_find(self):
+
+    def load_data(self):
         game_folder = path.dirname(__file__)
         self.img_folder = path.join(game_folder, 'img')
         self.snd_folder = path.join(game_folder, 'Sound')
         self.mob_img_folder = path.join(self.img_folder, 'Enemy')
         self.boss_img_folder = path.join(self.img_folder, 'Thorsten')
         self.powerups_img_folder = path.join(self.img_folder, 'PowerUps')
-
-    def load_data(self):
-        self.path_find()
         self.player_ship_image = pygame.image.load(path.join(self.img_folder, 'spaceship.png')).convert_alpha()
         self.bullet_img = pygame.image.load(path.join(self.img_folder, 'beam.png')).convert()  # come up error when implement
         self.meteor_image = pygame.image.load(path.join(self.img_folder, 'meteor.png')).convert_alpha()
@@ -84,7 +82,7 @@ class Game:
         self.meteor_image_rect = self.meteor_image.get_rect()
 
     def load_mob_images(self):
-        self.path_find()
+        #self.path_find()
         self.mob_images_list = [path.join(self.mob_img_folder, str(number) + ".png") for number in range(0, 12)]
         self.mob_images = []
         for file in self.mob_images_list:
@@ -95,7 +93,7 @@ class Game:
         self.mob_image_rect = self.mob_images[0].get_rect()
 
     def load_boss_images(self):
-        self.path_find()
+        #self.path_find()
         self.boss_images_list = [path.join(self.boss_img_folder, str(number) + ".png") for number in range(1, 32)]
         self.boss_images = []
         for file in self.boss_images_list:
@@ -107,7 +105,7 @@ class Game:
 
 
     def load_power_up_images(self):
-        self.path_find()
+        #self.path_find()
         self.power_up_images_list = []
         self.power_up_images = [[] for i in range(1, len(POWER_UP_ID_LIST) + 1)]
         for power_up_id in POWER_UP_ID_LIST:
@@ -422,19 +420,19 @@ class Game:
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
-            bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
-            bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         else:
-            bullet = Bullet(player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet = Bullet(self, player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):
         #can add music
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
-            Boss_Bullet(boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
     ##    pygame.time.set_timer(boss_bullet_event, 0)
 
