@@ -65,6 +65,8 @@ class Game:
     def init_masks(self):
         self.player_ship_image_mask = pygame.mask.from_surface(self.player_ship_image)
         self.player_ship_rect = self.player_ship_image.get_rect()
+        self.meteor_image_mask = pygame.mask.from_surface(self.meteor_image)
+        self.meteor_image_rect = self.meteor_image.get_rect()
 
     def load_mob_images(self):
         self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0, 12)]
@@ -258,10 +260,11 @@ class Game:
         if self.alive and not self.pause:
             # player colliding with enemy
             for mob in self.mob_list:
-                offset_x, offset_y = (mob.rect.x - self.player.rect.x), (mob.rect.y - self.player.rect.y)
-                if (self.player_ship_image_mask.overlap(self.mob_image_mask, (offset_x, offset_y)) != None):
-                    pygame.mixer.Channel(3).play(self.KILLED)
-                    self.alive = False
+                self.check_for_collision(self.player, mob, self.player_ship_image_mask, self.mob_image_mask)
+
+            #Player colliding with meteors
+            for meteor in self.meteor_list:
+                self.check_for_collision(self.player, meteor, self.player_ship_image_mask, self.meteor_image_mask)
 
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
@@ -362,6 +365,12 @@ class Game:
 
         elif self.pause:
             self.show_menu('b')
+
+    def check_for_collision(self, player, enemy, player_mask, enemy_mask):
+        offset_x, offset_y = (enemy.rect.x - player.rect.x), (enemy.rect.y - player.rect.y)
+        if (player_mask.overlap(enemy_mask, (offset_x, offset_y)) != None):
+            pygame.mixer.Channel(3).play(self.KILLED)
+            self.alive = False
 
     #Spawning enemies
     def spawn_enemy(self, speed, current_level, groups):
