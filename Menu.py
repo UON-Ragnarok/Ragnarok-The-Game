@@ -46,6 +46,7 @@ class Menu:
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(i), 1, BLUE), (self.mid_x - 10 ,self.mid_y + 40))
                 pygame.display.update()
                 pygame.time.wait(1000)
+                screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(i), 1, BLACK), (self.mid_x - 10 ,self.mid_y + 40))
  
                               
             
