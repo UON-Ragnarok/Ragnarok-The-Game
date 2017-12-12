@@ -115,14 +115,11 @@ class Boss(pygame.sprite.Sprite):
 
     def boss_three_action(self):
         if self.anger:
-            time_between_meteors = 1
+            time_speed_of_meteors = [1, 5 * self.speed * self.anger_multiplier]
         else:
-            time_between_meteors = 2
-        if time.time() - self.spawn_meteor_old_time > time_between_meteors:
-            if self.anger:
-                self.game.spawn_meteor(5 * self.speed * self.anger_multiplier)
-            else:
-                self.game.spawn_meteor(5 * self.speed)
+            time_speed_of_meteors = [2, 5 * self.speed]
+        if time.time() - self.spawn_meteor_old_time > time_speed_of_meteors[0]:
+            self.game.spawn_meteor(time_speed_of_meteors[1])
             self.spawn_meteor_old_time = time.time()
 
 
