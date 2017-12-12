@@ -1,22 +1,25 @@
 import pygame
 from Constants import *
+from os import path
 
 class Intro:
     pygame.init()
 
     def __init__(self, screen):
-        self.menu_background = pygame.image.load('img/main_menu_bg.jpg').convert()
-        self.title = pygame.image.load('img/Ragnarok_logo.png').convert_alpha()
-        self.start_button_image = pygame.image.load('img/start_button.png').convert()
-        self.about_button_image = pygame.image.load('img/about_button.png').convert()
-        self.back_button_image = pygame.image.load('img/back_button.png').convert()
-        self.mute_button_image = pygame.transform.scale(pygame.image.load('img/mute.png').convert_alpha(), (50, 50))
-        self.volume_button_image = pygame.transform.scale(pygame.image.load('img/volume.png').convert_alpha(), (50, 50))
-        self.spaceship_image = pygame.image.load('img/spaceship.png').convert_alpha()
-        self.mob_image = pygame.image.load('img/mob.png').convert_alpha()
-        self.meteor_image = pygame.image.load('img/meteor.png').convert_alpha()
-        self.thor_image = pygame.image.load('img/thor1.png').convert_alpha()
-        self.power_up_image = pygame.image.load('img/PowerUps/A1.png').convert_alpha()
+        game_folder = path.dirname(__file__)
+        img_folder = path.join(game_folder, 'img')
+        self.menu_background = pygame.image.load(path.join(img_folder, 'main_menu_bg.jpg')).convert()
+        self.title = pygame.image.load(path.join(img_folder, 'Ragnarok_logo.png')).convert_alpha()
+        self.start_button_image = pygame.image.load(path.join(img_folder, 'start_button.png')).convert()
+        self.about_button_image = pygame.image.load(path.join(img_folder, 'about_button.png')).convert()
+        self.back_button_image = pygame.image.load(path.join(img_folder, 'back_button.png')).convert()
+        self.mute_button_image = pygame.transform.scale(pygame.image.load(path.join(img_folder, 'mute.png')).convert_alpha(), (50, 50))
+        self.volume_button_image = pygame.transform.scale(pygame.image.load(path.join(img_folder, 'volume.png')).convert_alpha(), (50, 50))
+        self.spaceship_image = pygame.image.load(path.join(img_folder, 'spaceship.png')).convert_alpha()
+        self.mob_image = pygame.image.load(path.join(img_folder, 'mob.png')).convert_alpha()
+        self.meteor_image = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
+        self.thor_image = pygame.image.load(path.join(img_folder, 'thor1.png')).convert_alpha()
+        self.power_up_image = pygame.image.load(path.join(img_folder, 'PowerUps/A1.png')).convert_alpha()
         self.screen = screen
         self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
         self.music_on_off = [0.3, 0]  # setting music volume/ on_off bg music
