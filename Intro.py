@@ -5,9 +5,10 @@ from os import path
 class Intro:
     pygame.init()
 
-    def __init__(self, screen):
+    def __init__(self, game, screen):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'img')
+        self.game = game
         self.menu_background = pygame.image.load(path.join(img_folder, 'main_menu_bg.jpg')).convert()
         self.title = pygame.image.load(path.join(img_folder, 'Ragnarok_logo.png')).convert_alpha()
         self.start_button_image = pygame.image.load(path.join(img_folder, 'start_button.png')).convert()
@@ -24,6 +25,7 @@ class Intro:
         self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
         self.music_on_off = [0.3, 0]  # setting music volume/ on_off bg music
         self.mute_text = ["MUSIC ON", "MUSIC OFF"]
+        self.is_mute = False
         self.on_off = 0
         self.click_x = 0  # to store the x_pos of click
         self.click_y = 0  # to store the y_pos of click
@@ -122,14 +124,22 @@ class Intro:
                     self.click_x, self.click_y = event.pos
 
     def bg_music(self):
+        if self.game.is_mute:
+            self.on_off = 1
+        else:
+            self.on_off = 0
         self.draw_img(self.music_on_off_img[self.on_off], self.mb_top_left_x, self.mb_top_left_y)
         self.draw_text(40, WHITE, self.mute_text[self.on_off], (200, 635))
-        pygame.mixer.Channel(0).set_volume(self.music_on_off[0])
         if self.music_on_off_img[self.on_off].get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.click_x, self.click_y):
             # click on the image will either turn the volume down or up/ silening it
             self.on_off = (self.on_off + 1) % 2
             self.music_on_off[0], self.music_on_off[1] = self.music_on_off[1], self.music_on_off[0]
+            self.game.is_mute = not self.game.is_mute
+            self.game.set_volume(not self.game.is_mute)
             self.click_x, self.click_y = 0, 0  # reset click position, should actually really do for all(after the click start / about/ back) buttons click
+
+    def is_muted(self):
+        return self.is_mute
 
     def draw_img(self, img, x, y, area = None):
         self.screen.blit(img, (x, y), area)

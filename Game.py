@@ -25,6 +25,7 @@ class Game:
         self.load_highscore()
         self.alive = True
         self.pause = False
+        self.is_mute = False
         self.background_y = 0
         self.load_mob_images()
         self.load_boss_images()
@@ -32,6 +33,7 @@ class Game:
         self.load_data()
         self.load_music()
         self.init_masks()
+        self.set_volume(True)
         self.menu_screen()
 
 
@@ -43,14 +45,21 @@ class Game:
         self.COMET = pygame.mixer.Sound(path.join(self.snd_folder,'comet.ogg'))  # Channel 4
         self.LASER = pygame.mixer.Sound(path.join(self.snd_folder,'laser.ogg'))  # Channel 5
         self.BOSS_LASER = pygame.mixer.Sound(path.join(self.snd_folder,'Boss_laser.ogg'))  # Channel 6
-        pygame.mixer.Channel(0).set_volume(0.5) # Arcade
-        pygame.mixer.Channel(1).set_volume(0.3) # Explosion
-        pygame.mixer.Channel(2).set_volume(0.3) # Coin
-        pygame.mixer.Channel(3).set_volume(0.3) # Killed
-        pygame.mixer.Channel(4).set_volume(0.3) # Comet
-        pygame.mixer.Channel(5).set_volume(0.1) # Laser
-        pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
-        pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
+
+    def set_volume(self, bool):
+        if bool == True:
+            pygame.mixer.Channel(0).set_volume(0.5) # Arcade
+            pygame.mixer.Channel(1).set_volume(0.3) # Explosion
+            pygame.mixer.Channel(2).set_volume(0.3) # Coin
+            pygame.mixer.Channel(3).set_volume(0.3) # Killed
+            pygame.mixer.Channel(4).set_volume(0.3) # Comet
+            pygame.mixer.Channel(5).set_volume(0.1) # Laser
+            pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
+            pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
+        else:
+            for i in range(0,8):
+                pygame.mixer.Channel(i).set_volume(0) # Arcade
+
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -169,7 +178,7 @@ class Game:
     def menu_screen(self):
         pygame.mixer.Channel(0).get_busy()
         pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
-        self.intro = Intro(self.screen)
+        self.intro = Intro(self, self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
