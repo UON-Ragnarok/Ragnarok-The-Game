@@ -85,6 +85,9 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (170,190))
             self.boss_images.append(image)
+        self.boss_image_mask = pygame.mask.from_surface(self.boss_images[0])
+        self.boss_image_rect = self.boss_images[0].get_rect()
+
 
     def load_power_up_images(self):
         self.power_up_images_list = []
@@ -266,6 +269,9 @@ class Game:
             for meteor in self.meteor_list:
                 self.check_for_collision(self.player, meteor, self.player_ship_image_mask, self.meteor_image_mask)
 
+            for boss in self.boss_list:
+                self.check_for_collision(self.player, boss, self.player_ship_image_mask, self.boss_image_mask)
+
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
             for hit in power_up_hit_list:
@@ -286,27 +292,31 @@ class Game:
 
             for bullet in self.bullet_list:
                 enemies_hit_list = pygame.sprite.spritecollide(bullet, self.mob_list, False)
-                for enemy in enemies_hit_list:
-                    if enemy.death == False:
-                        enemy.health -= 1 + self.bullet_damage
+                for mob in enemies_hit_list:
+                    if mob.death == False:
+                        mob.health -= 1 + self.bullet_damage
                         self.score += 1
                         bullet.kill()
-                        if enemy.health <= 0:
-                            enemy.death = True
-                            enemy.remove(self.mob_list, self.enemy_list)
+                        if mob.health <= 0:
+                            mob.death = True
+                            mob.remove(self.mob_list, self.enemy_list)
                             #Spawn power ups
                             if not self.power_up_list:
                                 if random.randint(0, 100) < POWERUP_PERCENTAGE:
                                     which_power_up = random.randint(1,3)
                                     if which_power_up == 1:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[0], enemy.rect.x + 15, enemy.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[0], mob.rect.x + 15, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 2:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[1], enemy.rect.x + 15, enemy.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[1], mob.rect.x + 15, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 3:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[2], enemy.rect.x + 15, enemy.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[2], mob.rect.x + 15, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                             pygame.mixer.Channel(1).play(self.EXPLOSION)
-                    if enemy.killed:
-                        enemy.kill()
+                    if mob.killed:
+                        mob.kill()
+
+                #Kill bullet if it hits meteors
+                for meteor in self.meteor_list:
+                    meteor_hit_list = pygame.sprite.spritecollide(meteor, self.bullet_list, True)
 
                 #when player bullet colliding boss
                 boss_hit_list = pygame.sprite.spritecollide(bullet, self.boss_list, False)
@@ -332,17 +342,13 @@ class Game:
                     pygame.mixer.Channel(3).play(self.KILLED)
                     self.alive = False
 
-            #Kill bullet if it hits meteors
-            for meteor in self.meteor_list:
-                meteor_hit_list = pygame.sprite.spritecollide(meteor, self.bullet_list, True)
-
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
                 if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
                 else:
                     self.boss_id = random.randint(1,2)
-                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list,self.boss_bullet_list, self.sprites_list])
+                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list, self.sprites_list])
                 self.current_level += 1
 
             #Spawn meteor:
@@ -354,6 +360,7 @@ class Game:
                 #If enemies go off screen, for meteor, boss moves, enemy/mobs
                 if sprite.rect.top > SCREEN_HEIGHT:
                     sprite.kill()
+
         #m = Menu(screen_width/2,screen_height/2)
         if not self.alive:
             if self.score > self.highscore:
