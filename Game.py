@@ -176,8 +176,8 @@ class Game:
         self.run()
 
     def menu_screen(self):
-        pygame.mixer.Channel(0).get_busy()
-        pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
+        if not pygame.mixer.Channel(0).get_busy():
+            pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
         self.intro = Intro(self, self.screen)
         self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
