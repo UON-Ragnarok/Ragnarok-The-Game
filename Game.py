@@ -28,10 +28,10 @@ class Game:
         self.countdown = False
         self.is_mute = False
         self.background_y = 0
+        self.load_data()
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
-        self.load_data()
         self.load_music()
         self.init_masks()
         self.set_volume(True)
@@ -61,16 +61,21 @@ class Game:
             for i in range(0,8):
                 pygame.mixer.Channel(i).set_volume(0) # Arcade
 
+    def path_find(self):
+        game_folder = path.dirname(__file__)
+        self.img_folder = path.join(game_folder, 'img')
+        self.snd_folder = path.join(game_folder, 'Sound')
+        self.mob_img_folder = path.join(self.img_folder, 'Enemy')
+        self.boss_img_folder = path.join(self.img_folder, 'Thorsten')
+        self.powerups_img_folder = path.join(self.img_folder, 'PowerUps')
 
     def load_data(self):
-        game_folder = path.dirname(__file__)
-        img_folder = path.join(game_folder, 'img')
-        self.snd_folder = path.join(game_folder, 'Sound')
-        self.player_ship_image = pygame.image.load(path.join(img_folder, 'spaceship.png')).convert_alpha()
-        #self.bullet = pygame.image.load(path.join(img_folder, '.png')).convert()
-        #mob_images
-        self.meteor_image = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
-        #boss lighting bolt/bullet
+        self.path_find()
+        self.player_ship_image = pygame.image.load(path.join(self.img_folder, 'spaceship.png')).convert_alpha()
+        self.bullet_img = pygame.image.load(path.join(self.img_folder, 'beam.png')).convert()  # come up error when implement
+        self.meteor_image = pygame.image.load(path.join(self.img_folder, 'meteor.png')).convert_alpha()
+        self.boss_bolt_image = pygame.image.load(path.join(self.img_folder, 'bolt.png')).convert_alpha()
+        self.background = pygame.image.load(path.join(self.img_folder, 'background.jpg')).convert()
 
     def init_masks(self):
         self.player_ship_image_mask = pygame.mask.from_surface(self.player_ship_image)
@@ -79,17 +84,19 @@ class Game:
         self.meteor_image_rect = self.meteor_image.get_rect()
 
     def load_mob_images(self):
-        self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0, 12)]
+        self.path_find()
+        self.mob_images_list = [path.join(self.mob_img_folder, str(number) + ".png") for number in range(0, 12)]
         self.mob_images = []
         for file in self.mob_images_list:
             image = pygame.image.load(file).convert_alpha()
-            image = pygame.transform.scale(image, (80,80))
+            image = pygame.transform.scale(image, (80, 80))
             self.mob_images.append(image)
         self.mob_image_mask = pygame.mask.from_surface(self.mob_images[0])
         self.mob_image_rect = self.mob_images[0].get_rect()
 
     def load_boss_images(self):
-        self.boss_images_list = ["img/Thorsten/" + str(number) + ".png" for number in range(1,32)]
+        self.path_find()
+        self.boss_images_list = [path.join(self.boss_img_folder, str(number) + ".png") for number in range(1, 32)]
         self.boss_images = []
         for file in self.boss_images_list:
             image = pygame.image.load(file).convert_alpha()
@@ -100,17 +107,25 @@ class Game:
 
 
     def load_power_up_images(self):
+        self.path_find()
         self.power_up_images_list = []
         self.power_up_images = [[] for i in range(1, len(POWER_UP_ID_LIST) + 1)]
         for power_up_id in POWER_UP_ID_LIST:
-            self.power_up_images_list.append(["img/PowerUps/" + str(power_up_id) + str(number) + ".png" for number in range(1,11)])
+            self.power_up_images_list.append([path.join(self.powerups_img_folder, str(power_up_id) + str(number) + ".png") for number in range(1, 11)])
         for i in range(0, len(self.power_up_images)):
             for file in self.power_up_images_list[i]:
                 image = pygame.image.load(file).convert_alpha()
-                image = pygame.transform.scale(image, (50,50))
+                image = pygame.transform.scale(image, (50, 50))
                 self.power_up_images[i].append(image)
 
     def load_highscore(self):
+#        self.dir = path.dirname(__file__)
+#        with open(path.join(self.dir, HIGHSCORE), 'r') as f:
+#            try:
+#                self.highscore = int(f.read())
+#            except:
+#                self.highscore = 0
+
         f = open(HIGHSCORE, 'r')
         temp = f.read()
         if temp != "":
@@ -120,6 +135,12 @@ class Game:
         f.close()
 
     def write_highscore(self):
+        #self.dir = path.dirname(__file__)
+        #if self.score > self.highscore:
+        #    self.highscore = self.score
+        #    with open(path.join(self.dir, HIGHSCORE), 'w') as f:
+        #        f.write(str(self.score))
+
         if self.score >= self.highscore:
             f = open(HIGHSCORE, 'w')
             f.write(str(self.score))
@@ -176,7 +197,7 @@ class Game:
         if not pygame.mixer.Channel(0).get_busy():
             pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
         self.intro = Intro(self, self.screen)
-        self.background = pygame.image.load(BACKGROUND_IMG).convert()
+        #self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
     def show_menu(self, id):
@@ -304,11 +325,11 @@ class Game:
                                 if random.randint(0, 100) < POWERUP_PERCENTAGE:
                                     which_power_up = random.randint(1,3)
                                     if which_power_up == 1:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[0], mob.rect.x + 15, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[0], mob.rect.centerx , mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 2:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[1], mob.rect.x + 15, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[1], mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 3:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[2], mob.rect.x + 15, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                                        self.spawn_power_up(POWER_UP_ID_LIST[2], mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                             pygame.mixer.Channel(1).play(self.EXPLOSION)
                     if mob.killed:
                         mob.kill()
@@ -403,7 +424,7 @@ class Game:
         pygame.mixer.Channel(4).play(self.COMET)
         meteor = Meteor(self.meteor_image, speed, [self.enemy_list, self.meteor_list, self.sprites_list])
         meteor.rect.y = -200
-        meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
+        meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.w)
 
     #!!!!!!!!!!!!! can add different boss images!!
     def spawn_boss(self, speed, screen, current_level, boss_id):
