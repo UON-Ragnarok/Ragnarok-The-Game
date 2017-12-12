@@ -356,7 +356,7 @@ class Game:
                 if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level)
                 else:
-                    self.boss_id = random.randint(1,2)
+                    self.boss_id = 3
                     self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id)
                 self.current_level += 1
 
@@ -427,7 +427,7 @@ class Game:
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
             if boss.anger == True:
-                boss_bullet_speed = boss_bullet_speed * boss.bullet_anger_speed_multiplier
+                boss_bullet_speed = boss_bullet_speed * boss.anger_multiplier
             Boss_Bullet(boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])

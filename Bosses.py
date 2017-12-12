@@ -19,6 +19,7 @@ class Boss(pygame.sprite.Sprite):
         self.animation_frames = 5
         self.current_frame = 0
         self.moving_horizontal_old_time = time.time()
+        self.spawn_meteor_old_time = time.time()
 
         self.speed = speed
         self.health = 5 * current_level
@@ -34,7 +35,7 @@ class Boss(pygame.sprite.Sprite):
         self.death_speech = False
         self.killed = False
         self.anger_value = 0.5
-        self.bullet_anger_speed_multiplier = 1.5
+        self.anger_multiplier = 1.5
 
     # update the bossz
     def update(self):
@@ -53,62 +54,76 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.going_in = True
             else:
-                if self.boss_id == 1 or self.boss_id == 3:
-                    self.boss_one_movement()
-                elif self.boss_id == 2:
-                    self.boss_two_movement()
+                if not self.death:
+                    if self.boss_id == 1:
+                        self.boss_one_movement()
+                    elif self.boss_id == 2:
+                        self.boss_two_movement()
+                    elif self.boss_id == 3:
+                        self.boss_one_movement()
+                        self.boss_three_action()
         else:
             self.rect.x += 0
             self.current_frame += 0
 
     def boss_one_movement(self):
-        if not self.death:
-            if self.forward:
-                if self.anger:
-                    self.rect.x += self.speed * 2
-                else:
-                    self.rect.x += self.speed
-            elif not self.forward:
-                if self.anger:
-                    self.rect.x -= self.speed
-                else:
-                    self.rect.x -= self.speed / 2
+        if self.forward:
+            if self.anger:
+                self.rect.x += self.speed * 2
+            else:
+                self.rect.x += self.speed
+        elif not self.forward:
+            if self.anger:
+                self.rect.x -= self.speed
+            else:
+                self.rect.x -= self.speed / 2
                 # if the boss go out of the screen
-            if self.rect.right > SCREEN_WIDTH - 50 :
-                self.forward = False
-            if self.rect.left < 50 :
-                self.forward = True
+        if self.rect.right > SCREEN_WIDTH - 50 :
+            self.forward = False
+        if self.rect.left < 50 :
+            self.forward = True
 
     def boss_two_movement(self):
-        if not self.death:
-            if self.moving_horizontal:
-                if self.forward:
-                    self.rect.x += self.speed
-                elif not self.forward:
-                    self.rect.x -= self.speed / 2
+        if self.moving_horizontal:
+            if self.forward:
+                self.rect.x += self.speed
+            elif not self.forward:
+                self.rect.x -= self.speed / 2
                     # if the boss go out of the screen
-                if self.rect.right > SCREEN_WIDTH - 50 :
-                    self.forward = False
-                if self.rect.left < 50:
-                    self.forward = True
-                if time.time() - self.moving_horizontal_old_time > random.randint(3,5):
-                    self.moving_horizontal = False
+            if self.rect.right > SCREEN_WIDTH - 50 :
+                self.forward = False
+            if self.rect.left < 50:
+                self.forward = True
+            if time.time() - self.moving_horizontal_old_time > random.randint(3,5):
+                self.moving_horizontal = False
+        else:
+            if self.moving_vertical:
+                if self.anger:
+                    self.rect.y -= self.speed * 8
+                else:
+                    self.rect.y -= self.speed * 4
+            elif not self.moving_vertical:
+                if self.anger:
+                    self.rect.y += self.speed * 8
+                else:
+                    self.rect.y += self.speed * 4
+            if self.rect.bottom > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
+                self.moving_vertical = not self.moving_vertical
+                if self.rect.y < 50:
+                    self.moving_horizontal_old_time = time.time()
+                    self.moving_horizontal = True
+
+    def boss_three_action(self):
+        if self.anger:
+            time_between_meteors = 1
+        else:
+            time_between_meteors = 2
+        if time.time() - self.spawn_meteor_old_time > time_between_meteors:
+            if self.anger:
+                self.game.spawn_meteor(5 * self.speed * self.anger_multiplier)
             else:
-                if self.moving_vertical:
-                    if self.anger:
-                        self.rect.y -= self.speed * 8
-                    else:
-                        self.rect.y -= self.speed * 4
-                elif not self.moving_vertical:
-                    if self.anger:
-                        self.rect.y += self.speed * 8
-                    else:
-                        self.rect.y += self.speed * 4
-                if self.rect.bottom > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
-                    self.moving_vertical = not self.moving_vertical
-                    if self.rect.y < 50:
-                        self.moving_horizontal_old_time = time.time()
-                        self.moving_horizontal = True
+                self.game.spawn_meteor(5 * self.speed)
+            self.spawn_meteor_old_time = time.time()
 
 
     def update_health_bar(self):
