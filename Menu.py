@@ -37,3 +37,11 @@ class Menu:
             else:
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(score), 1, BLUE), (self.mid_x/2 - s_string_width/2, self.mid_y+50))
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(highscore), 1, BLUE), (self.mid_x*3/2 - b_string_width/2, self.mid_y+50))
+
+        elif menu == "d":
+            screen.blit(pygame.font.SysFont(FONT, 70, True).render("3", 1, BLUE), (self.mid_x ,self.mid_y))
+            pygame.time.wait(1000)
+            screen.blit(pygame.font.SysFont(FONT, 70, True).render("2", 1, BLUE), (self.mid_x ,self.mid_y))
+            pygame.time.wait(1000)
+            screen.blit(pygame.font.SysFont(FONT, 70, True).render("1", 1, BLUE), (self.mid_x ,self.mid_y))
+            pygame.time.wait(1000)

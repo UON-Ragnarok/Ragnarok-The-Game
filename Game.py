@@ -25,6 +25,7 @@ class Game:
         self.load_highscore()
         self.alive = True
         self.pause = False
+        self.countdown = False
         self.is_mute = False
         self.background_y = 0
         self.load_mob_images()
@@ -181,6 +182,7 @@ class Game:
     def show_menu(self, id):
         Menu().displayMenu(self.screen, id ,self.score, self.highscore)
 
+
     def run(self):
         # Game Loop
         self.playing = True
@@ -252,8 +254,7 @@ class Game:
                             sprite.pause = True
                     else:
                         self.pause = False
-                        for sprite in self.sprites_list:
-                            sprite.pause = False
+                        self.countdown = True
 
     def update(self):
         self.sprites_list.update()
@@ -372,6 +373,12 @@ class Game:
 
         elif self.pause:
             self.show_menu('b')
+
+        elif not self.pause and self.countdown:
+            self.show_menu('d')
+            self.countdown = False
+            for sprite in self.sprites_list:
+                sprite.pause = False
 
     def check_for_collision(self, player, enemy, player_mask, enemy_mask):
         offset_x, offset_y = (enemy.rect.x - player.rect.x), (enemy.rect.y - player.rect.y)
