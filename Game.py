@@ -119,13 +119,6 @@ class Game:
                 self.power_up_images[i].append(image)
 
     def load_highscore(self):
-#        self.dir = path.dirname(__file__)
-#        with open(path.join(self.dir, HIGHSCORE), 'r') as f:
-#            try:
-#                self.highscore = int(f.read())
-#            except:
-#                self.highscore = 0
-
         f = open(HIGHSCORE, 'r')
         temp = f.read()
         if temp != "":
@@ -135,12 +128,6 @@ class Game:
         f.close()
 
     def write_highscore(self):
-        #self.dir = path.dirname(__file__)
-        #if self.score > self.highscore:
-        #    self.highscore = self.score
-        #    with open(path.join(self.dir, HIGHSCORE), 'w') as f:
-        #        f.write(str(self.score))
-
         if self.score >= self.highscore:
             f = open(HIGHSCORE, 'w')
             f.write(str(self.score))
