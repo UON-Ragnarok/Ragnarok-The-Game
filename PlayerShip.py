@@ -2,13 +2,11 @@ import pygame
 from Constants import *
 
 class PlayerShip(pygame.sprite.Sprite):
-    def __init__(self, game):
-        self.groups = game.sprites_list
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = game.spaceship_img
+    def __init__(self, image, *groups):
+        super().__init__(*groups)
+        self.image = image
         self.rect = self.image.get_rect()
-        self.rect.bottom = SCREEN_HEIGHT *0.95
+        self.rect.bottom = SCREEN_HEIGHT * 0.95
         self.pause = False
 
     def update(self):

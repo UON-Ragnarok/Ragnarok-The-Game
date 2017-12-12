@@ -39,11 +39,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.killed = True
 
 class Meteor(pygame.sprite.Sprite):
-    def __init__(self, game, speed):
-        self.groups = game.enemy_list, game.meteor_list, game.sprites_list
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = game.meteor_img
+    def __init__(self, image, speed, *groups):
+        super().__init__(*groups)
+        self.image = image
         self.speed = speed
         self.rect = self.image.get_rect()
         self.pause = False
