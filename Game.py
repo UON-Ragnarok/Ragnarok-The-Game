@@ -345,7 +345,9 @@ class Game:
                 if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level)
                 else:
-                    self.boss_id = (self.boss_id + 1) % 3
+                    self.boss_id += 1
+                    if self.boss_id > 3:
+                        self.boss_id = 1
                     self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id)
                 self.current_level += 1
 
