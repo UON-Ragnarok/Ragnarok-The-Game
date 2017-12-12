@@ -73,7 +73,7 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.rect.x -= self.speed / 2
                 # if the boss go out of the screen
-            if self.rect.x + self.image.get_rect().width > SCREEN_WIDTH - 50 or self.rect.x < 50:
+            if self.rect.right > SCREEN_WIDTH - 50 or self.rect.left < 50:
                 self.forward = not self.forward
 
     def boss_two_movement(self):
@@ -84,7 +84,7 @@ class Boss(pygame.sprite.Sprite):
                 elif not self.forward:
                     self.rect.x -= self.speed / 2
                     # if the boss go out of the screen
-                if self.rect.x + self.image.get_rect().width > SCREEN_WIDTH - 50 or self.rect.x < 50:
+                if self.rect.right > SCREEN_WIDTH - 50 or self.rect.left < 50:
                     self.forward = not self.forward
                 if time.time() - self.moving_horizontal_old_time > random.randint(3,5):
                     self.moving_horizontal = False
@@ -99,7 +99,7 @@ class Boss(pygame.sprite.Sprite):
                         self.rect.y += self.speed * 8
                     else:
                         self.rect.y += self.speed * 4
-                if self.rect.y + self.image.get_rect().height > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
+                if self.rect.bottom > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
                     self.moving_vertical = not self.moving_vertical
                     if self.rect.y < 50:
                         self.moving_horizontal_old_time = time.time()
@@ -107,8 +107,8 @@ class Boss(pygame.sprite.Sprite):
 
     def update_health_bar(self):
         if self.going_in and not self.death:
-            pygame.draw.line(self.screen, RED, (self.rect.x + 10,self.rect.y - 10),(self.rect.x+self.image.get_rect().width -10,self.rect.y -10),8)
-            pygame.draw.line(self.screen, GREEN, (self.rect.x + 10,self.rect.y - 10),(self.rect.x+(self.image.get_rect().width -10)* (self.health/self.total_health),self.rect.y -10),8)
+            pygame.draw.line(self.screen, RED, (self.rect.x + 10, self.rect.y - 10) , (self.rect.right - 10, self.rect.y - 10), 8)
+            pygame.draw.line(self.screen, GREEN, (self.rect.x + 10, self.rect.y - 10) , (self.rect.x + (self.image.get_rect().width - 10) * (self.health/ self.total_health), self.rect.y - 10), 8)
 
     def update_animation(self):
         self.current_frame += 1
@@ -162,8 +162,10 @@ class Boss(pygame.sprite.Sprite):
 class Boss_Bullet(pygame.sprite.Sprite):
     bullet_speed = 3
     prev_x_pos = -1
-    def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
-        super().__init__(*groups)
+    def __init__(self, game, boss, x_pos, y_pos, bullet_speed):
+        self.groups = game.sprites_list, game.boss_bullet_list
+        pygame.sprite.Sprite().__init__(self, self.groups)
+        self.game = game
         self.boss = boss
         self.boss_id = boss.boss_id
         self.image = pygame.Surface([5, 10])
@@ -171,7 +173,7 @@ class Boss_Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_pos
         self.origin_pos_x = x_pos
-        self.boss_origin_pos_x = boss.rect.x + boss.image.get_rect().width/2
+        self.boss_origin_pos_x = boss.rect.x + boss.image.get_rect().centerx
         self.rect.y = y_pos
         self.speed = bullet_speed
         self.pause = False

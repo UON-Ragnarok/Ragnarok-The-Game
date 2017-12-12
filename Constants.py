@@ -2,7 +2,7 @@ import pygame
 
 #Game Settings
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 750
 FPS = 120
 GAME_TITLE = 'Ragnarok The Game'
 BACKGROUND_IMG = 'img/background.jpg'
@@ -16,6 +16,7 @@ GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (240, 255, 0)
+BLUE = (127, 202, 255)
 
 #Gameplay Properties
 DIFFICULTY = 10

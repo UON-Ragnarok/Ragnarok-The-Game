@@ -8,8 +8,8 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface([5,10])
         self.image.fill([255,255,255]) #black bullet, place holder, need to find image or something
         self.rect = self.image.get_rect()
-        self.rect.x  = x_pos
-        self.rect.y  = y_pos
+        self.rect.centerx  = x_pos
+        self.rect.bottom  = y_pos
         self.speed = speed
         self.pause = False
 

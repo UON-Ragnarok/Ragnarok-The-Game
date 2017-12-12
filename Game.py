@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 import time
+from os import path
 
 from PlayerShip import *
 from Bullet import *
@@ -28,18 +29,19 @@ class Game:
         self.load_mob_images()
         self.load_boss_images()
         self.load_power_up_images()
+        self.load_data()
         self.load_music()
         self.menu_screen()
 
 
     def load_music(self):
-        self.ARCADE_FUNK = pygame.mixer.Sound('Sound/Arcade Funk.ogg')  # Channel 0
-        self.EXPLOSION = pygame.mixer.Sound('Sound/explo.ogg') # Channel 1
-        self.COIN = pygame.mixer.Sound('Sound/coin.ogg')  # Channel 2
-        self.KILLED = pygame.mixer.Sound('Sound/killed_explo.ogg')  # Channel 3
-        self.COMET = pygame.mixer.Sound('Sound/comet.ogg')  # Channel 4
-        self.LASER = pygame.mixer.Sound('Sound/laser.ogg')  # Channel 5
-        self.BOSS_LASER = pygame.mixer.Sound('Sound/Boss_laser.ogg')  # Channel 6
+        self.ARCADE_FUNK = pygame.mixer.Sound(path.join(self.snd_folder,'Arcade Funk.ogg'))  # Channel 0
+        self.EXPLOSION = pygame.mixer.Sound(path.join(self.snd_folder,'explo.ogg')) # Channel 1
+        self.COIN = pygame.mixer.Sound(path.join(self.snd_folder,'coin.ogg'))  # Channel 2
+        self.KILLED = pygame.mixer.Sound(path.join(self.snd_folder,'killed_explo.ogg'))  # Channel 3
+        self.COMET = pygame.mixer.Sound(path.join(self.snd_folder,'comet.ogg'))  # Channel 4
+        self.LASER = pygame.mixer.Sound(path.join(self.snd_folder,'laser.ogg'))  # Channel 5
+        self.BOSS_LASER = pygame.mixer.Sound(path.join(self.snd_folder,'Boss_laser.ogg'))  # Channel 6
         pygame.mixer.Channel(0).set_volume(0.5) # Arcade
         pygame.mixer.Channel(1).set_volume(0.3) # Explosion
         pygame.mixer.Channel(2).set_volume(0.3) # Coin
@@ -48,6 +50,16 @@ class Game:
         pygame.mixer.Channel(5).set_volume(0.1) # Laser
         pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
         pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
+
+    def load_data(self):
+        game_folder = path.dirname(__file__)
+        img_folder = path.join(game_folder, 'img')
+        self.snd_folder = path.join(game_folder, 'Sound')
+        self.spaceship_img = pygame.image.load(path.join(img_folder, 'spaceship.png')).convert_alpha()
+        #self.bullet = pygame.image.load(path.join(img_folder, '.png')).convert()
+        #mob_images
+        self.meteor_img = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
+        #boss lighting bolt/bullet
 
 
     def load_mob_images(self):
@@ -202,7 +214,7 @@ class Game:
                 self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay)
              # update the boss bullet
             if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
-                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.sprites_list, self.boss_bullet_list])
+                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed)
                 self.boss_bullet_counter += 1
                 if self.boss_bullet_counter >= 2:
                     pygame.time.set_timer(self.boss_bullet_event, 2500)
@@ -373,21 +385,21 @@ class Game:
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
-            bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.y, bullet_speed)
-            bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.y, bullet_speed)
+            bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed)
+            bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed)
         else:
-            bullet = Bullet(self, (player.rect.x + player.image.get_rect().width/2), player.rect.y, bullet_speed)
+            bullet = Bullet(self, player.rect.centerx, player.rect.top, bullet_speed)
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
-    def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
+    def boss_fire_bullet(self, boss, boss_bullet_speed):
         #can add music
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
             if boss.anger == True:
                 boss_bullet_speed = boss_bullet_speed * boss.bullet_anger_speed_multiplier
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 - 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.x + boss.image.get_rect().width/2 + 50), boss.rect.y + boss.image.get_rect().height, boss_bullet_speed, groups)
+            Boss_Bullet(self, boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed)
+            Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed)
+            Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed)
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
     ##    pygame.time.set_timer(boss_bullet_event, 0)
 

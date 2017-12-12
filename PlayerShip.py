@@ -6,14 +6,14 @@ class PlayerShip(pygame.sprite.Sprite):
         self.groups = game.sprites_list
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pygame.image.load('img/spaceship.png').convert_alpha()
+        self.image = game.spaceship_img
         self.rect = self.image.get_rect()
-        self.rect.y = (SCREEN_HEIGHT - self.rect.y)*0.9
+        self.rect.bottom = SCREEN_HEIGHT *0.95
         self.pause = False
 
     def update(self):
         pos = pygame.mouse.get_pos()
         if self.pause == False:
             self.rect.x = pos[0]
-            if pos[0] > (SCREEN_WIDTH - self.image.get_rect().width):
-                self.rect.x = (SCREEN_WIDTH - self.image.get_rect().width)
+            if self.rect.right >= SCREEN_WIDTH:
+                self.rect.right = SCREEN_WIDTH
