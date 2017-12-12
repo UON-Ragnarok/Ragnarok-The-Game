@@ -63,7 +63,7 @@ class Game:
 
 
     def load_mob_images(self):
-        self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0,12)]
+        self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0, 12)]
         self.mob_images = []
         for file in self.mob_images_list:
             image = pygame.image.load(file).convert_alpha()

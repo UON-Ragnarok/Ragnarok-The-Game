@@ -164,6 +164,8 @@ class Boss_Bullet(pygame.sprite.Sprite):
     prev_x_pos = -1
     def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
         super().__init__(*groups)
+    def __init__(self, boss, x_pos, y_pos, bullet_speed, *groups):
+        super().__init__(*groups)
         self.boss = boss
         self.boss_id = boss.boss_id
         self.image = pygame.Surface([5, 10])
@@ -175,6 +177,7 @@ class Boss_Bullet(pygame.sprite.Sprite):
         self.rect.y = y_pos
         self.speed = bullet_speed
         self.pause = False
+
 
     # different bullets with different bosses
     def update(self):
