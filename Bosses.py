@@ -19,7 +19,7 @@ class Boss(pygame.sprite.Sprite):
         self.animation_frames = 5
         self.current_frame = 0
         self.moving_horizontal_old_time = time.time()
-        self.spawn_meteor_old_time = time.time()
+        self.action_old_time = time.time()
 
         self.speed = speed
         self.health = 5 * current_level
@@ -57,11 +57,12 @@ class Boss(pygame.sprite.Sprite):
                 if not self.death:
                     if self.boss_id == 1:
                         self.boss_one_movement()
+                        self.boss_action(self.boss_id, 2, 3 * self.speed)
                     elif self.boss_id == 2:
                         self.boss_two_movement()
                     elif self.boss_id == 3:
                         self.boss_one_movement()
-                        self.boss_three_action()
+                        self.boss_action(self.boss_id, 2, 5 * self.speed)
         else:
             self.rect.x += 0
             self.current_frame += 0
@@ -113,15 +114,17 @@ class Boss(pygame.sprite.Sprite):
                     self.moving_horizontal_old_time = time.time()
                     self.moving_horizontal = True
 
-    def boss_three_action(self):
+    def boss_action(self, boss_id, time_between, speed):
         if self.anger:
-            time_speed_of_meteors = [1, 5 * self.speed * self.anger_multiplier]
+            time_speed_of_actions = [time_between / 2, speed * self.anger_multiplier]
         else:
-            time_speed_of_meteors = [2, 5 * self.speed]
-        if time.time() - self.spawn_meteor_old_time > time_speed_of_meteors[0]:
-            self.game.spawn_meteor(time_speed_of_meteors[1])
-            self.spawn_meteor_old_time = time.time()
-
+            time_speed_of_actions = [time_between , speed * self.anger_multiplier]
+        if time.time() - self.action_old_time > time_speed_of_actions[0]:
+            if boss_id == 1:
+                self.game.boss_fire_bullet(self, time_speed_of_actions[1])
+            if boss_id == 3:
+                self.game.spawn_meteor(time_speed_of_actions[1])
+            self.action_old_time = time.time()
 
     def update_health_bar(self):
         if self.going_in and not self.death:

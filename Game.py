@@ -160,6 +160,7 @@ class Game:
 
         #Enemies Properties
         self.boss_speed = 1
+        self.boss_id = 0
         self.boss_bullet_speed = 5
         self.enemies_speed = 3
 
@@ -168,11 +169,6 @@ class Game:
         self.fire_bullet_delay = 500
         pygame.time.set_timer(self.fire_bullet_event, self.fire_bullet_delay)
 
-        #Setting up the boss firing bullet delay
-        self.boss_bullet_event = pygame.USEREVENT + 2
-        self.boss_bullet_delay = 100
-        self.boss_bullet_counter = 0
-        pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
         self.run()
 
     def menu_screen(self):
@@ -232,14 +228,7 @@ class Game:
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
                 self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay)
              # update the boss bullet
-            if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
-                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed)
-                self.boss_bullet_counter += 1
-                if self.boss_bullet_counter >= 2:
-                    pygame.time.set_timer(self.boss_bullet_event, 2500)
-                    self.boss_bullet_counter = 0
-                else:
-                    pygame.time.set_timer(self.boss_bullet_event, self.boss_bullet_delay)
+
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and (not self.alive):
@@ -356,7 +345,7 @@ class Game:
                 if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
                     self.spawn_enemy(self.enemies_speed, self.current_level)
                 else:
-                    self.boss_id = 3
+                    self.boss_id = (self.boss_id + 1) % 3
                     self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id)
                 self.current_level += 1
 
@@ -426,8 +415,6 @@ class Game:
         #can add music
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
-            if boss.anger == True:
-                boss_bullet_speed = boss_bullet_speed * boss.anger_multiplier
             Boss_Bullet(boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
