@@ -31,6 +31,7 @@ class Game:
         self.load_power_up_images()
         self.load_data()
         self.load_music()
+        self.init_masks()
         self.menu_screen()
 
 
@@ -61,6 +62,9 @@ class Game:
         self.meteor_image = pygame.image.load(path.join(img_folder, 'meteor.png')).convert_alpha()
         #boss lighting bolt/bullet
 
+    def init_masks(self):
+        self.player_ship_image_mask = pygame.mask.from_surface(self.player_ship_image)
+        self.player_ship_rect = self.player_ship_image.get_rect()
 
     def load_mob_images(self):
         self.mob_images_list = ["img/enemy/" + str(number) + ".png" for number in range(0, 12)]
@@ -69,6 +73,8 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (80,80))
             self.mob_images.append(image)
+        self.mob_image_mask = pygame.mask.from_surface(self.mob_images[0])
+        self.mob_image_rect = self.mob_images[0].get_rect()
 
     def load_boss_images(self):
         self.boss_images_list = ["img/Thorsten/" + str(number) + ".png" for number in range(1,32)]
@@ -251,10 +257,11 @@ class Game:
 
         if self.alive and not self.pause:
             # player colliding with enemy
-            enemy_hit_list = pygame.sprite.spritecollide(self.player, self.enemy_list, True)
-            if enemy_hit_list:
-                pygame.mixer.Channel(3).play(self.KILLED)
-                self.alive = False
+            for mob in self.mob_list:
+                offset_x, offset_y = (mob.rect.x - self.player.rect.x), (mob.rect.y - self.player.rect.y)
+                if (self.player_ship_image_mask.overlap(self.mob_image_mask, (offset_x, offset_y)) != None):
+                    pygame.mixer.Channel(3).play(self.KILLED)
+                    self.alive = False
 
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
