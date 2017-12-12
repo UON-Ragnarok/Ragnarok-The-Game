@@ -230,10 +230,10 @@ class Game:
                 self.running = False
 
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
-                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay, [self.bullet_list, self.sprites_list])
+                self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay)
              # update the boss bullet
             if self.alive and event.type == self.boss_bullet_event and not self.pause and self.boss_list and self.boss_list.sprites()[0].boss_id == 1:
-                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+                self.boss_fire_bullet(self.boss_list.sprites()[0], self.boss_bullet_speed)
                 self.boss_bullet_counter += 1
                 if self.boss_bullet_counter >= 2:
                     pygame.time.set_timer(self.boss_bullet_event, 2500)
@@ -354,16 +354,16 @@ class Game:
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
                 if self.current_level % DIFFICULTY != 0 or self.current_level == 0:
-                    self.spawn_enemy(self.enemies_speed, self.current_level, [self.enemy_list, self.mob_list, self.sprites_list])
+                    self.spawn_enemy(self.enemies_speed, self.current_level)
                 else:
                     self.boss_id = random.randint(1,2)
-                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id, [self.boss_list, self.sprites_list])
+                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id)
                 self.current_level += 1
 
             #Spawn meteor:
             if not self.meteor_list and not self.boss_list:
                 if self.current_level % METEOR_SPAWN_RATE == 0:
-                    self.spawn_meteor(self.enemies_speed * 2, [self.enemy_list, self.meteor_list, self.sprites_list])
+                    self.spawn_meteor(self.enemies_speed * 2)
 
             for sprite in self.sprites_list :
                 #If enemies go off screen, for meteor, boss moves, enemy/mobs
@@ -389,10 +389,10 @@ class Game:
             self.alive = False
 
     #Spawning enemies
-    def spawn_enemy(self, speed, current_level, groups):
+    def spawn_enemy(self, speed, current_level):
         health = int(current_level / DIFFICULTY) + 1
         for i in range(5):
-            enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, groups)
+            enemy = Enemy(speed * (1 + current_level / 100), health, self.mob_images, [self.enemy_list, self.mob_list, self.sprites_list])
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
@@ -401,36 +401,36 @@ class Game:
         power_up.rect.x = pos_x
         power_up.rect.y = pos_y
 
-    def spawn_meteor(self, speed, groups):
+    def spawn_meteor(self, speed):
         pygame.mixer.Channel(4).play(self.COMET)
-        meteor = Meteor(self.meteor_image, speed, groups)
+        meteor = Meteor(self.meteor_image, speed, [self.enemy_list, self.meteor_list, self.sprites_list])
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.width)
 
     #!!!!!!!!!!!!! can add different boss images!!
-    def spawn_boss(self, speed, screen, current_level, boss_id, groups):
-        boss = Boss(boss_id, screen, speed * (1 + current_level / 100), current_level, self.boss_images, groups)
+    def spawn_boss(self, speed, screen, current_level, boss_id):
+        boss = Boss(self, boss_id, screen, speed * (1 + current_level / 100), current_level, self.boss_images, [self.boss_list, self.sprites_list])
         boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
         boss.rect.y = -200
 
-    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay, groups):
+    def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
-            bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, groups)
-            bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, groups)
+            bullet1 = Bullet((player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet2 = Bullet((player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         else:
-            bullet = Bullet(player.rect.centerx, player.rect.top, bullet_speed, groups)
+            bullet = Bullet(player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
-    def boss_fire_bullet(self, boss, boss_bullet_speed, groups):
+    def boss_fire_bullet(self, boss, boss_bullet_speed):
         #can add music
         # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
             if boss.anger == True:
                 boss_bullet_speed = boss_bullet_speed * boss.bullet_anger_speed_multiplier
-            Boss_Bullet(boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, groups)
-            Boss_Bullet(boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, groups)
+            Boss_Bullet(boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
     ##    pygame.time.set_timer(boss_bullet_event, 0)
 

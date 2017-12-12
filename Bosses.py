@@ -8,9 +8,10 @@ class Boss(pygame.sprite.Sprite):
     forward = True
     moving_vertical = False
     moving_horizontal = True
-    def __init__(self, boss_id, screen, speed, current_level, images,  *groups):
+    def __init__(self, game, boss_id, screen, speed, current_level, images,  *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
+        self.game = game
         self.screen = screen
         self.images = images
         self.index = 0
@@ -52,7 +53,7 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.going_in = True
             else:
-                if self.boss_id == 1:
+                if self.boss_id == 1 or self.boss_id == 3:
                     self.boss_one_movement()
                 elif self.boss_id == 2:
                     self.boss_two_movement()
@@ -104,6 +105,7 @@ class Boss(pygame.sprite.Sprite):
                     if self.rect.y < 50:
                         self.moving_horizontal_old_time = time.time()
                         self.moving_horizontal = True
+
 
     def update_health_bar(self):
         if self.going_in and not self.death:
