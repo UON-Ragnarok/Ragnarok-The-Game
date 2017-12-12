@@ -1,6 +1,7 @@
 import pygame
 from Constants import *
 
+
 class Menu:
     def __init__(self):
         self.mid_x = SCREEN_WIDTH/2
@@ -21,6 +22,8 @@ class Menu:
         b_width = pygame.font.SysFont(FONT, 30, True).size("Best")[0]
         b_string_width = pygame.font.SysFont(FONT, 70, True).size(str(highscore))[0]
 
+        
+
         if menu == "b":
             screen.blit(pygame.font.SysFont(FONT, 70, True).render("Game Paused", 1, BLUE), (self.mid_x - gp_width/2 ,self.mid_y/2 ))
             screen.blit(pygame.font.SysFont(FONT, 30, True).render("Press Escape to resume", 1, BLUE), (self.mid_x - (res_width/2), self.mid_y-40))
@@ -39,9 +42,10 @@ class Menu:
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(highscore), 1, BLUE), (self.mid_x*3/2 - b_string_width/2, self.mid_y+50))
 
         elif menu == "d":
-            screen.blit(pygame.font.SysFont(FONT, 70, True).render("3", 1, BLUE), (self.mid_x ,self.mid_y))
-            pygame.time.wait(1000)
-            screen.blit(pygame.font.SysFont(FONT, 70, True).render("2", 1, BLUE), (self.mid_x ,self.mid_y))
-            pygame.time.wait(1000)
-            screen.blit(pygame.font.SysFont(FONT, 70, True).render("1", 1, BLUE), (self.mid_x ,self.mid_y))
-            pygame.time.wait(1000)
+            for i in range(3,0,-1):
+                screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(i), 1, BLUE), (self.mid_x - 10 ,self.mid_y + 40))
+                pygame.display.update()
+                pygame.time.wait(1000)
+ 
+                              
+            
