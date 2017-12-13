@@ -4,7 +4,7 @@ import pygame
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 FPS = 60
-GAME_TITLE = 'Ragnarok The Game'
+GAME_TITLE = 'Ragnarök The Game'
 BACKGROUND_IMG = 'img/background.jpg'
 FONT = 'Courier'
 HIGHSCORE = 'highscore.txt'

@@ -99,7 +99,7 @@ class Intro:
         # draw and write a bunck of stuff
         self.draw_img(self.spaceship_image, self.ss_top_left_x, self.ss_top_left_y)
         self.draw_text(20, YELLOW, "Use mouse or trackpad to control", (190, 75))
-        self.draw_text(20, YELLOW, "the spacship and destroy Asgard", (190, 85))
+        self.draw_text(20, YELLOW, "the spaceship and destroy Asgard", (190, 85))
         self.draw_img(self.mob_image, self.ss_top_left_x, self.ss_top_left_y + 25 + self.ss_height)
         self.draw_text(20, YELLOW, "Sworn protectors of Asgard,", (190, 175))
         self.draw_text(20, YELLOW, "destroy them to earn points", (190, 185))

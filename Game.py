@@ -211,9 +211,7 @@ class Game:
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
-        pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
-
-        #print (self.sprites_list)  # check the number of sprites
+        #pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
         pygame.display.flip()
 
     def events(self):
@@ -303,17 +301,9 @@ class Game:
                             #Spawn power ups
                             if not self.power_up_list:
                                 if random.randint(0, 100) < POWERUP_PERCENTAGE:
-#                                    which_power_up = random.randint(1,3)
-#                                    if which_power_up == 1:
-#                                        PowerUp(POWER_UP_ID_LIST[0], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
-#                                    elif which_power_up == 2:
-#                                        PowerUp(POWER_UP_ID_LIST[1], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
-#                                    elif which_power_up == 3:
-#                                        PowerUp(POWER_UP_ID_LIST[2], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                                     which_power_up = random.randint(0, 2)
                                     which_group = [self.speed_power_up_list, self.damage_power_up_list, self.double_power_up_list]
                                     PowerUp(POWER_UP_ID_LIST[which_power_up], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [which_group[which_power_up], self.power_up_list, self.sprites_list])
-
                             pygame.mixer.Channel(1).play(self.EXPLOSION)
                     if mob.killed:
                         mob.kill()
@@ -371,7 +361,7 @@ class Game:
         if not self.alive:
             if self.score > self.highscore:
                 self.highscore = self.score
-           # sprites_list.remove(player))
+           # sprites_list.remove(player)
             self.show_menu('c')
             for sprite in self.sprites_list:
                 sprite.kill()
@@ -420,7 +410,6 @@ class Game:
             Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
-
 
 
 g = Game()

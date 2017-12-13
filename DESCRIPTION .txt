@@ -1,1 +1,12 @@
 DESCRIPTION 
+
+'Ragnarök The Game' is a single player Shoot 'em up (also known as shmup or STG), player moves forward automatically, in a spacecraft to travel to destroy Asgard.
+On the other side of the universe, the mighty Thor(sten) and the sworn protectors of Asgard defending that happening.
+
+Player will encounter waves of emeny spacecraft, indestructible meteor and the mighty Thor(sten).
+Player continuously shoots, player can use either mouse or trackpad to control the position of their spacecraft, to dodges or position to shoot the emenies.
+To earn points destroy these wave of emenies spacecraft, the sworn protectors of Asgard, and the mighty Thor(sten).
+These emeny get stronger / increase in health.
+Upon destroy the emeny spacecraft a small percentage of chace a power up will drop, collect to gain special powers.
+There are different type of power up to boost your power for period of time, double shoots for 10 seconds, or premently increase your damage or shoot speeds.
+Meteorites are indestructable, so avoid them at all cost.
