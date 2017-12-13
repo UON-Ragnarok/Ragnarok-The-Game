@@ -1,10 +1,10 @@
 import pygame
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x_pos, y_pos, speed, *groups):
+    def __init__(self, game, img, x_pos, y_pos, speed, *groups):
         super().__init__(*groups)
         self.game = game
-        self.image = game.bullet_img
+        self.image = img
         self.rect = self.image.get_rect()
         self.rect.centerx = x_pos
         self.rect.bottom = y_pos

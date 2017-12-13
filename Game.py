@@ -69,10 +69,10 @@ class Game:
         self.mob_img_folder = path.join(self.img_folder, 'Enemy')
         self.boss_img_folder = path.join(self.img_folder, 'Thorsten')
         self.powerups_img_folder = path.join(self.img_folder, 'PowerUps')
-        self.player_ship_image = pygame.image.load(path.join(self.img_folder, 'spaceship.png')).convert_alpha()
-        self.bullet_img = pygame.image.load(path.join(self.img_folder, 'beam.png')).convert()  # come up error when implement
-        self.meteor_image = pygame.image.load(path.join(self.img_folder, 'meteor.png')).convert_alpha()
-        self.boss_bolt_image = pygame.image.load(path.join(self.img_folder, 'bolt.png')).convert_alpha()
+        self.player_ship_img = pygame.image.load(path.join(self.img_folder, 'player_ship.png')).convert_alpha()
+        self.bullet_img = pygame.image.load(path.join(self.img_folder, 'bullet.png')).convert()  # come up error when implement
+        self.meteor_img = pygame.image.load(path.join(self.img_folder, 'meteor.png')).convert_alpha()
+        self.boss_bolt_img = pygame.image.load(path.join(self.img_folder, 'boss_bolt.png')).convert_alpha()
         self.background = pygame.image.load(path.join(self.img_folder, 'background.jpg')).convert()
 
         # load high score  # this will work on linux not the other one but i cant get it to save
@@ -84,10 +84,10 @@ class Game:
 
 
     def init_masks(self):
-        self.player_ship_image_mask = pygame.mask.from_surface(self.player_ship_image)
-        self.player_ship_rect = self.player_ship_image.get_rect()
-        self.meteor_image_mask = pygame.mask.from_surface(self.meteor_image)
-        self.meteor_image_rect = self.meteor_image.get_rect()
+        self.player_ship_img_mask = pygame.mask.from_surface(self.player_ship_img)
+        self.player_ship_rect = self.player_ship_img.get_rect()
+        self.meteor_img_mask = pygame.mask.from_surface(self.meteor_img)
+        self.meteor_img_rect = self.meteor_img.get_rect()
 
 
     def load_mob_images(self):
@@ -97,7 +97,7 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (80, 80))
             self.mob_images.append(image)
-        self.mob_image_mask = pygame.mask.from_surface(self.mob_images[0])
+        self.mob_img_mask = pygame.mask.from_surface(self.mob_images[0])
         self.mob_image_rect = self.mob_images[0].get_rect()
 
 
@@ -108,7 +108,7 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (170,190))
             self.boss_images.append(image)
-        self.boss_image_mask = pygame.mask.from_surface(self.boss_images[0])
+        self.boss_img_mask = pygame.mask.from_surface(self.boss_images[0])
         self.boss_image_rect = self.boss_images[0].get_rect()
 
 
@@ -145,7 +145,7 @@ class Game:
         self.meteor_list = pygame.sprite.Group()  #List of meteor
 
         #Creating sprites
-        self.player = PlayerShip(self.player_ship_image, self.sprites_list)
+        self.player = PlayerShip(self.player_ship_img, self.sprites_list)
 
         #Game Properties
         self.score = 0
@@ -259,17 +259,17 @@ class Game:
         if self.alive and not self.pause:
             # player colliding with enemy
             for mob in self.mob_list:
-                self.check_for_collision(self.player, mob, self.player_ship_image_mask, self.mob_image_mask)
+                self.check_for_collision(self.player, mob, self.player_ship_img_mask, self.mob_img_mask)
 
             #Player colliding with meteors
             for meteor in self.meteor_list:
-                self.check_for_collision(self.player, meteor, self.player_ship_image_mask, self.meteor_image_mask)
+                self.check_for_collision(self.player, meteor, self.player_ship_img_mask, self.meteor_img_mask)
 
             for boss in self.boss_list:
-                self.check_for_collision(self.player, boss, self.player_ship_image_mask, self.boss_image_mask)
+                self.check_for_collision(self.player, boss, self.player_ship_img_mask, self.boss_img_mask)
 
 #            for boss_bullet in self.boss_bullet_list
-#                self.check_for_collision(self.player, mob, self.player_ship_image_mask, self.mob_image_mask)
+#                self.check_for_collision(self.player, boss_bullet, )
 
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
@@ -392,24 +392,24 @@ class Game:
 
     def spawn_meteor(self, speed):
         pygame.mixer.Channel(4).play(self.COMET)
-        meteor = Meteor(self.meteor_image, speed, [self.enemy_list, self.meteor_list, self.sprites_list])
+        meteor = Meteor(self.meteor_img, speed, [self.enemy_list, self.meteor_list, self.sprites_list])
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.w)
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
-            bullet1 = Bullet(self, (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
-            bullet2 = Bullet(self, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet1 = Bullet(self, self.bullet_img (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet2 = Bullet(self, self.bullet_img, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         else:
-            bullet = Bullet(self, player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet = Bullet(self, self.bullet_img, player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):
         if boss.going_in and not boss.death:
-            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_img, boss, (boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_img, boss, (boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_img, boss, (boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
 
 
