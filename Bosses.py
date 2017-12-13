@@ -213,10 +213,3 @@ class Boss_Bullet(pygame.sprite.Sprite):
             self.rect.x += 0
             self.rect.y += 0
 
-
-##            if self.prev_x_pos == -1:
-##                self.prev_x_pos = self.rect.x
-##                self.rect.x += ((self.prev_x_pos - self.boss.rect.x - self.boss.image.get_rect().width/2)/20)
-##            else:
-##                self.rect.x += (self.rect.x - self.prev_x_pos)
-##                self.prev_x_pos = self.rect.x
