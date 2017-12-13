@@ -129,27 +129,19 @@ class Game:
             f.close()
 
     def new_game(self):
-        #List of all sprites
-        self.sprites_list = pygame.sprite.Group()
-        #List of bullets
-        self.bullet_list = pygame.sprite.Group()
+
+        self.sprites_list = pygame.sprite.Group()  #List of all sprites
+        self.bullet_list = pygame.sprite.Group()  #List of bullets
         self.boss_bullet_list = pygame.sprite.Group()
-        #BOSS
-        self.boss_list = pygame.sprite.Group()
-        #List of all enemies
-        self.enemy_list = pygame.sprite.Group()
-        #List of mobs
-        self.mob_list = pygame.sprite.Group()
-        #List of PowerUps
-        self.power_up_list = pygame.sprite.Group()
-        #List of speed power ups
-        self.speed_power_up_list = pygame.sprite.Group()
-        #List of damage power ups
-        self.damage_power_up_list = pygame.sprite.Group()
-        #List of double power ups
-        self.double_power_up_list = pygame.sprite.Group()
-        #List of meteor
-        self.meteor_list = pygame.sprite.Group()
+        self.boss_list = pygame.sprite.Group()  #BOSS
+        self.enemy_list = pygame.sprite.Group()  #List of all enemies
+        self.mob_list = pygame.sprite.Group()  #List of mobs
+        self.power_up_list = pygame.sprite.Group()  #List of PowerUps
+        self.speed_power_up_list = pygame.sprite.Group()  #List of speed power ups
+        self.damage_power_up_list = pygame.sprite.Group()  #List of damage power ups
+        self.double_power_up_list = pygame.sprite.Group()  #List of double power ups
+        self.meteor_list = pygame.sprite.Group()  #List of meteor
+
         #Creating sprites
         self.player = PlayerShip(self.player_ship_image, self.sprites_list)
 
@@ -311,13 +303,17 @@ class Game:
                             #Spawn power ups
                             if not self.power_up_list:
                                 if random.randint(0, 100) < POWERUP_PERCENTAGE:
-                                    which_power_up = random.randint(1,3)
-                                    if which_power_up == 1:
-                                        PowerUp(POWER_UP_ID_LIST[0], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
-                                    elif which_power_up == 2:
-                                        PowerUp(POWER_UP_ID_LIST[1], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
-                                    elif which_power_up == 3:
-                                        PowerUp(POWER_UP_ID_LIST[2], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+#                                    which_power_up = random.randint(1,3)
+#                                    if which_power_up == 1:
+#                                        PowerUp(POWER_UP_ID_LIST[0], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+#                                    elif which_power_up == 2:
+#                                        PowerUp(POWER_UP_ID_LIST[1], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+#                                    elif which_power_up == 3:
+#                                        PowerUp(POWER_UP_ID_LIST[2], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                                    which_power_up = random.randint(0, 2)
+                                    which_group = [self.speed_power_up_list, self.damage_power_up_list, self.double_power_up_list]
+                                    PowerUp(POWER_UP_ID_LIST[which_power_up], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [which_group[which_power_up], self.power_up_list, self.sprites_list])
+
                             pygame.mixer.Channel(1).play(self.EXPLOSION)
                     if mob.killed:
                         mob.kill()
