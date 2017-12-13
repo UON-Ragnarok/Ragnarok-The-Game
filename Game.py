@@ -368,7 +368,7 @@ class Game:
                 if sprite.rect.top > SCREEN_HEIGHT:
                     sprite.kill()
 
-        #m = Menu(screen_width/2,screen_height/2)
+        
         if not self.alive:
             if self.score > self.highscore:
                 self.highscore = self.score
@@ -416,14 +416,12 @@ class Game:
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):
-        #can add music
-        # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
             Boss_Bullet(self, boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
-    ##    pygame.time.set_timer(boss_bullet_event, 0)
+    
 
 
 g = Game()
