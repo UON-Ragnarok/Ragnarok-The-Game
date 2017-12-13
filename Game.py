@@ -22,7 +22,6 @@ class Game:
         pygame.display.set_caption(GAME_TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
-        self.load_highscore()
         self.alive = True
         self.pause = False
         self.countdown = False
@@ -47,6 +46,7 @@ class Game:
         self.LASER = pygame.mixer.Sound(path.join(self.snd_folder,'laser.ogg'))  # Channel 5
         self.BOSS_LASER = pygame.mixer.Sound(path.join(self.snd_folder,'Boss_laser.ogg'))  # Channel 6
 
+
     def set_volume(self, bool):
         if bool == True:
             pygame.mixer.Channel(0).set_volume(0.3) # Arcade
@@ -63,9 +63,9 @@ class Game:
 
 
     def load_data(self):
-        game_folder = path.dirname(__file__)
-        self.img_folder = path.join(game_folder, 'img')
-        self.snd_folder = path.join(game_folder, 'Sound')
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'img')
+        self.snd_folder = path.join(self.game_folder, 'Sound')
         self.mob_img_folder = path.join(self.img_folder, 'Enemy')
         self.boss_img_folder = path.join(self.img_folder, 'Thorsten')
         self.powerups_img_folder = path.join(self.img_folder, 'PowerUps')
@@ -75,11 +75,20 @@ class Game:
         self.boss_bolt_image = pygame.image.load(path.join(self.img_folder, 'bolt.png')).convert_alpha()
         self.background = pygame.image.load(path.join(self.img_folder, 'background.jpg')).convert()
 
+        # load high score  # this will work on linux not the other one but i cant get it to save
+        with open(path.join(self.game_folder, HIGHSCORE), 'r') as f:
+            try:
+                self.highscore = int(f.read())
+            except:
+                self.highscore = 0
+
+
     def init_masks(self):
         self.player_ship_image_mask = pygame.mask.from_surface(self.player_ship_image)
         self.player_ship_rect = self.player_ship_image.get_rect()
         self.meteor_image_mask = pygame.mask.from_surface(self.meteor_image)
         self.meteor_image_rect = self.meteor_image.get_rect()
+
 
     def load_mob_images(self):
         self.mob_images_list = [path.join(self.mob_img_folder, str(number) + ".png") for number in range(0, 12)]
@@ -90,6 +99,7 @@ class Game:
             self.mob_images.append(image)
         self.mob_image_mask = pygame.mask.from_surface(self.mob_images[0])
         self.mob_image_rect = self.mob_images[0].get_rect()
+
 
     def load_boss_images(self):
         self.boss_images_list = [path.join(self.boss_img_folder, str(number) + ".png") for number in range(1, 32)]
@@ -113,20 +123,12 @@ class Game:
                 image = pygame.transform.scale(image, (50, 50))
                 self.power_up_images[i].append(image)
 
-    def load_highscore(self):
-        f = open(HIGHSCORE, 'r')
-        temp = f.read()
-        if temp != "":
-            self.highscore = int(temp)
-        else:
-            self.highscore = 0
-        f.close()
 
     def write_highscore(self):
-        if self.score > self.highscore:
-            f = open(HIGHSCORE, 'w')
-            f.write(str(self.score))
-            f.close()
+        if self.score >= self.highscore:
+            with open(path.join(self.game_folder, HIGHSCORE), 'w') as f:
+                f.write(str(self.score))
+
 
     def new_game(self):
 
@@ -171,7 +173,6 @@ class Game:
         if not pygame.mixer.Channel(0).get_busy():
             pygame.mixer.Channel(0).play(self.ARCADE_FUNK, -1)
         self.intro = Intro(self, self.screen)
-        #self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
     def show_menu(self, page):
@@ -225,7 +226,7 @@ class Game:
 
             if self.alive and event.type == self.fire_bullet_event and not self.pause:
                 self.fire_bullet(self.player, self.bullet_speed, self.fire_bullet_event, self.fire_bullet_delay)
-             # update the boss bullet
+                # update the boss bullet
 
 
             elif event.type == pygame.KEYDOWN:

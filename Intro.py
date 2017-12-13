@@ -11,7 +11,6 @@ from os import path
 #				for name in IMG_NAMES}
 
 class Intro:
-    pygame.init()
 
     def __init__(self, game, screen):
         game_folder = path.dirname(__file__)

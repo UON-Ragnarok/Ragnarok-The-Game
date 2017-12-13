@@ -5,7 +5,6 @@ from os import path
 from Constants import *
 
 class Boss(pygame.sprite.Sprite):
-    pygame.mixer.init()
 
     forward = True
     moving_vertical = False
@@ -85,7 +84,7 @@ class Boss(pygame.sprite.Sprite):
                 # if the boss go out of the screen
         if self.rect.right > SCREEN_WIDTH - 50 :
             self.forward = False
-        if self.rect.left < 50 :
+        if self.rect.left < 50:
             self.forward = True
 
     def boss_two_movement(self):
@@ -143,36 +142,34 @@ class Boss(pygame.sprite.Sprite):
             self.image = self.images[self.index]
 
     def say_phrases(self):
-        game_folder = path.dirname(__file__)
-        snd_folder = path.join(game_folder, 'Sound')
         phrase = random.randint(1, 4)
         if not self.going_in:
             if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'I am thor fear me.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'I am thor fear me.ogg')))
             elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'I am the starting point of the asgard.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'I am the starting point of the asgard.ogg')))
             elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'my name is thorsten altenkirch.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'my name is thorsten altenkirch.ogg')))
             elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'obviously I am the big boss.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'obviously I am the big boss.ogg')))
         if self.anger and not self.anger_speech:
             if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'i made an error for you to spot.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'i made an error for you to spot.ogg')))
             elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'stupid question.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'stupid question.ogg')))
             elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'you cannot pickle my brain.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'you cannot pickle my brain.ogg')))
             elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'this is easy exercise.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'this is easy exercise.ogg')))
         if self.death and not self.death_speech:
             if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'Ill be back.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'Ill be back.ogg')))
             elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'rah.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'rah.ogg')))
             elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'lecture resumes next week.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'lecture resumes next week.ogg')))
             elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'how can you pickle my brain.ogg')))
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'how can you pickle my brain.ogg')))
             self.death_speech = True
 
     # if hit boss health -1
