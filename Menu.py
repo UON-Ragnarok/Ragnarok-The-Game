@@ -11,7 +11,6 @@ class Menu:
     #menua = Instro
     #menub = Pause
     #menuc = Game Over
-    #menud = Calm Down
         gp_width = pygame.font.SysFont(FONT, 70, True) .size("Game Paused")[0]
         res_width = pygame.font.SysFont(FONT, 30, True).size("Press Escape to resume")[0]
         r_width = pygame.font.SysFont(FONT, 30, True).size("Press R to go to main menu")[0]
