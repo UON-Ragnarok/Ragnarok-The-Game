@@ -49,7 +49,7 @@ class Game:
 
     def set_volume(self, bool):
         if bool == True:
-            pygame.mixer.Channel(0).set_volume(0.5) # Arcade
+            pygame.mixer.Channel(0).set_volume(0.3) # Arcade
             pygame.mixer.Channel(1).set_volume(0.3) # Explosion
             pygame.mixer.Channel(2).set_volume(0.3) # Coin
             pygame.mixer.Channel(3).set_volume(0.3) # Killed
@@ -82,7 +82,6 @@ class Game:
         self.meteor_image_rect = self.meteor_image.get_rect()
 
     def load_mob_images(self):
-        #self.path_find()
         self.mob_images_list = [path.join(self.mob_img_folder, str(number) + ".png") for number in range(0, 12)]
         self.mob_images = []
         for file in self.mob_images_list:
@@ -93,7 +92,6 @@ class Game:
         self.mob_image_rect = self.mob_images[0].get_rect()
 
     def load_boss_images(self):
-        #self.path_find()
         self.boss_images_list = [path.join(self.boss_img_folder, str(number) + ".png") for number in range(1, 32)]
         self.boss_images = []
         for file in self.boss_images_list:
@@ -105,7 +103,6 @@ class Game:
 
 
     def load_power_up_images(self):
-        #self.path_find()
         self.power_up_images_list = []
         self.power_up_images = [[] for i in range(1, len(POWER_UP_ID_LIST) + 1)]
         for power_up_id in POWER_UP_ID_LIST:
@@ -161,15 +158,15 @@ class Game:
         self.current_level = 0
 
         #Player Properties
-        self.bullet_speed = 5
+        self.bullet_speed = 10
         self.bullet_damage = 0
         self.double_power = False
 
         #Enemies Properties
-        self.boss_speed = 1
+        self.boss_speed = 2
         self.boss_id = 0
-        self.boss_bullet_speed = 5
-        self.enemies_speed = 3
+        self.boss_bullet_speed = 8
+        self.enemies_speed = 6
 
         #Setting up firing bullet delay
         self.fire_bullet_event = pygame.USEREVENT + 1
@@ -219,7 +216,7 @@ class Game:
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
-        #pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
+        pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
         self.sprites_list.draw(self.screen)
         #print (self.sprites_list)  # check the number of sprites
         pygame.display.flip()
@@ -277,6 +274,9 @@ class Game:
             for boss in self.boss_list:
                 self.check_for_collision(self.player, boss, self.player_ship_image_mask, self.boss_image_mask)
 
+#            for boss_bullet in self.boss_bullet_list
+#                self.check_for_collision(self.player, mob, self.player_ship_image_mask, self.mob_image_mask)
+
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
             for hit in power_up_hit_list:
@@ -310,11 +310,11 @@ class Game:
                                 if random.randint(0, 100) < POWERUP_PERCENTAGE:
                                     which_power_up = random.randint(1,3)
                                     if which_power_up == 1:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[0], mob.rect.centerx , mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
+                                        PowerUp(POWER_UP_ID_LIST[0], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.speed_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 2:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[1], mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
+                                        PowerUp(POWER_UP_ID_LIST[1], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.damage_power_up_list, self.power_up_list, self.sprites_list])
                                     elif which_power_up == 3:
-                                        self.spawn_power_up(POWER_UP_ID_LIST[2], mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
+                                        PowerUp(POWER_UP_ID_LIST[2], POWER_UP_ID_LIST, self.power_up_images, mob.rect.centerx, mob.rect.y, [self.double_power_up_list, self.power_up_list, self.sprites_list])
                             pygame.mixer.Channel(1).play(self.EXPLOSION)
                     if mob.killed:
                         mob.kill()
@@ -355,7 +355,7 @@ class Game:
                     self.boss_id += 1
                     if self.boss_id > 3:
                         self.boss_id = 1
-                    self.spawn_boss(self.boss_speed, self.screen, self.current_level, self.boss_id)
+                    Boss(self, self.boss_id, self.screen, self.boss_speed * (1 + self.current_level / 100), self.current_level, self.boss_images, [self.boss_list, self.sprites_list])
                 self.current_level += 1
 
             #Spawn meteor:
@@ -400,22 +400,11 @@ class Game:
             enemy.rect.x = 10 + 100*i
             enemy.rect.y = -50
 
-    def spawn_power_up(self, id, pos_x, pos_y, groups):
-        power_up = PowerUp(id, POWER_UP_ID_LIST, self.power_up_images, groups)
-        power_up.rect.x = pos_x
-        power_up.rect.y = pos_y
-
     def spawn_meteor(self, speed):
         pygame.mixer.Channel(4).play(self.COMET)
         meteor = Meteor(self.meteor_image, speed, [self.enemy_list, self.meteor_list, self.sprites_list])
         meteor.rect.y = -200
         meteor.rect.x = random.randrange(0, SCREEN_WIDTH - meteor.rect.w)
-
-    #!!!!!!!!!!!!! can add different boss images!!
-    def spawn_boss(self, speed, screen, current_level, boss_id):
-        boss = Boss(self, boss_id, screen, speed * (1 + current_level / 100), current_level, self.boss_images, [self.boss_list, self.sprites_list])
-        boss.rect.x = SCREEN_WIDTH/2 - boss.rect.width/2
-        boss.rect.y = -200
 
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)

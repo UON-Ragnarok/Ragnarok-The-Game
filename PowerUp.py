@@ -2,7 +2,7 @@ import pygame
 
 class PowerUp(pygame.sprite.Sprite):
 
-    def __init__(self, power_ups_id, power_ups_id_list, images, *group):
+    def __init__(self, power_ups_id, power_ups_id_list, images, pos_x, pos_y, *group):
         super().__init__(*group)
         self.power_ups_id = power_ups_id
         self.power_ups_id_list = power_ups_id_list
@@ -10,9 +10,11 @@ class PowerUp(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.images[self.power_ups_id_list.index(self.power_ups_id)][self.index]
         self.rect = self.image.get_rect()
+        self.rect.centerx = pos_x
+        self.rect.y = pos_y
         self.animation_frames = 10
         self.current_frame = 0
-        self.speed = 5
+        self.speed = 10
         self.pause = False
 
     def update(self):

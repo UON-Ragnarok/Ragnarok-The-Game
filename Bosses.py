@@ -10,7 +10,7 @@ class Boss(pygame.sprite.Sprite):
     forward = True
     moving_vertical = False
     moving_horizontal = True
-    def __init__(self, game, boss_id, screen, speed, current_level, images,  *groups):
+    def __init__(self, game, boss_id, screen, speed, current_level, images, *groups):
         super().__init__(*groups)
         self.boss_id = boss_id
         self.game = game
@@ -27,6 +27,8 @@ class Boss(pygame.sprite.Sprite):
         self.health = 5 * current_level
         self.total_health = self.health
         self.rect = self.image.get_rect()
+        self.rect.centerx = SCREEN_WIDTH/2
+        self.rect.y = -200
 
         self.going_in = False
         self.pause = False
@@ -192,8 +194,6 @@ class Boss_Bullet(pygame.sprite.Sprite):
         self.boss = boss
         self.boss_id = boss.boss_id
         self.image = game.boss_bolt_image
-        #self.image = pygame.Surface([5, 10])
-        #self.image.fill(YELLOW) #yellow bullet, place holder, need to find image or something
         self.rect = self.image.get_rect()
         self.rect.x = x_pos
         self.origin_pos_x = x_pos

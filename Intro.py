@@ -87,6 +87,7 @@ class Intro:
 
             pygame.display.flip()
 
+
     def main_menu(self):
         # draw a and write a bunck of stuff
         self.draw_img(self.title, SCREEN_WIDTH / 9, SCREEN_HEIGHT / 6)

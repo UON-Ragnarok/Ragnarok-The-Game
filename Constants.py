@@ -3,7 +3,7 @@ import pygame
 #Game Settings
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
-FPS = 120
+FPS = 60
 GAME_TITLE = 'Ragnarok The Game'
 BACKGROUND_IMG = 'img/background.jpg'
 FONT = 'Courier'
