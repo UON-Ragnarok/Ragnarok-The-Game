@@ -59,7 +59,7 @@ class Game:
             pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
         else:
             for i in range(0, 8):
-                pygame.mixer.Channel(i).set_volume(0) 
+                pygame.mixer.Channel(i).set_volume(0)
 
 
     def load_data(self):
@@ -420,9 +420,9 @@ class Game:
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):
         if boss.going_in and not boss.death:
-            Boss_Bullet(self, boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
-            Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
+            Boss_Bullet(self, self.boss_bolt_image, boss, (boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
 
 

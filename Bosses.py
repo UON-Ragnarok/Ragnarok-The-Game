@@ -188,12 +188,12 @@ class Boss(pygame.sprite.Sprite):
 class Boss_Bullet(pygame.sprite.Sprite):
     bullet_speed = 3
     prev_x_pos = -1
-    def __init__(self, game, boss, x_pos, y_pos, bullet_speed, *groups):
+    def __init__(self, game, img, boss, x_pos, y_pos, bullet_speed, *groups):
         super().__init__(*groups)
         self.game = game
         self.boss = boss
         self.boss_id = boss.boss_id
-        self.image = game.boss_bolt_image
+        self.image = img
         self.rect = self.image.get_rect()
         self.rect.x = x_pos
         self.origin_pos_x = x_pos
@@ -212,4 +212,3 @@ class Boss_Bullet(pygame.sprite.Sprite):
         else:
             self.rect.x += 0
             self.rect.y += 0
-
