@@ -205,19 +205,22 @@ class Game:
 
     def draw(self):
         self.draw_background()
+        self.sprites_list.draw(self.screen)
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
             if self.score >= self.highscore:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
+        elif self.pause:
+            self.show_menu("b")
         else:
             self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, BLACK), (SCREEN_WIDTH - 100, 50))
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
         pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
-        self.sprites_list.draw(self.screen)
+
         #print (self.sprites_list)  # check the number of sprites
         pygame.display.flip()
 
@@ -368,7 +371,7 @@ class Game:
                 if sprite.rect.top > SCREEN_HEIGHT:
                     sprite.kill()
 
-        #m = Menu(screen_width/2,screen_height/2)
+        
         if not self.alive:
             if self.score > self.highscore:
                 self.highscore = self.score
@@ -416,14 +419,12 @@ class Game:
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):
-        #can add music
-        # if boss.boss_id ==1 the bullet is like this, we could also add boss_id ==2 or more than that if we want different bosses with different bullets
         if boss.going_in and not boss.death:
             Boss_Bullet(self, boss,(boss.rect.centerx - 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
-    ##    pygame.time.set_timer(boss_bullet_event, 0)
+    
 
 
 g = Game()
