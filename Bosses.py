@@ -28,7 +28,7 @@ class Boss(pygame.sprite.Sprite):
         self.total_health = self.health
         self.rect = self.image.get_rect()
         self.rect.centerx = SCREEN_WIDTH/2
-        self.rect.y = -200
+        self.rect.bottom = 0
 
         self.going_in = False
         self.pause = False
@@ -145,7 +145,7 @@ class Boss(pygame.sprite.Sprite):
     def say_phrases(self):
         game_folder = path.dirname(__file__)
         snd_folder = path.join(game_folder, 'Sound')
-        phrase = random.randint(1,4)
+        phrase = random.randint(1, 4)
         if not self.going_in:
             if phrase == 1:
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(snd_folder, 'I am thor fear me.ogg')))
