@@ -31,7 +31,6 @@ class Intro:
         self.power_up_image = pygame.image.load(path.join(img_folder, 'PowerUps/A1.png')).convert_alpha()
         self.screen = screen
         self.music_on_off_img = [self.mute_button_image.copy(), self.volume_button_image.copy()]
-        self.music_on_off = [0.3, 0]  # setting music volume/ on_off bg music
         self.mute_text = ["MUSIC ON", "MUSIC OFF"]
         self.is_mute = False
         self.on_off = 0
@@ -89,7 +88,7 @@ class Intro:
 
 
     def main_menu(self):
-        # draw a and write a bunck of stuff
+        # draw and write a bunck of stuff
         self.draw_img(self.title, SCREEN_WIDTH / 9, SCREEN_HEIGHT / 6)
         self.draw_img(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
         self.mouse_over_enlarge(self.start_button_image, self.sb_top_left_x, self.sb_top_left_y)
@@ -97,7 +96,7 @@ class Intro:
         self.mouse_over_enlarge(self.about_button_image, self.sb_top_left_x, self.sb_top_left_y + 25 + self.sb_height)
 
     def about(self):
-        # draw a and write a bunck of stuff
+        # draw and write a bunck of stuff
         self.draw_img(self.spaceship_image, self.ss_top_left_x, self.ss_top_left_y)
         self.draw_text(20, YELLOW, "Use mouse or trackpad to control", (190, 75))
         self.draw_text(20, YELLOW, "the spacship and destroy Asgard", (190, 85))
@@ -139,7 +138,6 @@ class Intro:
         if self.music_on_off_img[self.on_off].get_rect(topleft=(self.mb_top_left_x, self.mb_top_left_y)).collidepoint(self.click_x, self.click_y):
             # click on the image will either turn the volume down or up/ silening it
             self.on_off = (self.on_off + 1) % 2
-            self.music_on_off[0], self.music_on_off[1] = self.music_on_off[1], self.music_on_off[0]
             self.game.is_mute = not self.game.is_mute
             self.game.set_volume(not self.game.is_mute)
             self.click_x, self.click_y = 0, 0  # reset click position, should actually really do for all(after the click start / about/ back) buttons click

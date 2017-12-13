@@ -58,8 +58,8 @@ class Game:
             pygame.mixer.Channel(6).set_volume(0.3) # Boss_Laser
             pygame.mixer.Channel(7).set_volume(1.0) # Boss Channel
         else:
-            for i in range(0,8):
-                pygame.mixer.Channel(i).set_volume(0) # Arcade
+            for i in range(0, 8):
+                pygame.mixer.Channel(i).set_volume(0) 
 
 
     def load_data(self):
@@ -123,7 +123,7 @@ class Game:
         f.close()
 
     def write_highscore(self):
-        if self.score >= self.highscore:
+        if self.score > self.highscore:
             f = open(HIGHSCORE, 'w')
             f.write(str(self.score))
             f.close()
@@ -182,8 +182,8 @@ class Game:
         #self.background = pygame.image.load(BACKGROUND_IMG).convert()
         self.new_game()
 
-    def show_menu(self, id):
-        Menu().displayMenu(self.screen, id ,self.score, self.highscore)
+    def show_menu(self, page):
+        Menu().displayMenu(self.screen, page, self.score, self.highscore)
 
 
     def run(self):
@@ -208,8 +208,8 @@ class Game:
         self.sprites_list.draw(self.screen)
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
-            if self.score >= self.highscore:
-                self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
+            if self.score > self.highscore:
+                self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, RED), (SCREEN_WIDTH - 100, 50))
             else:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
         elif self.pause:
@@ -371,7 +371,7 @@ class Game:
                 if sprite.rect.top > SCREEN_HEIGHT:
                     sprite.kill()
 
-        
+
         if not self.alive:
             if self.score > self.highscore:
                 self.highscore = self.score
@@ -424,7 +424,7 @@ class Game:
             Boss_Bullet(self, boss,(boss.rect.centerx), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             Boss_Bullet(self, boss,(boss.rect.centerx + 50), boss.rect.bottom, boss_bullet_speed, [self.boss_bullet_list, self.sprites_list])
             pygame.mixer.Channel(6).play(self.BOSS_LASER)
-    
+
 
 
 g = Game()
