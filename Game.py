@@ -205,19 +205,22 @@ class Game:
 
     def draw(self):
         self.draw_background()
+        self.sprites_list.draw(self.screen)
         # *after* drawing everything, flip the display
         if self.alive and not self.pause:
             if self.score >= self.highscore:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score),  0, RED), (SCREEN_WIDTH - 100, 50))
             else:
                 self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, GREY), (SCREEN_WIDTH - 100, 50))
+        elif self.pause:
+            self.show_menu("b")
         else:
             self.screen.blit(pygame.font.SysFont(FONT, 40, True).render(str(self.score), 0, BLACK), (SCREEN_WIDTH - 100, 50))
         if self.boss_list:
             for boss in self.boss_list:
                 boss.update_health_bar()
         pygame.display.set_caption("Fps {:.2f}".format(self.clock.get_fps()))  # check fps
-        self.sprites_list.draw(self.screen)
+
         #print (self.sprites_list)  # check the number of sprites
         pygame.display.flip()
 

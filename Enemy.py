@@ -23,10 +23,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y += self.speed
             if self.death == True:
                 self.update_death_animation()
-        else:
-            self.rect.y += 0
-            if self.death == True:
-                self.current_frame += 0
+
 
     def update_death_animation(self):
         if self.index != 11:
