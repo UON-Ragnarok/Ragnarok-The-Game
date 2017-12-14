@@ -40,7 +40,7 @@ class Intro:
             self.draw_img(self.IMGS["menu_background_img"], relative_x - self.IMGS["menu_background_img"].get_rect().width, 0)
             if relative_x < SCREEN_WIDTH:
                 self.draw_img(self.IMGS["menu_background_img"], relative_x, 0)
-            self.menu_background_img_x += -0.2
+            self.menu_background_img_x += -0.1
             if main:
                 # load main menu
                 self.main_menu()
@@ -56,10 +56,11 @@ class Intro:
                 self.bg_music()  # music mute/ volume down and up
             if about:
                 self.about()
-                self.menu_background_img_x += -0.7
+                self.menu_background_img_x += -0.1
                 if self.IMGS["back_button_img"].get_rect(topleft=(self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.click_x, self.click_y):
                     main = True
                     about = False
+
 
             pygame.display.flip()
 
