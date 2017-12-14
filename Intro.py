@@ -56,7 +56,7 @@ class Intro:
                 self.bg_music()  # music mute/ volume down and up
             if about:
                 self.about()
-                self.menu_background_img_x += -0.7
+                self.menu_background_img_x += -0.5
                 if self.IMGS["back_button_img"].get_rect(topleft=(self.bb_top_left_x, self.sb_top_left_y + 300)).collidepoint(self.click_x, self.click_y):
                     main = True
                     about = False
