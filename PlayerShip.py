@@ -1,6 +1,7 @@
 import pygame
 from Constants import *
 
+# Class for the User ship
 class PlayerShip(pygame.sprite.Sprite):
     def __init__(self, image, *groups):
         super().__init__(*groups)
@@ -9,6 +10,7 @@ class PlayerShip(pygame.sprite.Sprite):
         self.rect.bottom = SCREEN_HEIGHT * 0.95
         self.pause = False
 
+# defining the position of the spaceship on the screen 
     def update(self):
         pos = pygame.mouse.get_pos()
         if self.pause == False:

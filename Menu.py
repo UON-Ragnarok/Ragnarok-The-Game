@@ -8,10 +8,7 @@ class Menu:
         self.mid_y = SCREEN_HEIGHT/2
 
     def displayMenu(self, screen, menu, score = 0, highscore = 0):
-    #menua = Instro
-    #menub = Pause
-    #menuc = Game Over
-    #menud = countdown
+
         gp_width = pygame.font.SysFont(FONT, 70, True) .size("Game Paused")[0]
         res_width = pygame.font.SysFont(FONT, 30, True).size("Press Escape to resume")[0]
         r_width = pygame.font.SysFont(FONT, 30, True).size("Press R to go to main menu")[0]
@@ -23,11 +20,13 @@ class Menu:
         b_width = pygame.font.SysFont(FONT, 30, True).size("Best")[0]
         b_string_width = pygame.font.SysFont(FONT, 70, True).size(str(highscore))[0]
 
-
+    #menub = Pause
         if menu == "b":
             screen.blit(pygame.font.SysFont(FONT, 70, True).render("Game Paused", 1, BLUE), (self.mid_x - gp_width/2 ,self.mid_y/2 ))
             screen.blit(pygame.font.SysFont(FONT, 30, True).render("Press Escape to resume", 1, BLUE), (self.mid_x - (res_width/2), self.mid_y-40))
             screen.blit(pygame.font.SysFont(FONT, 30, True).render("Press R to go to main menu", 1, BLUE), (self.mid_x - (r_width/2), self.mid_y))
+
+    #menuc = Game Over
         elif menu == "c":
             screen.blit(pygame.font.SysFont(FONT, 70, True).render("Game Over", 1, BLUE), (self.mid_x - go_width/2, self.mid_y/2))
             screen.blit(pygame.font.SysFont(FONT, 30, True).render("Press R to go to main menu", 1, BLUE), (self.mid_x - (r2_width/2), self.mid_y-60))
@@ -41,6 +40,7 @@ class Menu:
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(score), 1, BLUE), (self.mid_x/2 - s_string_width/2, self.mid_y+50))
                 screen.blit(pygame.font.SysFont(FONT, 70, True).render(str(highscore), 1, BLUE), (self.mid_x*3/2 - b_string_width/2, self.mid_y+50))
 
+    #menud = countdown
         elif menu == "d":
             # for the countdown before resume
             for i in range(3, 0, -1):

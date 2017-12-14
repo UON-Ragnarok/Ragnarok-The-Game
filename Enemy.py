@@ -1,6 +1,7 @@
 import pygame
 from Constants import *
 
+# Creating class for enemies
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, speed, health, images, *groups):
         super().__init__(*groups)
@@ -18,13 +19,14 @@ class Enemy(pygame.sprite.Sprite):
         self.killed = False
         self.death = False
 
+# Defining position of the enemy on the screen
     def update(self):
         if self.pause == False:
             self.rect.y += self.speed
             if self.death == True:
                 self.update_death_animation()
 
-
+# Defining the death animation of the enemy
     def update_death_animation(self):
         if self.index != 11:
             self.current_frame += 1
@@ -35,6 +37,7 @@ class Enemy(pygame.sprite.Sprite):
             else:
                 self.killed = True
 
+# Creating class for meteor
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, image, speed, *groups):
         super().__init__(*groups)
@@ -43,6 +46,7 @@ class Meteor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.pause = False
 
+# Defining position of the metor on the screen 
     def update(self):
         # kiind of duplicate for Game.py line 308
         if self.rect.top > SCREEN_HEIGHT:
