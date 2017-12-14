@@ -8,7 +8,7 @@ class Enemy(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.images[self.index]
 
-        self.animation_frames = 5
+        self.animation_frames = 3
         self.current_frame = 0
 
         self.speed = speed

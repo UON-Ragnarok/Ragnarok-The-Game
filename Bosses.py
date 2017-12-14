@@ -19,7 +19,7 @@ class Boss(pygame.sprite.Sprite):
         self.images = images
         self.index = 0
         self.image = self.images[self.index]
-        self.animation_frames = 5
+        self.animation_frames = 3
         self.current_frame = 0
         self.moving_horizontal_old_time = time.time()
         self.action_old_time = time.time()
@@ -52,7 +52,7 @@ class Boss(pygame.sprite.Sprite):
                 self.update_animation()
             
             if self.death and self.index < 30:
-                self.animation_frames = 10
+                self.animation_frames = 7
                 self.update_animation()
                 if self.index >= 30:
                     self.killed = True
