@@ -1,9 +1,9 @@
-To run the game, execute 'Game.py' with Python runtime.
+To run the game, execute 'Game.py'.
 
 Controls:
 
 In start menu, use mouse to click the options.
-Use mouse or trackpad to control the spaceship, the fire bullets can be shot automatically.
+Use mouse or trackpad to control the spaceship, the bullets are fired automatically
 
 Hotkeys:
 
@@ -12,6 +12,6 @@ R - Back to main menu
 N - Quit
 
 Aim:
-Avoid the collision, boss bullets and the meteors.
-Shoot the enemies and bosses.
+Avoid collision between spaceship and other game objects including enemy ships, enemy bullets and meteors
+Destroy enermy ships and bosses
 Aim for higher score.
