@@ -85,9 +85,8 @@ class Game:
 
     def init_masks(self):
         self.player_ship_img_mask = pygame.mask.from_surface(self.player_ship_img)
-        self.player_ship_rect = self.player_ship_img.get_rect()
         self.meteor_img_mask = pygame.mask.from_surface(self.meteor_img)
-        self.meteor_img_rect = self.meteor_img.get_rect()
+        self.boss_bolt_img_mask = pygame.mask.from_surface(self.boss_bolt_img)
 
 
     def load_mob_images(self):
@@ -257,19 +256,18 @@ class Game:
         self.sprites_list.update()
 
         if self.alive and not self.pause:
-            # player colliding with enemy
+            # detect player colliding (prefect collision) with enemy
             for mob in self.mob_list:
                 self.check_for_collision(self.player, mob, self.player_ship_img_mask, self.mob_img_mask)
 
-            #Player colliding with meteors
             for meteor in self.meteor_list:
                 self.check_for_collision(self.player, meteor, self.player_ship_img_mask, self.meteor_img_mask)
 
             for boss in self.boss_list:
                 self.check_for_collision(self.player, boss, self.player_ship_img_mask, self.boss_img_mask)
 
-#            for boss_bullet in self.boss_bullet_list
-#                self.check_for_collision(self.player, boss_bullet, )
+            for boss_bullet in self.boss_bullet_list:
+                self.check_for_collision(self.player, boss_bullet, self.player_ship_img_mask, self.boss_bolt_img_mask)
 
             #If hit a power up
             power_up_hit_list = pygame.sprite.spritecollide(self.player, self.power_up_list, False)
@@ -331,11 +329,6 @@ class Game:
                          for boss_bullet in self.boss_bullet_list:
                              boss_bullet.kill()
 
-            # when player colliding boss bullet
-            player_hit_list = pygame.sprite.spritecollide(self.player, self.boss_bullet_list, False)
-            if player_hit_list:
-                    pygame.mixer.Channel(3).play(self.KILLED)
-                    self.alive = False
 
            #Spawn enemies if there aren't any, levels and speeds fix later
             if not self.mob_list and not self.boss_list:
