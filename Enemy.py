@@ -49,5 +49,4 @@ class Meteor(pygame.sprite.Sprite):
             self.kill()
         if self.pause == False:
             self.rect.y += self.speed
-        else:
-            self.rect.y += 0
+
