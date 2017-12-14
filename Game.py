@@ -399,10 +399,10 @@ class Game:
     def fire_bullet(self, player, bullet_speed, fire_bullet_event, fire_bullet_delay):
         pygame.mixer.Channel(5).play(self.LASER)
         if self.double_power:
-            bullet1 = Bullet(self, self.bullet_img, (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
-            bullet2 = Bullet(self, self.bullet_img, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet1 = Bullet(self.bullet_img, (player.rect.x + player.image.get_rect().width/4), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet2 = Bullet(self.bullet_img, (player.rect.x + player.image.get_rect().width/4 * 3), player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         else:
-            bullet = Bullet(self, self.bullet_img, player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
+            bullet = Bullet(self.bullet_img, player.rect.centerx, player.rect.top, bullet_speed, [self.bullet_list, self.sprites_list])
         pygame.time.set_timer(fire_bullet_event, fire_bullet_delay)
 
     def boss_fire_bullet(self, boss, boss_bullet_speed):

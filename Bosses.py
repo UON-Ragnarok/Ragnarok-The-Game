@@ -161,6 +161,7 @@ class Boss(pygame.sprite.Sprite):
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'you cannot pickle my brain.ogg')))
             elif phrase == 4:
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'this is easy exercise.ogg')))
+            self.anger_speech = True
         if self.death and not self.death_speech:
             if phrase == 1:
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'Ill be back.ogg')))
