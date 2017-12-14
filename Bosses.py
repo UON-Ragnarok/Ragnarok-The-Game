@@ -8,8 +8,8 @@ class Boss(pygame.sprite.Sprite):
     # flags for boss states
     forward = True # whether the boss moves forward or backward horizontally
     moving_vertical = False # whether the boss moves up or down
-    moving_horizontal = True 
-    # initialise Boss by accepting relevant data from outside of the class 
+    moving_horizontal = True
+    # initialise Boss by accepting relevant data from outside of the class
     def __init__(self, game, boss_id, screen, speed, current_level, images, *groups):
         super().__init__(*groups)
 
@@ -24,7 +24,7 @@ class Boss(pygame.sprite.Sprite):
         self.moving_horizontal_old_time = time.time()
         self.action_old_time = time.time()
 
-        # initialise boss properties 
+        # initialise boss properties
         self.speed = speed
         self.health = 5 * current_level
         self.total_health = self.health
@@ -48,7 +48,7 @@ class Boss(pygame.sprite.Sprite):
         if self.pause == False:
             self.say_phrases() # boss speech
             # boss animation
-            if self.health < (self.total_health / 100 * 50) and self.index < 19: 
+            if self.health < (self.total_health / 100 * 50) and self.index < 19:
                 self.update_animation()
             if self.death and self.index < 30:
                 self.animation_frames = 7
@@ -140,10 +140,10 @@ class Boss(pygame.sprite.Sprite):
             if boss_id == 3: # boss 3 spawns meteors
                 self.game.spawn_meteor(time_speed_of_actions[1])
             self.action_old_time = time.time()
-    
+
     def update_health_bar(self):
         if self.going_in and not self.death:
-            # draw health bar 
+            # draw health bar
             pygame.draw.line(self.screen, RED, (10, 10) , (SCREEN_WIDTH - 10, 10), 8)
             pygame.draw.line(self.screen, GREEN, (10, 10) , ((SCREEN_WIDTH - 10) * (self.health/ self.total_health), 10), 8)
 
@@ -153,37 +153,19 @@ class Boss(pygame.sprite.Sprite):
             self.current_frame = 0
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
-    
+
     def say_phrases(self): # boss speech
-        phrase = random.randint(1, 4)
+        phrase = random.randint(0, 3)
         if not self.going_in:
-            if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'I am thor fear me.ogg')))
-            elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'I am the starting point of the asgard.ogg')))
-            elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'my name is thorsten altenkirch.ogg')))
-            elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'obviously I am the big boss.ogg')))
+            opening_line = ['I am thor fear me.ogg', 'I am the starting point of the asgard.ogg', 'my name is thorsten altenkirch.ogg', 'obviously I am the big boss.ogg']
+            pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, opening_line[phrase])))
         if self.anger and not self.anger_speech:
-            if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'i made an error for you to spot.ogg')))
-            elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'stupid question.ogg')))
-            elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'you cannot pickle my brain.ogg')))
-            elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'this is easy exercise.ogg')))
+            anger_line = ['i made an error for you to spot.ogg', 'stupid question.ogg', 'you cannot pickle my brain.ogg', 'this is easy exercise.ogg']
+            pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, anger_line[phrase])))
             self.anger_speech = True
         if self.death and not self.death_speech:
-            if phrase == 1:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'Ill be back.ogg')))
-            elif phrase == 2:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'rah.ogg')))
-            elif phrase == 3:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'lecture resumes next week.ogg')))
-            elif phrase == 4:
-                pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, 'how can you pickle my brain.ogg')))
+            closing_line = ['Ill be back.ogg', 'rah.ogg', 'lecture resumes next week.ogg', 'how can you pickle my brain.ogg']
+            pygame.mixer.Channel(7).play(pygame.mixer.Sound(path.join(self.game.snd_folder, closing_line[phrase])))
             self.death_speech = True
 
     # if hit, decrease boss health
@@ -217,9 +199,8 @@ class Boss_Bullet(pygame.sprite.Sprite):
 
 
     def update(self):
-        
+
         if self.pause == False:
             # update bullet trajectory (splitting bullets)
             self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
             self.rect.y += self.speed
-
