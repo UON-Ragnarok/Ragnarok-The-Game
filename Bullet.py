@@ -1,10 +1,9 @@
 import pygame
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x_pos, y_pos, speed, *groups):
+    def __init__(self, img, x_pos, y_pos, speed, *groups):
         super().__init__(*groups)
-        self.game = game
-        self.image = game.bullet_img
+        self.image = img
         self.rect = self.image.get_rect()
         self.rect.centerx = x_pos
         self.rect.bottom = y_pos
@@ -17,5 +16,4 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
         if self.pause == False:
             self.rect.y -= self.speed
-        else:
-            self.rect.y += 0
+
