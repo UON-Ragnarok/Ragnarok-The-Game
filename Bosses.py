@@ -50,7 +50,6 @@ class Boss(pygame.sprite.Sprite):
             # boss animation
             if self.health < (self.total_health / 100 * 50) and self.index < 19: 
                 self.update_animation()
-            
             if self.death and self.index < 30:
                 self.animation_frames = 7
                 self.update_animation()
@@ -121,12 +120,12 @@ class Boss(pygame.sprite.Sprite):
                 else:
                     self.rect.y += self.speed * 4
             # revert vertical direction when reaching bottom of screen
-            if self.rect.bottom > (SCREEN_HEIGHT - 50) or self.rect.y < 50:
-                self.moving_vertical = not self.moving_vertical
-                # reable horizontal movement when returned to top
-                if self.rect.y < 50:
-                    self.moving_horizontal_old_time = time.time()
-                    self.moving_horizontal = True
+            if self.rect.bottom >= (SCREEN_HEIGHT - 50):
+                self.moving_vertical = True
+            if self.rect.y <= 50:
+                self.moving_vertical = False
+                self.moving_horizontal_old_time = time.time()
+                self.moving_horizontal = True
     # define boss's actions
     def boss_action(self, boss_id, time_between, speed):
         # set interval between actions
@@ -145,9 +144,9 @@ class Boss(pygame.sprite.Sprite):
     def update_health_bar(self):
         if self.going_in and not self.death:
             # draw health bar 
-            pygame.draw.line(self.screen, RED, (self.rect.x + 10, self.rect.y - 10) , (self.rect.right - 10, self.rect.y - 10), 8)
-            pygame.draw.line(self.screen, GREEN, (self.rect.x + 10, self.rect.y - 10) , (self.rect.x + (self.image.get_rect().width - 10) * (self.health/ self.total_health), self.rect.y - 10), 8)
-    
+            pygame.draw.line(self.screen, RED, (10, 10) , (SCREEN_WIDTH - 10, 10), 8)
+            pygame.draw.line(self.screen, GREEN, (10, 10) , ((SCREEN_WIDTH - 10) * (self.health/ self.total_health), 10), 8)
+
     def update_animation(self):
         self.current_frame += 1
         if self.current_frame >= self.animation_frames:
