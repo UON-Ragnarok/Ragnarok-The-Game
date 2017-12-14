@@ -154,7 +154,7 @@ class Boss(pygame.sprite.Sprite):
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
 
-    def say_phrases(self): # boss speech
+    def say_phrases(self): # boss speech for when he spawns, angry and dies
         phrase = random.randint(0, 3)
         if not self.going_in:
             opening_line = ['I am thor fear me.ogg', 'I am the starting point of the asgard.ogg', 'my name is thorsten altenkirch.ogg', 'obviously I am the big boss.ogg']
