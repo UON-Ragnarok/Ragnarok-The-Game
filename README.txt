@@ -1,17 +1,12 @@
-To run the game, execute 'Game.py'.
+README
 
-Controls:
 
-In start menu, use mouse to click the options.
-Use mouse or trackpad to control the spaceship, the bullets are fired automatically
+Hard drive will need to have at least 50MB of free space in order to download the game. 
 
-Hotkeys:
+To run the game, the Operating system will need Python and Pygame which can be found respectively: 
+	https://www.python.org/ftp/python/3.6.3/python-3.6.3-macosx10.6.pkg
+	http://www.pygame.org/download.shtml
 
-Esc - Pause game
-R - Back to main menu
-N - Quit
+If the operating system contains Python and Pygame, the user can run the game by executing 'Game.py' located in the folder 'Ragnarok-The-Game'.
 
-Aim:
-Avoid collision between spaceship and other game objects including enemy ships, enemy bullets and meteors
-Destroy enermy ships and bosses
-Aim for higher score.
+
