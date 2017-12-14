@@ -207,6 +207,4 @@ class Boss_Bullet(pygame.sprite.Sprite):
         if self.pause == False:
             self.rect.x += ((self.origin_pos_x - self.boss_origin_pos_x)/25)
             self.rect.y += self.speed
-        else:
-            self.rect.x += 0
-            self.rect.y += 0
+
