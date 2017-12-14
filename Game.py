@@ -18,7 +18,7 @@ class Game:
         # initialize game window, etc
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
         # set caption
         pygame.display.set_caption(GAME_TITLE)
         self.clock = pygame.time.Clock()
@@ -90,12 +90,6 @@ class Game:
             except:
                 self.highscore = 0
 
-
-    def init_masks(self):
-        self.player_ship_img_mask = pygame.mask.from_surface(self.player_ship_img)
-        self.meteor_img_mask = pygame.mask.from_surface(self.meteor_img)
-        self.boss_bolt_img_mask = pygame.mask.from_surface(self.boss_bolt_img)
-
     # load images for enemy ships
     def load_mob_images(self):
         self.mob_images_list = [path.join(self.mob_img_folder, str(number) + ".png") for number in range(0, 12)]
@@ -104,8 +98,6 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (80, 80))
             self.mob_images.append(image)
-        self.mob_img_mask = pygame.mask.from_surface(self.mob_images[0])
-        self.mob_image_rect = self.mob_images[0].get_rect()
 
     # load images for bosses
     def load_boss_images(self):
@@ -115,8 +107,6 @@ class Game:
             image = pygame.image.load(file).convert_alpha()
             image = pygame.transform.scale(image, (170,190))
             self.boss_images.append(image)
-        self.boss_img_mask = pygame.mask.from_surface(self.boss_images[0])
-        self.boss_image_rect = self.boss_images[0].get_rect()
 
     # load images for Power-ups
     def load_power_up_images(self):
@@ -129,6 +119,15 @@ class Game:
                 image = pygame.image.load(file).convert_alpha()
                 image = pygame.transform.scale(image, (50, 50))
                 self.power_up_images[i].append(image)
+
+    def init_masks(self):
+        self.player_ship_img_mask = pygame.mask.from_surface(self.player_ship_img)
+        self.meteor_img_mask = pygame.mask.from_surface(self.meteor_img)
+        self.boss_bolt_img_mask = pygame.mask.from_surface(self.boss_bolt_img)
+        self.boss_img_mask = pygame.mask.from_surface(self.boss_images[0])
+        self.boss_image_rect = self.boss_images[0].get_rect()
+        self.mob_img_mask = pygame.mask.from_surface(self.mob_images[0])
+        self.mob_image_rect = self.mob_images[0].get_rect()
 
     # write highscore to file
     def write_highscore(self):
@@ -187,7 +186,6 @@ class Game:
     # display relevant menu
     def show_menu(self, page):
         Menu().displayMenu(self.screen, page, self.score, self.highscore)
-
 
     def run(self):
         # Game Loop
