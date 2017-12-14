@@ -8,7 +8,7 @@ class Intro:
         self.game = game
         IMG_NAMES = ["menu_background", "title", "start_button", "about_button", "back_button", "mute_button",
                     "volume_button", "player_ship", "mob", "meteor", "thor", "powerup"]
-        self.IMGS = {f"{name}_img": pygame.image.load(path.join(self.game.img_folder, f"{name}.png")).convert_alpha() for name in IMG_NAMES}
+        self.IMGS = {"{name}_img": pygame.image.load(path.join(self.game.img_folder, "{name}.png")).convert_alpha() for name in IMG_NAMES}
         self.music_on_off_img = [self.IMGS["mute_button_img"], self.IMGS["volume_button_img"]]
         self.mute_text = ["MUSIC ON", "MUSIC OFF"]
         self.is_mute = False
